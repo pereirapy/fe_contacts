@@ -1,0 +1,15 @@
+{
+  "emailPlaceHolder": "Preencha seu email",
+  "passwordPlaceHolder": "Preencha sua senha",
+  "btnSubmit": "Enviar",
+  "passwordLabel": "Senha",
+  "emailLabel": "Email",
+  "titleModal": "Iniciar sessão",
+  "btnOpenModal": "Iniciar sessão",
+  "AUTHORIZED": "Voce foi logado corretamente",
+  "NO_EMAIL_VALID": "Este e-mail não foi encontrado",
+  "PASSWORD_WRONG": "A senha não é correta",
+  "ERROR_WHILE_CREATING": "Erro ao iniciar sessão",
+  "errorTryLogIn": "Erro ao iniciar sessão",
+  "passwordHelper": "Sua senha precisa conter ao menos 8 caracteres, um número, um caracter especial, uma letra maiúscula, uma letra minúscula e não ter espaços "
+}

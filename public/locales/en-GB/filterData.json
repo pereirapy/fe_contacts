@@ -1,0 +1,20 @@
+{
+  "title": "Filters",
+  "gendersTitleFilter": "Genders",
+  "languagesTitleFilter": "Languages",
+  "statusTitleFilter": "Status",
+  "responsibilityTitleFilter": "Responsibility",
+  "typeCompanyTitleFilter": "Type",
+  "typeCompanyBoth": "Both",
+  "publishersResponsiblesTitleFilter": "Created by",
+  "locationsTitleFilter": "Locations",
+  "typeCompany0": "Residential",
+  "typeCompany1": "Business",
+  "typeCompany-1": "Both",
+  "unknown": "Unknown"
+
+
+
+
+
+}

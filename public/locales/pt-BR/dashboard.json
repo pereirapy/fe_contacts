@@ -1,0 +1,20 @@
+{
+  "title": "Agenda Telefônica",
+  "titleCongregation": "Cong. Santa Rita",
+  "welcome": "Esta é sua página",
+  "contacted": "Contactados",
+  "withoutContact": "Sem contato",
+  "totalContactsAssignByMeWaitingFeedback": "Por mim",
+  "totalContactsWaitingFeedback": "Outros",
+  "titleChartContacts": "Contatados Vs. não contatados",
+  "titleChartWaitingFeedback": "Aguardam meu comentario Vs. de outros",
+  "titleChartWaitingFeedbackByPublishers": "Aguardam comentario por cada publicador",
+  "titleChartGender": "Contatados por gênero",
+  "titleChartLanguage": "Contatados por idioma",
+  "noName": "No Name",
+  "titleChartType": "Contatos por tipo",
+  "titleChartByLocationsContacted": "Contatados por localidade",
+  "unknown": "Desconhecida"
+
+
+}

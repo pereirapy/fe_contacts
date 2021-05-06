@@ -1,0 +1,9 @@
+.page-header {
+  background-color: #15b6c3;
+}
+
+.page-header h1 {
+  color: white;
+  font: 700 2rem Archivo;
+  padding: 1rem 0;
+}

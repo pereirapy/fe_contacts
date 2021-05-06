@@ -1,0 +1,14 @@
+{
+  "title": "Details of Contact",
+  "titleCrud": "Detail of Contact",
+  "publisher": "Publisher",
+  "date": "Date",
+  "information": "Information",
+  "informationLabel": "Informations",
+  "informationPlaceHolder": "Write here infornations about the conversation that the public has with this contact",
+  "name": "Name",
+  "phone": "Phone",
+  "notificationNotAllowedNewDetails": "Before create a new conversation, please, write the feedback of last contact",
+  "[WAITING_FEEDBACK]": "Waiting for feedback",
+  "ERROR_PUBLISHER_ALREADY_WAITING_FEEDBACK": "This contact is already waiting a feedback. Please, take a note of this feedback before assign to other publisher"
+}

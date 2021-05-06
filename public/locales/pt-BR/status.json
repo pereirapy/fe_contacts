@@ -1,0 +1,14 @@
+{
+  "title": "Estado",
+  "titleList": "Lista dos Estados",
+  "descriptionLabel": "Descrição",
+  "descriptionTraducedLabel": "Descrição Traduzida",
+  "descriptionPlaceHolder": "Por favor escreva uma breve descrição",
+  "available": "Disponível",
+  "bibleStudy": "Estudo Bíblico",
+  "returnVisit": "Revisita",
+  "noVisit": "Não visitar",
+  "sentToOtherCongregation": "Enviado para outra congregação",
+  "status_description_unique":"Este estado já existe"
+
+}

@@ -1,0 +1,20 @@
+{
+  "title": "Phonebook",
+  "titleCongregation": "Cong. Santa Rita",
+  "welcome": "This is your dashboard",
+  "contacted": "Contacted",
+  "withoutContact": "Without contact",
+  "totalContactsAssignByMeWaitingFeedback": "Me",
+  "totalContactsWaitingFeedback": "Others",
+  "titleChartContacts": "Contacted vs. not contacted",
+  "titleChartWaitingFeedback": "Waiting feedback by me vs. others",
+  "titleChartWaitingFeedbackByPublishers": "Waiting feedback by each publishers",
+  "titleChartGender": "Contacted by gender",
+  "titleChartLanguage": "Contacted by language",
+  "noName": "No Name",
+  "titleChartType": "Contacts by type",
+  "titleChartByLocationsContacted": "Contacted by location",
+  "unknown": "Unknown"
+
+
+}

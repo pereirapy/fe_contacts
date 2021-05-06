@@ -1,0 +1,22 @@
+{
+  "titleCrud": "Idiomas",
+  "titleModal": "Idioma",
+  "title": "Idioma do sistema",
+  "labelSelect": "Idioma",
+  "noLanguage": "Sem idioma",
+  "optionsLabel": "Idiomas",
+  "languageOptionEnglish": "Inglês",
+  "languageOptionPortuguese": "Português",
+  "english": "Inglês",
+  "spanish": "Espanhol",
+  "germany": "Alemão",
+  "portuguese": "Português",
+  "unknown":"Desconhecido",
+  "descriptionLabel": "Descrição",
+  "nameLabel": "Name",
+  "colorLabel": "Color",
+  "descriptionTraducedLabel": "Descrição Traduzida",
+  "descriptionPlaceHolder": "Por favor escreva uma breve descrição",
+  "namePlaceHolder": "Por favor escreva um breve nome",
+  "colorPlaceHolder": "Por favor escreva cor em hexadecimal"
+}

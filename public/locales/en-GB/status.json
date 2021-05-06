@@ -1,0 +1,13 @@
+{
+  "title": "Status",
+  "titleList": "List of Status",
+  "descriptionLabel": "Description",
+  "descriptionTraducedLabel": "Description Traduced",
+  "descriptionPlaceHolder": "Please write a short description",
+  "available": "Available",
+  "bibleStudy": "Bible Study",
+  "returnVisit": "Return Visit",
+  "noVisit": "No Visit",
+  "sentToOtherCongregation": "Sent to other congregation",
+  "status_description_unique": "This status already exists"
+}
