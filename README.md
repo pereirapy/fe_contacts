@@ -22,6 +22,11 @@
   - Those information you will use in frontend app
 - In heroku the app will run automatically the script `npm start`
 
+4 - Login
+
+- email: admin@example.com
+- password: 123456
+
 ## Available Scripts
 
 In the project directory, you can run:
