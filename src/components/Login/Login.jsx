@@ -2,12 +2,19 @@ import React from 'react'
 import { get } from 'lodash/fp'
 import FormLogin from './FormLogin'
 import { auth } from '../../services'
-import { setLoginData } from '../../utils/loginDataManager'
 import { withTranslation } from 'react-i18next'
 import SimpleReactValidator from 'simple-react-validator'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSignInAlt } from '@fortawesome/free-solid-svg-icons'
+
 import { getLocale, handleInputChangeGeneric } from '../../utils/forms'
-import OurModal from '../common/OurModal/OurModal'
 import { showSuccessful, showError } from '../../utils/generic'
+import { buildContextData } from '../../utils/loginDataManager'
+import { ApplicationContext } from '../../contexts/application'
+import { campaigns } from '../../services'
+
+import OurModal from '../common/OurModal/OurModal'
+import ElementError from '../common/ElementError/ElementError'
 
 const fields = {
   email: '',
@@ -28,7 +35,7 @@ class LoginPopup extends React.Component {
     this.validator = new SimpleReactValidator({
       autoForceUpdate: this,
       locale: getLocale(this.props),
-      element: (message) => <div className="text-danger">{message}</div>,
+      element: (message) => <ElementError message={message} />,
     })
   }
 
@@ -50,10 +57,16 @@ class LoginPopup extends React.Component {
 
     try {
       const authRes = await auth.authenticate(form)
-      setLoginData(get('data.data', authRes))
-      this.setState({ submitting: false })
-      history.push('/dashboard')
+      const { updateContext, setCookieLoginData } = this.context
+      const user = get('data.data', authRes)
+      setCookieLoginData(user)
+      const newContext = buildContextData()
+      const response = await campaigns.getDetailsActive()
+      const campaignActive = response.data.data || null
+      updateContext(() => ({ ...newContext, campaignActive }))
+
       showSuccessful(t, get('data.cod', authRes), 'login')
+      history.push('/dashboard')
     } catch (error) {
       this.setState({ submitting: false })
       showError(error, t, 'login', {
@@ -65,22 +78,34 @@ class LoginPopup extends React.Component {
   render() {
     const { t } = this.props
     const { submitting, validated, form } = this.state
+    const buttonText = (
+      <React.Fragment>
+        <FontAwesomeIcon icon={faSignInAlt} /> {t('btnOpenModal')}
+      </React.Fragment>
+    )
+    const title = (
+      <React.Fragment>
+        <FontAwesomeIcon icon={faSignInAlt} /> {t('titleModal')}
+      </React.Fragment>
+    )
+
     return (
       <OurModal
         body={FormLogin}
         size="sm"
-        title={t('titleModal')}
+        title={title}
         form={form}
         validator={this.validator}
         submitting={submitting}
         validated={validated}
         handleSubmit={this.handleSubmit}
         handleInputChange={this.handleInputChange}
-        buttonText={t('btnOpenModal')}
+        buttonText={buttonText}
         buttonVariant="primary"
       />
     )
   }
 }
+LoginPopup.contextType = ApplicationContext
 
 export default withTranslation(['login', 'common'])(LoginPopup)

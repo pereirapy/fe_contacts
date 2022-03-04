@@ -21,7 +21,7 @@
   "dataSuccessfullySaved": "Data Successfully Saved",
   "typeToSearch": "Type to Search...",
   "view": "View",
-  "warning": "Warning | Warnings",
+  "warning": "Warning!! | Warnings!!",
   "yes": "Yes",
   "btnSubmit": "Submit",
   "btnSubmitting": "Submitting...",
@@ -53,6 +53,7 @@
   "ops": "Ops!!",
   "contacts_pkey": "This number already exists",
   "contacts_phone2_unique": "The Phone 2 number already exists",
+  "status_description_unique": "This status already exists",
   "sendOverWhatsApp": "Send over WhatsApp",
   "total": "Total",
   "list": "List",
@@ -62,7 +63,17 @@
   "placeHolderSelect": "Select...",
   "same": "Same",
   "errorValidation": "Validation error",
-  "allFieldsIsEmpty": "All fields is empty. Please, select at least one"
+  "allFieldsIsEmpty": "All fields is empty. Please, select at least one",
+  "pageNotFound": "Page not found",
+  "goToHome": "Go to home",
+  "updatedByAt": "Updated by {{name}} at {{date}}",
+  "createdByAt": "Created by {{name}} at {{date}}",
+  "campaigns_name_unique": "This campaign name already exists",
+  "ERROR_ID_CAMPAIGN_IS_MISSING": "Campaign not found"
 
+
+
+
+  
 
 }

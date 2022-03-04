@@ -1,12 +1,17 @@
 import React from 'react'
 import { withTranslation } from 'react-i18next'
 import OurModal from '../common/OurModal/OurModal'
-import { getOr, isEmpty, omit } from 'lodash/fp'
+import ElementError from '../common/ElementError/ElementError'
+import { getOr, omit } from 'lodash/fp'
 import SimpleReactValidator from 'simple-react-validator'
-import { getLocale, handleInputChangeGeneric } from '../../utils/forms'
+import {
+  getLocale,
+  handleInputChangeGeneric,
+  mustBeEqualFieldPassword,
+} from '../../utils/forms'
 import { publishers } from '../../services'
 import FormPublisher from './FormPublisher'
-import { faEdit } from '@fortawesome/free-solid-svg-icons'
+import { faEdit, faUserEdit } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { showError, showSuccessful, ifEmptySetNull } from '../../utils/generic'
 
@@ -36,15 +41,9 @@ class EditContact extends React.Component {
     this.validator = new SimpleReactValidator({
       autoForceUpdate: this,
       locale: getLocale(this.props),
-      element: (message) => <div className="text-danger">{message}</div>,
+      element: (message) => <ElementError message={message} />,
       validators: {
-        mustBeEqualFieldPassword: {
-          message: this.props.t('mustBeEqualFieldPassword'),
-          rule: (val) =>
-            val === this.state.form.password ||
-            isEmpty(this.state.form.password),
-          required: true,
-        },
+        mustBeEqualFieldPassword: mustBeEqualFieldPassword(this),
       },
     })
   }
@@ -110,6 +109,14 @@ class EditContact extends React.Component {
   render() {
     const { form, validated, loading } = this.state
     const { t, afterClose } = this.props
+    const title = (
+      <React.Fragment>
+        {' '}
+        <FontAwesomeIcon icon={faUserEdit} />{' '}
+        {`${t('common:edit')} ${t('titleCrud')}`}{' '}
+      </React.Fragment>
+    )
+
     return (
       <OurModal
         body={FormPublisher}
@@ -122,7 +129,7 @@ class EditContact extends React.Component {
         onEnter={this.handleGetOne}
         onExit={afterClose}
         buttonTitle={t('common:edit')}
-        title={`${t('common:edit')} ${t('titleCrud')}`}
+        title={title}
         buttonText={<FontAwesomeIcon icon={faEdit} />}
         buttonVariant="success"
       />

@@ -1,12 +1,17 @@
 import React from 'react'
 import { withTranslation } from 'react-i18next'
 import OurModal from '../common/OurModal/OurModal'
-import { isEmpty, omit, getOr } from 'lodash/fp'
+import ElementError from '../common/ElementError/ElementError'
+import { omit, getOr } from 'lodash/fp'
 import SimpleReactValidator from 'simple-react-validator'
-import { getLocale, handleInputChangeGeneric } from '../../utils/forms'
+import {
+  getLocale,
+  handleInputChangeGeneric,
+  mustBeEqualFieldPassword,
+} from '../../utils/forms'
 import { publishers } from '../../services'
 import FormPublisher from './FormPublisher'
-import { faUserPlus } from '@fortawesome/free-solid-svg-icons'
+import { faPlusSquare, faUserPlus } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { showError, showSuccessful, ifEmptySetNull } from '../../utils/generic'
 
@@ -17,7 +22,7 @@ const fields = {
   repeatPassword: null,
   email: null,
   idResponsibility: '',
-  active: 1,
+  active: '1',
   justAllowedForMe: true,
 }
 
@@ -37,15 +42,9 @@ class NewPublisher extends React.Component {
     this.validator = new SimpleReactValidator({
       autoForceUpdate: this,
       locale: getLocale(this.props),
-      element: (message) => <div className="text-danger">{message}</div>,
+      element: (message) => <ElementError message={message} />,
       validators: {
-        mustBeEqualFieldPassword: {
-          message: this.props.t('mustBeEqualFieldPassword'),
-          rule: (val) =>
-            val === this.state.form.password ||
-            isEmpty(this.state.form.password),
-          required: true,
-        },
+        mustBeEqualFieldPassword: mustBeEqualFieldPassword(this),
       },
     })
   }
@@ -90,6 +89,14 @@ class NewPublisher extends React.Component {
   render() {
     const { form, validated, loading } = this.state
     const { t, afterClose } = this.props
+    const title = (
+      <React.Fragment>
+        {' '}
+        <FontAwesomeIcon icon={faUserPlus} />{' '}
+        {`${t('common:new')} ${t('titleCrud')}`}{' '}
+      </React.Fragment>
+    )
+
     return (
       <OurModal
         body={FormPublisher}
@@ -102,8 +109,8 @@ class NewPublisher extends React.Component {
         onExit={afterClose}
         onClose={this.resetForm}
         buttonTitle={t('common:new')}
-        title={`${t('common:new')} ${t('titleCrud')}`}
-        buttonText={<FontAwesomeIcon icon={faUserPlus} />}
+        title={title}
+        buttonText={<FontAwesomeIcon icon={faPlusSquare} />}
       />
     )
   }

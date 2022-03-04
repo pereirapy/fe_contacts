@@ -7,7 +7,7 @@ const GenderSelect = (props) => {
   const { t } = useTranslation(['contacts', 'common'])
 
   const { validator } = props
-  const { value, onChange, validated } = props
+  const { value, onChange, validated, rules } = props
 
   const genderOptions = orderBy(
     ['label'],
@@ -29,6 +29,7 @@ const GenderSelect = (props) => {
       value={value}
       options={genderOptions}
       onChange={onChange}
+      rules={rules}
     />
   )
 }

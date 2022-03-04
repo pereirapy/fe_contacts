@@ -2,10 +2,15 @@ import React from 'react'
 import { withTranslation } from 'react-i18next'
 import { details, publishers, locations } from '../../../services'
 import ContainerCRUD from '../../../components/common/ContainerCRUD/ContainerCRUD'
+import ElementError from '../../../components/common/ElementError/ElementError'
 import { getOr, pick, get } from 'lodash/fp'
 import FormDetails from '../FormDetails'
 import SimpleReactValidator from 'simple-react-validator'
-import { getLocale, handleInputChangeGeneric } from '../../../utils/forms'
+import {
+  getLocale,
+  handleInputChangeGeneric,
+  formatDateDMYHHmm,
+} from '../../../utils/forms'
 import {
   showError,
   showSuccessful,
@@ -15,6 +20,8 @@ import { WAITING_FEEDBACK, GENDER_UNKNOWN } from '../../../constants/contacts'
 import { Container } from 'react-bootstrap'
 import { reducePublishers } from '../../../stateReducers/publishers'
 import { reduceLocations } from '../../../stateReducers/locations'
+import { faAddressCard } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const fields = {
   information: '',
@@ -26,6 +33,8 @@ const fields = {
   name: '',
   owner: '',
   typeCompany: '0',
+  updatedAt: '',
+  publisherUpdatedBy: '',
 }
 
 class EditDetailsContact extends React.Component {
@@ -43,11 +52,28 @@ class EditDetailsContact extends React.Component {
     this.handleGetOne = this.handleGetOne.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleInputChange = this.handleInputChange.bind(this)
+    this.getLastPublisherThatTouched =
+      this.getLastPublisherThatTouched.bind(this)
+
     this.validator = new SimpleReactValidator({
       autoForceUpdate: this,
       locale: getLocale(this.props),
-      element: (message) => <div className="text-danger">{message}</div>,
+      element: (message) => <ElementError message={message} />,
     })
+  }
+
+  getLastPublisherThatTouched(form) {
+    const { t } = this.props
+
+    return form.publisherUpdatedBy
+      ? t('common:updatedByAt', {
+          date: formatDateDMYHHmm(form.updatedAt),
+          name: form.publisherUpdatedBy,
+        })
+      : t('common:createdByAt', {
+          date: formatDateDMYHHmm(form.createdAt),
+          name: form.publisherCreatedBy,
+        })
   }
 
   async handleGetOne() {
@@ -61,6 +87,7 @@ class EditDetailsContact extends React.Component {
         getOr('', 'information', data) === WAITING_FEEDBACK
           ? ''
           : getOr('', 'information', data),
+      lastPublisherThatTouched: this.getLastPublisherThatTouched(data),
     }
     const publishersOptions = reducePublishers(await publishers.getAll())
     const locationsOptions = reduceLocations(await locations.getAll())
@@ -137,12 +164,18 @@ class EditDetailsContact extends React.Component {
       phone,
     } = this.state
     const { t, history } = this.props
+    const title = (
+      <React.Fragment>
+        {' '}
+        <FontAwesomeIcon icon={faAddressCard} />{' '}
+        {`${t('common:edit')} ${t('detailsContacts:title')} #${phone}`}
+      </React.Fragment>
+    )
 
     return (
-      <>
-        <ContainerCRUD title={t('title')} {...this.props}>
+      <React.Fragment>
+        <ContainerCRUD title={title} {...this.props}>
           <Container className="border p-4">
-            <h1>{`${t('common:edit')} ${t('detailsContacts:title')} #${phone}`}</h1>
             <FormDetails
               validator={this.validator}
               loading={loading}
@@ -157,7 +190,7 @@ class EditDetailsContact extends React.Component {
             />
           </Container>
         </ContainerCRUD>
-      </>
+      </React.Fragment>
     )
   }
 }

@@ -1,12 +1,17 @@
 import React from 'react'
 import { withTranslation } from 'react-i18next'
 import OurModal from '../../common/OurModal/OurModal'
+import ElementError from '../../common/ElementError/ElementError'
 import { getOr, pick, get } from 'lodash/fp'
 import SimpleReactValidator from 'simple-react-validator'
-import { getLocale, handleInputChangeGeneric } from '../../../utils/forms'
+import {
+  getLocale,
+  handleInputChangeGeneric,
+  formatDateDMYHHmm,
+} from '../../../utils/forms'
 import { details, publishers, locations } from '../../../services'
 import FormDetails from '../FormDetails'
-import { faEdit } from '@fortawesome/free-solid-svg-icons'
+import { faEdit, faAddressCard } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   showError,
@@ -42,11 +47,28 @@ class EditDetailsContact extends React.Component {
     this.handleGetOne = this.handleGetOne.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleInputChange = this.handleInputChange.bind(this)
+    this.getLastPublisherThatTouched =
+      this.getLastPublisherThatTouched.bind(this)
+
     this.validator = new SimpleReactValidator({
       autoForceUpdate: this,
       locale: getLocale(this.props),
-      element: (message) => <div className="text-danger">{message}</div>,
+      element: (message) => <ElementError message={message} />,
     })
+  }
+
+  getLastPublisherThatTouched(form) {
+    const { t } = this.props
+
+    return form.publisherUpdatedBy
+      ? t('common:updatedByAt', {
+          date: formatDateDMYHHmm(form.updatedAt),
+          name: form.publisherUpdatedBy,
+        })
+      : t('common:createdByAt', {
+          date: formatDateDMYHHmm(form.createdAt),
+          name: form.publisherCreatedBy,
+        })
   }
 
   async handleGetOne() {
@@ -63,6 +85,7 @@ class EditDetailsContact extends React.Component {
           getOr('', 'information', data) === WAITING_FEEDBACK
             ? ''
             : getOr('', 'information', data),
+        lastPublisherThatTouched: this.getLastPublisherThatTouched(data),
       }
       const publishersOptions = reducePublishers(await publishers.getAll())
       const locationsOptions = reduceLocations(await locations.getAll())
@@ -129,8 +152,17 @@ class EditDetailsContact extends React.Component {
   }
 
   render() {
-    const { form, validated, publishersOptions, loading, locationsOptions } = this.state
+    const { form, validated, publishersOptions, loading, locationsOptions } =
+      this.state
     const { t, afterClose, contact } = this.props
+    const title = (
+      <React.Fragment>
+        {' '}
+        <FontAwesomeIcon icon={faAddressCard} />{' '}
+        {`${t('common:edit')} ${t('titleCrud')} #${get('phone', contact)}`}
+      </React.Fragment>
+    )
+
     return (
       <OurModal
         body={FormDetails}
@@ -144,10 +176,7 @@ class EditDetailsContact extends React.Component {
         form={form}
         locationsOptions={locationsOptions}
         publishersOptions={publishersOptions}
-        title={`${t('common:edit')} ${t('titleCrud')} #${get(
-          'phone',
-          contact
-        )}`}
+        title={title}
         buttonTitle={t('common:edit')}
         buttonText={<FontAwesomeIcon variant="success" icon={faEdit} />}
         buttonVariant="success"

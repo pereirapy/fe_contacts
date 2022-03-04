@@ -1,14 +1,14 @@
 import React from 'react'
 import { Route, Redirect } from 'react-router-dom'
-import { hasToken } from './loginDataManager'
+import useApplicationContext from '../hooks/useApplicationContext'
 
-// handle the private routes
 function PrivateRoute({ component: Component, ...rest }) {
+  const { hasToken } = useApplicationContext()
   return (
     <Route
       {...rest}
       render={(props) =>
-        hasToken() ? (
+        hasToken ? (
           <Component {...props} />
         ) : (
           <Redirect to={{ pathname: '/', state: { from: props.location } }} />

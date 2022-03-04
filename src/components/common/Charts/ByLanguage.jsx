@@ -3,8 +3,8 @@ import { Col, Card } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { PieChart } from 'react-minimal-pie-chart'
 import { get, isEmpty, map, getOr } from 'lodash/fp'
-import { randomColor } from '../../utils/generic'
-import { generateLabel } from '../../stateReducers/dashboard'
+import { randomColor } from '../../../utils/generic'
+import { generateLabel } from '../../../stateReducers/dashboard'
 import { round } from 'lodash'
 import ReactPlaceholder from 'react-placeholder'
 
@@ -30,18 +30,20 @@ const ByLanguage = (props) => {
   return (
     <Col
       xs={{ span: 8, offset: 2 }}
-      lg={{ span: 2, offset: 0 }}
+      md={{ span: 6, offset: 3, order: 'first' }}
+      lg={{ span: 4, offset: 0 }}
+      xl={{ span: 4, offset: 0 }}
       className="mt-2"
     >
       <Card>
-        <Card.Header className="text-center" style={{ minHeight: '73px' }}>
+        <Card.Header className="text-center" style={{ minHeight: '87px' }}>
           {t('titleChartLanguage')}
         </Card.Header>
-        <Card.Body>
+        <Card.Body style={{ textAlign: '-webkit-center' }}>
           <ReactPlaceholder
             showLoadingAnimation={true}
             type="round"
-            style={{ width: 230, height: 230 }}
+            className="size-react-placeholder"
             ready={!props.loading}
             rows={1}
           >

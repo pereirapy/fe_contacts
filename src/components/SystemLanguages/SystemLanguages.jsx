@@ -1,13 +1,14 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { setUserSettings } from '../../utils/loginDataManager'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLanguage } from '@fortawesome/free-solid-svg-icons'
 import OurModal from '../common/OurModal/OurModal'
 import FormSystemLanguages from './FormSystemLanguages'
+import useApplicationContext from '../../hooks/useApplicationContext'
 
 const SystemLanguages = () => {
   const { t, i18n } = useTranslation('languages')
+  const { setSettings, updateContext } = useApplicationContext()
 
   const languagesOptions = () => [
     { label: t('languageOptionEnglish'), value: 'en-GB' },
@@ -16,14 +17,23 @@ const SystemLanguages = () => {
 
   const handleInputChange = ({ target: { value } }) => {
     i18n.changeLanguage(value)
-    setUserSettings({ language: value })
+    const settings = { language: value }
+    setSettings(settings)
+    updateContext((previous) => ({ ...previous, settings }))
   }
+
+  const title = (
+    <React.Fragment>
+      {' '}
+      <FontAwesomeIcon icon={faLanguage} /> {`${t('title')}`}{' '}
+    </React.Fragment>
+  )
 
   return (
     <OurModal
       body={FormSystemLanguages}
       size="sm"
-      title={t('title')}
+      title={title}
       valueSelected={i18n.language}
       optionsLanguages={languagesOptions()}
       handleInputChange={handleInputChange}

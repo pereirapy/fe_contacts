@@ -5,6 +5,7 @@ const style = {
   position: 'fixed',
   top: '50%',
   left: '50%',
+  textAlign: 'center',
   transform: 'translate(-50%, -50%)',
 }
 
@@ -16,7 +17,6 @@ const Loading = () => (
     <Spinner animation="grow" variant="danger" />
     <Spinner animation="grow" variant="warning" />
     <Spinner animation="grow" variant="info" />
-    <Spinner animation="grow" variant="light" />
     <Spinner animation="grow" variant="dark" />
   </div>
 )

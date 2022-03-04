@@ -7,8 +7,9 @@ import StatusSelect from '../common/StatusSelect/StatusSelect'
 import LanguageSelect from '../common/LanguageSelect/LanguageSelect'
 import ReactPlaceholder from 'react-placeholder'
 import SuperSelect from '../common/SuperSelect/SuperSelect'
+import { Radio } from 'pretty-checkbox-react'
 
-const FormDetails = (props) => {
+const FormContacts = (props) => {
   const { t } = useTranslation(['contacts', 'common'])
   const {
     form,
@@ -19,7 +20,7 @@ const FormDetails = (props) => {
     validated,
     validator,
     disablePhone,
-    locationsOptions
+    locationsOptions,
   } = props
 
   return (
@@ -33,27 +34,31 @@ const FormDetails = (props) => {
         <Row className="mb-2">
           <Col xs={6} lg={2}>
             <Form.Group controlId="typeCompanyResidential">
-              <Form.Check
-                type="radio"
+              <Radio
                 name="typeCompany"
-                label={t('residential')}
+                color="success"
+                bigger
                 checked={form.typeCompany === false || form.typeCompany === '0'}
                 value={0}
                 onChange={handleInputChange}
-              />
+              >
+                {t('residential')}
+              </Radio>
             </Form.Group>
           </Col>
           <Col>
             <Form.Group controlId="typeCompanyCommercial">
-              <Form.Check
-                type="radio"
+              <Radio
                 name="typeCompany"
-                label={t('commercial')}
+                color="warning"
+                bigger
                 validator={validator}
                 checked={form.typeCompany === true || form.typeCompany === '1'}
                 value={1}
                 onChange={handleInputChange}
-              />
+              >
+                {t('commercial')}
+              </Radio>
             </Form.Group>
           </Col>
         </Row>
@@ -68,7 +73,7 @@ const FormDetails = (props) => {
               value={form.phone}
               disabled={disablePhone}
               onChange={handleInputChange}
-              rules="required|min:10"
+              rules="required|min:10|numberStartsWithInvalidCharacter"
             />
           </Col>
           <Col xs={6} lg={6}>
@@ -80,7 +85,7 @@ const FormDetails = (props) => {
               validated={validated}
               value={form.phone2}
               onChange={handleInputChange}
-              rules="min:10"
+              rules="min:10|numberStartsWithInvalidCharacter"
             />
           </Col>
         </Row>
@@ -199,16 +204,23 @@ const FormDetails = (props) => {
             />
           </Col>
         </Row>
-        <Button
-          disabled={loading}
-          variant="primary"
-          onClick={() => handleSubmit(onHide)}
-        >
-          {t(loading ? 'common:btnSubmitting' : 'common:btnSubmit')}
-        </Button>{' '}
+        <Row>
+          <Col xs={12} md={{ order: 'first', span: 2 }}>
+            <Button
+              disabled={loading}
+              variant="primary"
+              onClick={() => handleSubmit(onHide)}
+            >
+              {t(loading ? 'common:btnSubmitting' : 'common:btnSubmit')}
+            </Button>
+          </Col>
+          <Col xs={{ order: 'first', span: 12 }} md={10} className="text-right">
+            <Form.Text muted>{form.lastPublisherThatTouched}</Form.Text>
+          </Col>
+        </Row>
       </Form>
     </ReactPlaceholder>
   )
 }
 
-export default FormDetails
+export default FormContacts

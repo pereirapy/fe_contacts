@@ -1,14 +1,14 @@
 import React from 'react'
 import { Route, Redirect } from 'react-router-dom'
-import { hasToken } from './loginDataManager'
+import useApplicationContext from '../hooks/useApplicationContext'
 
-// handle the public routes
 function PublicRoute({ component: Component, ...rest }) {
+  const { hasToken } = useApplicationContext()
   return (
     <Route
       {...rest}
       render={(props) =>
-        !hasToken() ? (
+        !hasToken ? (
           <Component {...props} />
         ) : (
           <Redirect to={{ pathname: '/dashboard' }} />

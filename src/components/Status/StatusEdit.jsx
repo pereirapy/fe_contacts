@@ -5,7 +5,8 @@ import { get, pick } from 'lodash/fp'
 import SimpleReactValidator from 'simple-react-validator'
 import { getLocale, handleInputChangeGeneric } from '../../utils/forms'
 import OurModal from '../common/OurModal/OurModal'
-import { faEdit } from '@fortawesome/free-solid-svg-icons'
+import ElementError from '../common/ElementError/ElementError'
+import { faEdit, faTags } from '@fortawesome/free-solid-svg-icons'
 import StatusForm from './StatusForm.jsx'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { showError, showSuccessful } from '../../utils/generic'
@@ -27,7 +28,7 @@ class StatusEdit extends React.Component {
     this.validator = new SimpleReactValidator({
       autoForceUpdate: this,
       locale: getLocale(this.props),
-      element: (message) => <div className="text-danger">{message}</div>,
+      element: (message) => <ElementError message={message} />,
     })
   }
 
@@ -69,6 +70,12 @@ class StatusEdit extends React.Component {
   render() {
     const { form, validated, submitting } = this.state
     const { t, afterClose } = this.props
+    const title = (
+      <React.Fragment>
+        {' '}
+        <FontAwesomeIcon icon={faTags} /> {`${t('common:edit')} ${t('title')}`}{' '}
+      </React.Fragment>
+    )
 
     return (
       <OurModal
@@ -80,7 +87,7 @@ class StatusEdit extends React.Component {
         handleInputChange={this.handleInputChange}
         form={form}
         onExit={afterClose}
-        title={`${t('common:edit')} ${t('title')}`}
+        title={title}
         buttonText={<FontAwesomeIcon icon={faEdit} />}
         buttonVariant="success"
       />

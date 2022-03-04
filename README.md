@@ -1,4 +1,26 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# This is the frontend for the project Contacts
+
+## First Steps
+
+1- Clone the project
+
+2 - Development environment:
+
+- run `npm run dev`
+- Go to the url that you see in your terminal
+
+3 - Production environment:
+
+- Creates a new app for the frontend
+  - Go to `https://dashboard.heroku.com/apps` and create a new app
+  - Connect with your GitHub repo that has your FRONTEND files
+  - Enable automatic deploys
+  - Go to `Settings` tab -> Reveal Config Vars and add two:
+    - `REACT_APP_API_PATH` as key and `/`and the value
+    - `REACT_APP_API_URL` as key and `HERE WILL THE THE URL OF YOUR BACKEND APP` and the value
+  - Go to `Deploy` tab -> Manual deploy -> Choose a branch to deploy -> Deploy Branch
+  - Those information you will use in frontend app
+- In heroku the app will run automatically the script `npm start`
 
 ## Available Scripts
 
@@ -45,24 +67,24 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 
 ### Code Splitting
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+This section has moved here: <https://facebook.github.io/create-react-app/docs/code-splitting>
 
 ### Analyzing the Bundle Size
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+This section has moved here: <https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size>
 
 ### Making a Progressive Web App
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+This section has moved here: <https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app>
 
 ### Advanced Configuration
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
+This section has moved here: <https://facebook.github.io/create-react-app/docs/advanced-configuration>
 
 ### Deployment
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
+This section has moved here: <https://facebook.github.io/create-react-app/docs/deployment>
 
 ### `yarn build` fails to minify
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+This section has moved here: <https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify>

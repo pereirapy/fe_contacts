@@ -1,7 +1,7 @@
 import React from 'react'
 import { withTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEye } from '@fortawesome/free-solid-svg-icons'
+import { faEye, faAddressCard } from '@fortawesome/free-solid-svg-icons'
 import { details } from '../../../services'
 import { getOr, isEmpty, some } from 'lodash/fp'
 import OurModal from '../../common/OurModal/OurModal'
@@ -68,6 +68,14 @@ class ListDetailsContact extends React.Component {
   render() {
     const { t, contact, afterClose } = this.props
     const { data, waitingFeedback, submitting } = this.state
+    const title = (
+      <React.Fragment>
+        {' '}
+        <FontAwesomeIcon icon={faAddressCard} />{' '}
+        {`${t('title')} # ${contact.phone} ${this.getNameForTitle()}`}
+      </React.Fragment>
+    )
+
     return (
       <OurModal
         body={ListDataDetailsContact}
@@ -75,9 +83,10 @@ class ListDetailsContact extends React.Component {
         submitting={submitting}
         waitingFeedback={waitingFeedback}
         data={data}
-        title={`${t('title')} # ${contact.phone} ${this.getNameForTitle()}`}
+        title={title}
         buttonTitle={t('common:list')}
         buttonText={<FontAwesomeIcon icon={faEye} />}
+        buttonVariant="primary"
         afterClose={this.handleGetAllOneContact}
         onExit={afterClose}
         onEnter={this.handleGetAllOneContact}

@@ -1,18 +1,23 @@
 import { get, getOr, isEmpty, isNumber } from 'lodash/fp'
-import moment from 'moment'
 import Swal from 'sweetalert2'
-
-const formatDate = (date) =>
-  date ? moment(date).format('DD/MM/YYYY HH:mm') : null
 
 const randomColor = () =>
   `#${(Math.random() * 0xfffff * 1000000).toString(16).slice(0, 6)}`
 
 const parseErrorMessage = (error) => {
   const message = get('message', error)
-  const errorConstraint = get('response.data.error.constraint', error)
+  const errorConstraint = getOr(
+    get('response.data.error.constraint', error),
+    'response.data.constraint',
+    error
+  )
+
   const errorCode = get('response.data.error.code', error)
-  const errorMessage = get('response.data.error', error)
+
+  const errorMessage = isEmpty(get('response.data.error', error))
+    ? null
+    : get('response.data.error', error)
+
   return errorConstraint
     ? errorConstraint
     : errorCode
@@ -39,7 +44,6 @@ const parseErrorMessageTranslated = (error, t, fileTranslationName, extra) => {
       t(`common:errorTextUndefined`)
     )
   )
-
   const preText = t(
     `${fileTranslationName}:${parseErrorMessage(error)}`,
     paramsExtraForTranslation
@@ -101,7 +105,6 @@ const ifEmptySetNull = (value) =>
 export {
   randomColor,
   parseErrorMessage,
-  formatDate,
   showError,
   showSuccessful,
   ifEmptySetNull,

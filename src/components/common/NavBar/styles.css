@@ -1,0 +1,13 @@
+.dropdown-item:focus,
+.dropdown-item:hover {
+  color: #2460bb !important;
+}
+
+.nav-link:hover {
+  color: #2460bb !important;
+}
+
+.dropdown-item.active,
+.dropdown-item:active {
+  color: #fff !important;
+}

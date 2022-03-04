@@ -1,17 +1,23 @@
 import React from 'react'
 import { withTranslation } from 'react-i18next'
 import OurModal from '../common/OurModal/OurModal'
+import ElementError from '../common/ElementError/ElementError'
 import { getOr, omit, get } from 'lodash/fp'
 import SimpleReactValidator from 'simple-react-validator'
-import { getLocale, handleInputChangeGeneric } from '../../utils/forms'
+import {
+  getLocale,
+  handleInputChangeGeneric,
+  numberStartsWithInvalidCharacter,
+} from '../../utils/forms'
 import { contacts, publishers, locations } from '../../services'
 import FormContacts from './FormContacts'
-import { faEdit } from '@fortawesome/free-solid-svg-icons'
+import { faEdit, faUserEdit } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { GENDER_UNKNOWN } from '../../constants/contacts'
 import { showError, showSuccessful, ifEmptySetNull } from '../../utils/generic'
 import { reducePublishers } from '../../stateReducers/publishers'
 import { reduceLocations } from '../../stateReducers/locations'
+import { formatDateDMYHHmm } from '../../utils/forms'
 
 const fields = {
   phone: '',
@@ -41,11 +47,32 @@ class EditContact extends React.Component {
     this.handleGetOne = this.handleGetOne.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleInputChange = this.handleInputChange.bind(this)
+    this.getLastPublisherThatTouched =
+      this.getLastPublisherThatTouched.bind(this)
+
     this.validator = new SimpleReactValidator({
       autoForceUpdate: this,
       locale: getLocale(this.props),
-      element: (message) => <div className="text-danger">{message}</div>,
+      element: (message) => <ElementError message={message} />,
+      validators: {
+        numberStartsWithInvalidCharacter:
+          numberStartsWithInvalidCharacter(this),
+      },
     })
+  }
+
+  getLastPublisherThatTouched(form) {
+    const { t } = this.props
+
+    return form.contactUpdatedBy
+      ? t('common:updatedByAt', {
+          date: formatDateDMYHHmm(form.contactUpdatedAt),
+          name: form.contactUpdatedBy,
+        })
+      : t('common:createdByAt', {
+          date: formatDateDMYHHmm(form.contactCreatedAt),
+          name: form.contactCreatedBy,
+        })
   }
 
   async handleGetOne() {
@@ -53,7 +80,12 @@ class EditContact extends React.Component {
     try {
       const id = getOr(0, 'props.id', this)
       const response = await contacts.getOne(id)
-      const form = getOr(fields, 'data.data', response)
+      const form = {
+        ...getOr(fields, 'data.data', response),
+        lastPublisherThatTouched: this.getLastPublisherThatTouched(
+          get('data.data', response)
+        ),
+      }
       const publishersOptions = reducePublishers(await publishers.getAll())
       const locationsOptions = reduceLocations(await locations.getAll())
 
@@ -99,7 +131,17 @@ class EditContact extends React.Component {
     const owner =
       form.typeCompany === true || form.typeCompany === '1' ? form.owner : null
     const data = {
-      ...omit(['details'], form),
+      ...omit(
+        [
+          'details',
+          'contactUpdatedAt',
+          'contactUpdatedBy',
+          'contactCreatedAt',
+          'contactCreatedBy',
+          'lastPublisherThatTouched',
+        ],
+        form
+      ),
       name: ifEmptySetNull(getOr('', 'name', form)),
       phone2: ifEmptySetNull(getOr('', 'phone2', form)),
       idLocation: ifEmptySetNull(getOr('', 'idLocation', form)),
@@ -117,9 +159,14 @@ class EditContact extends React.Component {
       const contact = getOr(0, 'response.data.extra.contact', error)
       const name = get('name', contact)
       const phone = get('phone', contact)
-      showError(error, t, 'contacts', {
-        paramsExtraForTranslation: { name, phone },
-      })
+      if (phone) {
+        showError(error, t, 'contacts', {
+          paramsExtraForTranslation: { name, phone },
+        })
+      } else {
+        showError(error, t, 'common')
+      }
+
       this.setState({ loading: false })
     }
   }
@@ -134,6 +181,14 @@ class EditContact extends React.Component {
       locationsOptions,
     } = this.state
     const { t, afterClose } = this.props
+    const title = (
+      <React.Fragment>
+        {' '}
+        <FontAwesomeIcon icon={faUserEdit} />{' '}
+        {`${t('common:edit')} ${t('titleCrud')}`}{' '}
+      </React.Fragment>
+    )
+
     return (
       <OurModal
         body={FormContacts}
@@ -150,7 +205,7 @@ class EditContact extends React.Component {
         publishersOptions={publishersOptions}
         statusOptions={statusOptions}
         buttonTitle={t('common:edit')}
-        title={`${t('common:edit')} ${t('titleCrud')}`}
+        title={title}
         buttonText={<FontAwesomeIcon icon={faEdit} />}
         buttonVariant="success"
       />

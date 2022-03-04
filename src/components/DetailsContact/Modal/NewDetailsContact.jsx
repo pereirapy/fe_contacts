@@ -1,17 +1,22 @@
 import React from 'react'
 import { withTranslation } from 'react-i18next'
 import OurModal from '../../common/OurModal/OurModal'
+import ElementError from '../../common/ElementError/ElementError'
 import Swal from 'sweetalert2'
 import { getOr, pick, get } from 'lodash/fp'
 import SimpleReactValidator from 'simple-react-validator'
 import { getLocale, handleInputChangeGeneric } from '../../../utils/forms'
 import { details, publishers, contacts, locations } from '../../../services'
 import FormDetails from '../FormDetails'
-import { faPlusSquare } from '@fortawesome/free-solid-svg-icons'
+import { faPlusSquare, faAddressCard } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button } from 'react-bootstrap'
 import { reducePublishers } from '../../../stateReducers/publishers'
-import { showError, showSuccessful, ifEmptySetNull } from '../../../utils/generic'
+import {
+  showError,
+  showSuccessful,
+  ifEmptySetNull,
+} from '../../../utils/generic'
 import { GENDER_UNKNOWN } from '../../../constants/contacts'
 import { reduceLocations } from '../../../stateReducers/locations'
 import {
@@ -46,14 +51,13 @@ class NewDetailsContact extends React.Component {
 
     this.handleSubmit = this.handleSubmit.bind(this)
     this.onOpen = this.onOpen.bind(this)
-    this.notificationNotAllowedNewDetails = this.notificationNotAllowedNewDetails.bind(
-      this
-    )
+    this.notificationNotAllowedNewDetails =
+      this.notificationNotAllowedNewDetails.bind(this)
     this.handleInputChange = this.handleInputChange.bind(this)
     this.validator = new SimpleReactValidator({
       autoForceUpdate: this,
       locale: getLocale(this.props),
-      element: (message) => <div className="text-danger">{message}</div>,
+      element: (message) => <ElementError message={message} />,
     })
   }
 
@@ -138,8 +142,16 @@ class NewDetailsContact extends React.Component {
   }
 
   render() {
-    const { form, validated, publishersOptions, loading, locationsOptions } = this.state
+    const { form, validated, publishersOptions, loading, locationsOptions } =
+      this.state
     const { t, afterClose, waitingFeedback, contact } = this.props
+    const title = (
+      <React.Fragment>
+        {' '}
+        <FontAwesomeIcon icon={faAddressCard} />{' '}
+        {`${t('common:new')} ${t('titleCrud')} #${get('phone', contact)}`}
+      </React.Fragment>
+    )
 
     return waitingFeedback ? (
       <Button variant="primary" onClick={this.notificationNotAllowedNewDetails}>
@@ -158,7 +170,7 @@ class NewDetailsContact extends React.Component {
         onEnter={this.onOpen}
         locationsOptions={locationsOptions}
         publishersOptions={publishersOptions}
-        title={`${t('common:new')} ${t('titleCrud')} #${get('phone', contact)}`}
+        title={title}
         buttonTitle={t('common:new')}
         buttonText={<FontAwesomeIcon icon={faPlusSquare} />}
       />

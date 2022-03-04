@@ -10,11 +10,24 @@ import {
   map,
   isEmpty,
   contains,
+  isEqual,
 } from 'lodash/fp'
 import { parseErrorMessage } from '../../../utils/generic'
 import ReactPlaceholder from 'react-placeholder'
 import SuperSelect from '../SuperSelect/SuperSelect'
 import { reduceFiltersLocations } from '../../../stateReducers/locations'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+  faFilter,
+  faUser,
+  faVenusMars,
+  faLanguage,
+  faTags,
+  faBuilding,
+  faMapMarkedAlt,
+  faWeight,
+} from '@fortawesome/free-solid-svg-icons'
+import { Checkbox, Radio } from 'pretty-checkbox-react'
 
 class FilterData extends React.Component {
   constructor(props) {
@@ -23,25 +36,30 @@ class FilterData extends React.Component {
     this.state = {
       loading: false,
       error: false,
-      genders: [],
-      checksGender: [],
-      languages: [],
-      checksLanguages: [],
-      status: [],
-      checksStatus: [],
-      responsibility: [],
-      checksResponsibility: [],
-      publishersResponsibles: [],
-      checksPublishersResponsibles: [],
-      locations: [],
-      selectLocations: [],
-      typeCompany: '-1',
-      radiosTypeCompany: [],
+      filters: {
+        genders: [],
+        languages: [],
+        status: [],
+        responsibility: [],
+        publishersResponsibles: [],
+        locations: [],
+        typeCompany: '-1',
+      },
+      data: {
+        checksGender: [],
+        checksLanguages: [],
+        checksStatus: [],
+        checksResponsibility: [],
+        checksPublishersResponsibilities: [],
+        selectLocations: [],
+        radiosTypeCompany: [],
+      },
     }
     this.getAllFilters = this.getAllFilters.bind(this)
     this.handleOnClick = this.handleOnClick.bind(this)
-    this.handleGetValuesTradicional = this.handleGetValuesTradicional.bind(this)
+    this.handleGetValuesTraditional = this.handleGetValuesTraditional.bind(this)
     this.updateValues = this.updateValues.bind(this)
+    this.setFiltersSelectedFromURL = this.setFiltersSelectedFromURL.bind(this)
   }
 
   handleOnClick(event) {
@@ -49,12 +67,12 @@ class FilterData extends React.Component {
       target: { name, value, checked },
     } = event
     const newValues = checked
-      ? pipe(uniq, compact)([...this.state[name], value])
-      : remove((arrayValue) => arrayValue === value, this.state[name])
+      ? pipe(uniq, compact)([...this.state.filters[name], value])
+      : remove((arrayValue) => arrayValue === value, this.state.filters[name])
     this.updateValues(name, newValues)
   }
 
-  handleGetValuesTradicional(event) {
+  handleGetValuesTraditional(event) {
     const {
       target: { name, value },
     } = event
@@ -65,12 +83,16 @@ class FilterData extends React.Component {
     const { handleFilters } = this.props
 
     this.setState({
-      [name]: newValues,
+      filters: {
+        ...this.state.filters,
+        [name]: newValues,
+      },
     })
     handleFilters({
       filters: {
         [name]: newValues,
       },
+      currentPage: 1,
     })
   }
 
@@ -83,14 +105,19 @@ class FilterData extends React.Component {
       const response = await getFilters()
       const data = getOr([], 'data.data', response)
       this.setState({
-        checksGender: getOr([], 'genders', data),
-        checksLanguages: getOr([], 'languages', data),
-        checksStatus: getOr([], 'status', data),
-        checksResponsibility: getOr([], 'responsibility', data),
-        checksPublishersResponsibles: getOr([], 'publishersResponsibles', data),
-        selectLocations: reduceFiltersLocations(data, t),
-        radiosTypeCompany: getOr([], 'typeCompany', data),
-        loading: false,
+        data: {
+          checksGender: getOr([], 'genders', data),
+          checksLanguages: getOr([], 'languages', data),
+          checksStatus: getOr([], 'status', data),
+          checksResponsibility: getOr([], 'responsibility', data),
+          checksPublishersResponsibilities: getOr(
+            [],
+            'publishersResponsibles',
+            data
+          ),
+          selectLocations: reduceFiltersLocations(data, t),
+          radiosTypeCompany: getOr([], 'typeCompany', data),
+        },
       })
     } catch (error) {
       this.setState({
@@ -104,55 +131,77 @@ class FilterData extends React.Component {
     this.getAllFilters()
   }
 
+  setFiltersSelectedFromURL() {
+    const { filters } = this.props
+    this.setState({
+      filters,
+      loading: false,
+    })
+  }
+
   componentDidUpdate(prevProps) {
     const { loading } = this.state
-    const { refresh, error } = this.props
+    const { refresh, error, filters } = this.props
     const prevRefresh = getOr(true, 'refresh', prevProps)
     if (refresh && !prevRefresh && !loading && !error) this.getAllFilters()
+    else if (!refresh && !isEqual(filters, this.state.filters)) {
+      this.setFiltersSelectedFromURL()
+    } else if (!refresh && loading) {
+      this.setState({
+        loading: false,
+      })
+    }
   }
 
   render() {
     const {
-      checksGender,
-      genders,
-      checksLanguages,
-      languages,
-      checksResponsibility,
-      responsibility,
-      checksStatus,
-      status,
       error,
       loading,
-      typeCompany,
-      radiosTypeCompany,
-      checksPublishersResponsibles,
-      publishersResponsibles,
-      selectLocations,
-      locations,
+      filters: {
+        genders,
+        languages,
+        responsibility,
+        status,
+        typeCompany,
+        publishersResponsibles,
+        locations,
+      },
+      data: {
+        checksGender,
+        checksResponsibility,
+        checksLanguages,
+        checksStatus,
+        checksPublishersResponsibilities,
+        radiosTypeCompany,
+        selectLocations,
+      },
     } = this.state
 
     const noData =
       isEmpty(checksGender) &&
       isEmpty(checksLanguages) &&
       isEmpty(checksResponsibility) &&
-      isEmpty(checksPublishersResponsibles) &&
+      isEmpty(checksPublishersResponsibilities) &&
       isEmpty(selectLocations) &&
       isEmpty(checksStatus)
     const { t, showTypeCompany = false } = this.props
     return (
-      <>
+      <React.Fragment>
         <Col className="text-center">
-          <h3>{t('title')}</h3>
+          <h3>
+            <FontAwesomeIcon icon={faFilter} /> {t('title')}
+          </h3>
         </Col>
         <Col className="text-center text-muted">{error}</Col>
         <Col className="text-center text-muted">
           {!loading && noData && t('common:noData')}
         </Col>
-        {(loading || !isEmpty(checksPublishersResponsibles)) && !error && (
+        {(loading || !isEmpty(checksPublishersResponsibilities)) && !error && (
           <Col className="mb-4">
             <Card>
               <Card.Body>
                 <Card.Title>
+                  <FontAwesomeIcon icon={faUser} />{' '}
                   {t('publishersResponsiblesTitleFilter')}
                 </Card.Title>
                 <ReactPlaceholder
@@ -170,9 +219,9 @@ class FilterData extends React.Component {
                         label: `${publisherNameCreatedBy}`,
                         value: createdBy,
                       }),
-                      checksPublishersResponsibles
+                      checksPublishersResponsibilities
                     )}
-                    onChange={this.handleGetValuesTradicional}
+                    onChange={this.handleGetValuesTraditional}
                   />
                 </ReactPlaceholder>
               </Card.Body>
@@ -183,7 +232,10 @@ class FilterData extends React.Component {
           <Col className="mb-4">
             <Card>
               <Card.Body>
-                <Card.Title>{t('locationsTitleFilter')}</Card.Title>
+                <Card.Title>
+                  <FontAwesomeIcon icon={faMapMarkedAlt} />{' '}
+                  {t('locationsTitleFilter')}
+                </Card.Title>
                 <ReactPlaceholder
                   showLoadingAnimation={true}
                   type="text"
@@ -195,7 +247,7 @@ class FilterData extends React.Component {
                     value={locations}
                     isMulti={true}
                     options={selectLocations}
-                    onChange={this.handleGetValuesTradicional}
+                    onChange={this.handleGetValuesTraditional}
                   />
                 </ReactPlaceholder>
               </Card.Body>
@@ -206,7 +258,10 @@ class FilterData extends React.Component {
           <Col className="mb-4">
             <Card>
               <Card.Body>
-                <Card.Title>{t('gendersTitleFilter')}</Card.Title>
+                <Card.Title>
+                  <FontAwesomeIcon icon={faVenusMars} />{' '}
+                  {t('gendersTitleFilter')}
+                </Card.Title>
                 <ReactPlaceholder
                   showLoadingAnimation={true}
                   type="text"
@@ -216,14 +271,14 @@ class FilterData extends React.Component {
                   {map(
                     ({ gender }) => (
                       <Form.Group controlId={`genders${gender}`} key={gender}>
-                        <Form.Check
-                          type="checkbox"
+                        <Checkbox
                           name="genders"
+                          color="info"
+                          bigger
                           checked={contains(gender, genders)}
-                          label={`${t(`contacts:${gender}`)}`}
                           value={gender}
                           onChange={this.handleOnClick}
-                        />
+                        >{`${t(`contacts:${gender}`)}`}</Checkbox>
                       </Form.Group>
                     ),
                     checksGender
@@ -237,7 +292,10 @@ class FilterData extends React.Component {
           <Col className="mb-4">
             <Card>
               <Card.Body>
-                <Card.Title>{t('languagesTitleFilter')}</Card.Title>
+                <Card.Title>
+                  <FontAwesomeIcon icon={faLanguage} />{' '}
+                  {t('languagesTitleFilter')}
+                </Card.Title>
                 <ReactPlaceholder
                   showLoadingAnimation={true}
                   type="text"
@@ -250,14 +308,14 @@ class FilterData extends React.Component {
                         controlId={`languages${idLanguage}`}
                         key={idLanguage}
                       >
-                        <Form.Check
-                          type="checkbox"
+                        <Checkbox
+                          color="info"
+                          bigger
                           name="languages"
                           checked={contains(String(idLanguage), languages)}
-                          label={`${t(`languages:${languageName}`)}`}
                           value={idLanguage}
                           onChange={this.handleOnClick}
-                        />
+                        >{`${t(`languages:${languageName}`)}`}</Checkbox>
                       </Form.Group>
                     ),
                     checksLanguages
@@ -271,7 +329,9 @@ class FilterData extends React.Component {
           <Col className="mb-4">
             <Card>
               <Card.Body>
-                <Card.Title>{t('statusTitleFilter')}</Card.Title>
+                <Card.Title>
+                  <FontAwesomeIcon icon={faTags} /> {t('statusTitleFilter')}
+                </Card.Title>
                 <ReactPlaceholder
                   showLoadingAnimation={true}
                   type="text"
@@ -284,14 +344,16 @@ class FilterData extends React.Component {
                         controlId={`status${idStatus}`}
                         key={idStatus}
                       >
-                        <Form.Check
-                          type="checkbox"
+                        <Checkbox
+                          color="info"
+                          bigger
                           name="status"
                           checked={contains(String(idStatus), status)}
-                          label={`${t(`status:${statusDescription}`)}`}
                           value={idStatus}
                           onChange={this.handleOnClick}
-                        />
+                        >
+                          {`${t(`status:${statusDescription}`)}`}
+                        </Checkbox>
                       </Form.Group>
                     ),
                     checksStatus
@@ -305,7 +367,10 @@ class FilterData extends React.Component {
           <Col className="mb-4">
             <Card>
               <Card.Body>
-                <Card.Title>{t('responsibilityTitleFilter')}</Card.Title>
+                <Card.Title>
+                  <FontAwesomeIcon icon={faWeight} />{' '}
+                  {t('responsibilityTitleFilter')}
+                </Card.Title>
                 <ReactPlaceholder
                   showLoadingAnimation={true}
                   type="text"
@@ -318,19 +383,21 @@ class FilterData extends React.Component {
                         key={idResponsibility}
                         controlId={`responsibility${idResponsibility}`}
                       >
-                        <Form.Check
-                          type="checkbox"
+                        <Checkbox
+                          color="info"
+                          bigger
                           name="responsibility"
                           checked={contains(
                             String(idResponsibility),
                             responsibility
                           )}
-                          label={`${t(
-                            `responsibility:${responsibilityDescription}`
-                          )}`}
                           value={idResponsibility}
                           onChange={this.handleOnClick}
-                        />
+                        >
+                          {`${t(
+                            `responsibility:${responsibilityDescription}`
+                          )}`}
+                        </Checkbox>
                       </Form.Group>
                     ),
                     checksResponsibility
@@ -344,7 +411,10 @@ class FilterData extends React.Component {
           <Col className="mb-4">
             <Card>
               <Card.Body>
-                <Card.Title>{t('typeCompanyTitleFilter')}</Card.Title>
+                <Card.Title>
+                  <FontAwesomeIcon icon={faBuilding} />{' '}
+                  {t('typeCompanyTitleFilter')}
+                </Card.Title>
                 <ReactPlaceholder
                   showLoadingAnimation={true}
                   type="text"
@@ -357,14 +427,14 @@ class FilterData extends React.Component {
                         key={typeCompanySelected}
                         controlId={`typeCompany${typeCompanySelected}`}
                       >
-                        <Form.Check
-                          type="radio"
+                        <Radio
                           name="typeCompany"
                           checked={typeCompany === typeCompanySelected}
-                          label={`${t(`typeCompany${typeCompanySelected}`)}`}
                           value={typeCompanySelected}
-                          onChange={this.handleGetValuesTradicional}
-                        />
+                          color="info"
+                          bigger
+                          onChange={this.handleGetValuesTraditional}
+                        >{`${t(`typeCompany${typeCompanySelected}`)}`}</Radio>
                       </Form.Group>
                     ),
                     radiosTypeCompany
@@ -374,7 +444,7 @@ class FilterData extends React.Component {
             </Card>
           </Col>
         )}
-      </>
+      </React.Fragment>
     )
   }
 }

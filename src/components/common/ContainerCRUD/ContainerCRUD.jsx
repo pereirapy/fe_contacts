@@ -6,7 +6,7 @@ import ContainerWithNavBar from '../ContainerWithNavBar/ContainerWithNavBar'
 const ContainerCRUD = (props) => (
   <ContainerWithNavBar {...props}>
     <Row className="mt-4">
-      <Col className="page-header">
+      <Col className={`page-header bg-${props.color || 'info'}`}>
         <h1>{props.title}</h1>
       </Col>
     </Row>

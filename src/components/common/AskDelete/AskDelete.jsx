@@ -7,10 +7,12 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons'
 
 const AskDelete = (props) => {
   const { t } = useTranslation(['common'])
+  const title =
+    typeof props.title === 'string' ? props.title : t('askDeleteMessage')
 
   const askForSureWantDelete = () => {
     Swal.fire({
-      title: t('askDeleteMessage'),
+      title,
       icon: 'question',
       showDenyButton: true,
       confirmButtonText: t('yes'),

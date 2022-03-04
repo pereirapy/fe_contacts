@@ -1,6 +1,7 @@
 import React from 'react'
 import { withTranslation } from 'react-i18next'
 import OurModal from '../../common/OurModal/OurModal'
+import ElementError from '../../common/ElementError/ElementError'
 import {
   getOr,
   map,
@@ -13,22 +14,26 @@ import {
   isNil,
 } from 'lodash/fp'
 import SimpleReactValidator from 'simple-react-validator'
-import { getLocale, handleInputChangeGeneric } from '../../../utils/forms'
+import {
+  getLocale,
+  handleInputChangeGeneric,
+  formatDateDMYHHmm,
+} from '../../../utils/forms'
 import { contacts, publishers } from '../../../services'
 import FormSendPhones from './FormSendPhones'
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import moment from 'moment'
 import { URL_SEND_MESSAGE } from '../../../constants/settings'
 import { showError, showSuccessful } from '../../../utils/generic'
 import { reducePublishers } from '../../../stateReducers/publishers'
 import Swal from 'sweetalert2'
+import { ApplicationContext } from '../../../contexts/application'
 
 const fields = {
   idPublisher: '',
 }
 
-class NewContact extends React.Component {
+class SendPhones extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -45,12 +50,23 @@ class NewContact extends React.Component {
     this.mappingContactsPhones = this.mappingContactsPhones.bind(this)
     this.getInformation = this.getInformation.bind(this)
     this.verifyIfThisUserHasPhone = this.verifyIfThisUserHasPhone.bind(this)
+    this.onEnter = this.onEnter.bind(this)
+    this.verifyIfSomePhoneIsWaitingFeedback =
+      this.verifyIfSomePhoneIsWaitingFeedback.bind(this)
+    this.getPhonesWaitingOrNotFeedback =
+      this.getPhonesWaitingOrNotFeedback.bind(this)
+    this.getTitle = this.getTitle.bind(this)
 
     this.validator = new SimpleReactValidator({
       autoForceUpdate: this,
       locale: getLocale(this.props),
-      element: (message) => <div className="text-danger">{message}</div>,
+      element: (message) => <ElementError message={message} />,
     })
+  }
+
+  onEnter() {
+    this.verifyIfSomePhoneIsWaitingFeedback()
+    this.handleGetPublishers()
   }
 
   async handleGetPublishers() {
@@ -65,6 +81,38 @@ class NewContact extends React.Component {
 
   handleInputChange(event) {
     handleInputChangeGeneric(event, this)
+  }
+
+  getPhonesWaitingOrNotFeedback(waitingOrNot) {
+    const { checksContactsPhones, contactsData } = this.props
+
+    return pipe(
+      map((phone) => {
+        const contact = find((contact) => contact.phone === phone, contactsData)
+        return contact && contact.waitingFeedback === waitingOrNot
+          ? contact.phone
+          : null
+      }),
+      compact
+    )(checksContactsPhones)
+  }
+
+  verifyIfSomePhoneIsWaitingFeedback() {
+    const phonesWaitingFeedback = this.getPhonesWaitingOrNotFeedback(true)
+    if (phonesWaitingFeedback.length > 0) {
+      const { t } = this.props
+      const text =
+        phonesWaitingFeedback.length > 1
+          ? 'warningPhonesWaitingFeedback'
+          : 'warningPhoneWaitingFeedback'
+      Swal.fire({
+        title: t('common:warning'),
+        html: `${t(text, {
+          total: phonesWaitingFeedback.length,
+        })}<br/>${join(', ', phonesWaitingFeedback)}`,
+        icon: 'warning',
+      })
+    }
   }
 
   getDataPublisherSelected(idPublisher) {
@@ -88,10 +136,11 @@ class NewContact extends React.Component {
     const contactGender = !isEmpty(contact.gender)
       ? ` ${t('contacts:gender') + ':'} ${t(`contacts:${contact.gender}`)} - `
       : ''
+
     const lastInformation = !isEmpty(contact.information)
-      ? `${contact.information} - ${moment(
+      ? `${t(`contacts:${contact.information}`)} - ${formatDateDMYHHmm(
           contact.createdAtDetailsContacts
-        ).format('DD/MM/YYYY HH:mm')}`
+        )}`
       : t('withoutDetails')
     return contactName + contactGender + contactLanguage + lastInformation
   }
@@ -144,16 +193,6 @@ class NewContact extends React.Component {
     )
   }
 
-  getJustPhonesAllowed(checksContactsPhones, contactsData) {
-    return pipe(
-      map((phone) => {
-        const contact = find((contact) => contact.phone === phone, contactsData)
-        return !contact.waitingFeedback ? contact.phone : null
-      }),
-      compact
-    )(checksContactsPhones)
-  }
-
   async handleSubmit(onHide) {
     this.setState({ validated: true })
 
@@ -161,18 +200,21 @@ class NewContact extends React.Component {
       this.validator.showMessages()
       return true
     }
+    if (!this.verifyIfThisUserHasPhone()) return
+
     this.setState({ submitting: true })
 
     const { form } = this.state
-    const { t, checksContactsPhones, contactsData } = this.props
+    const { t } = this.props
+    const { campaignActive } = this.context
     const idPublisher = get('idPublisher', form)
-
+    const phones = this.getPhonesWaitingOrNotFeedback(false)
+    const idCampaign = campaignActive ? campaignActive.id : null
     const dataAssign = {
-      phones: this.getJustPhonesAllowed(checksContactsPhones, contactsData),
+      phones,
       idPublisher,
+      idCampaign,
     }
-
-    if (!this.verifyIfThisUserHasPhone()) return
 
     try {
       if (getOr([], 'phones', dataAssign).length > 0)
@@ -192,6 +234,15 @@ class NewContact extends React.Component {
     }
   }
 
+  getTitle() {
+    const { t } = this.props
+    const { campaignActive } = this.context
+    const titleWithCampaignName = campaignActive
+      ? `${t('title')} - ${campaignActive.name}`
+      : t('title')
+    return titleWithCampaignName
+  }
+
   render() {
     const { form, validated, publishersOptions } = this.state
     const { t, checksContactsPhones, afterClose } = this.props
@@ -206,8 +257,8 @@ class NewContact extends React.Component {
         phones={join(', ', checksContactsPhones)}
         publishersOptions={publishersOptions}
         onExit={afterClose}
-        onEnter={this.handleGetPublishers}
-        title={`${t('title')}`}
+        onEnter={this.onEnter}
+        title={this.getTitle()}
         buttonTitle={t('common:sendOverWhatsApp')}
         buttonText={<FontAwesomeIcon icon={faWhatsapp} />}
         buttonDisabled={checksContactsPhones.length === 0}
@@ -217,9 +268,11 @@ class NewContact extends React.Component {
   }
 }
 
+SendPhones.contextType = ApplicationContext
+
 export default withTranslation([
   'sendPhones',
   'common',
   'contacts',
   'languages',
-])(NewContact)
+])(SendPhones)

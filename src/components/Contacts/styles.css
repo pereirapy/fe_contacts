@@ -1,0 +1,13 @@
+.marginLeftCheckbox {
+  left: 15px;
+}
+
+.verticalBottom {
+  vertical-align: bottom !important;
+}
+
+.contactedDuringCampaign {
+  margin-bottom: 0;
+  margin-top: 0px;
+  background-color: #99d1ff;
+}

@@ -13,19 +13,32 @@ import {
   remove,
   contains,
   find,
-  isNil
+  isNil,
+  isEqual,
 } from 'lodash/fp'
 import AskDelete from '../common/AskDelete/AskDelete'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faList, faFileExcel } from '@fortawesome/free-solid-svg-icons'
+import {
+  faList,
+  faFileExcel,
+  faGlobeAmericas,
+} from '@fortawesome/free-solid-svg-icons'
 
 import ListDetailsContact from '../DetailsContact/Modal/ListDetailsContact'
 import { Link } from 'react-router-dom'
 import NoRecords from '../common/NoRecords/NoRecords'
 import Pagination from '../common/Pagination/Pagination'
 import Search from '../common/Search/Search'
-import { parseQuery } from '../../utils/forms'
-import { RECORDS_PER_PAGE } from '../../constants/application'
+import {
+  parseQuery,
+  formatDateDMYHHmm,
+  getQueryParamsFromURL,
+  setFiltersToURL,
+} from '../../utils/forms'
+import {
+  RECORDS_PER_PAGE,
+  MAX_DAYS_ALLOWED_WITH_NUMBERS,
+} from '../../constants/application'
 import {
   ID_STATUS_AVAILABLE,
   ID_STATUS_BIBLE_STUDY,
@@ -41,8 +54,11 @@ import SendPhones from './SendPhones/SendPhones'
 import BatchChanges from './BatchChanges/BatchChanges'
 import { showError } from '../../utils/generic'
 import ReactPlaceholder from 'react-placeholder'
-import { isPublisher, isAtLeastElder } from '../../utils/loginDataManager'
 import { CSVLink } from 'react-csv'
+import OurToolTip from '../common/OurToolTip/OurToolTip'
+import { Checkbox } from 'pretty-checkbox-react'
+import { ApplicationContext } from '../../contexts/application'
+import './styles.css'
 
 class Contacts extends React.Component {
   constructor(props) {
@@ -59,7 +75,7 @@ class Contacts extends React.Component {
       pagination: {},
       statusForbidden: [ID_STATUS_NO_VISIT, ID_STATUS_SEND_TO_OTHER_CONG],
       queryParams: {
-        sort: '"lastConversationInDays":DESC,name:IS NULL DESC,name:ASC',
+        sort: '"idStatus":ASC,"lastConversationInDays":DESC,name:IS NULL DESC,name:ASC',
         perPage: RECORDS_PER_PAGE,
         currentPage: 1,
         filters: JSON.stringify({
@@ -68,6 +84,7 @@ class Contacts extends React.Component {
           phone: '',
           note: '',
           typeCompany: '-1',
+          modeAllContacts: props.modeAllContacts ? '-1' : '0',
           genders: [],
           languages: [],
           status: [],
@@ -83,21 +100,46 @@ class Contacts extends React.Component {
     this.parseDataCVS = this.parseDataCVS.bind(this)
     this.setRowColor = this.setRowColor.bind(this)
     this.setSubRowVisible = this.setSubRowVisible.bind(this)
+    this.getInformationAboveName = this.getInformationAboveName.bind(this)
+    this.setBackgroundForbidden = this.setBackgroundForbidden.bind(this)
+    this.handleFilter = this.handleFilter.bind(this)
+    this.showCampaignName = this.showCampaignName.bind(this)
   }
 
-  async handleGetAll(objQuery) {
-    this.setState({ submitting: true })
+  uncheckCheckboxSelectAll() {
+    document.getElementById('checkall').checked = false
+  }
+
+  handleFilter(objQuery) {
+    const queryParams = parseQuery(objQuery, this.state)
+    setFiltersToURL(queryParams, this.props)
+  }
+
+  async handleGetAll() {
+    this.setState({ submitting: true, checksContactsPhones: [] })
+    this.uncheckCheckboxSelectAll()
     const { t } = this.props
     try {
-      const queryParams = parseQuery(objQuery, this.state)
+      const queryParams = getQueryParamsFromURL(this.props)
+        ? getQueryParamsFromURL(this.props)
+        : this.state.queryParams
       const response = await contacts.getAll(queryParams)
-      this.setState({
-        data: getOr([], 'data.data.list', response),
-        pagination: getOr({}, 'data.data.pagination', response),
-        submitting: false,
-        error: false,
-        queryParams,
-      })
+      const error = getOr([], 'data.errors[0]', response)
+      if (isEmpty(error)) {
+        this.setState({
+          data: getOr([], 'data.data.data.data.list', response),
+          pagination: getOr({}, 'data.data.data.data.pagination', response),
+          submitting: false,
+          error: false,
+          queryParams,
+        })
+      } else {
+        this.setState({
+          error,
+          submitting: false,
+        })
+        showError(error, t, 'contacts')
+      }
     } catch (error) {
       this.setState({
         error,
@@ -149,16 +191,32 @@ class Contacts extends React.Component {
   }
 
   afterSentPhones() {
-    document.getElementById('checkall').checked = false
     this.handleGetAll()
-    this.setState({ checksContactsPhones: [] })
   }
 
   componentDidMount() {
-    if (isPublisher()) {
+    const { isPublisher } = this.context
+    if (isPublisher) {
       const { history } = this.props
       history.push('/')
-    } else this.handleGetAll()
+    } else {
+      this.handleGetAll()
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { submitting } = this.state
+    const prevSubmiting = prevState.submitting
+    const prevQueryParams = prevState.queryParams
+    const queryParams = getQueryParamsFromURL(this.props)
+    if (
+      !submitting &&
+      !prevSubmiting &&
+      queryParams &&
+      !isEqual(queryParams, prevQueryParams)
+    ) {
+      this.handleGetAll()
+    }
   }
 
   toggleFilter() {
@@ -221,35 +279,100 @@ class Contacts extends React.Component {
 
   setSubRowVisible(contact) {
     if (
-      (contact.idStatus === ID_STATUS_RETURN_VISIT ||
+      contact.idStatus === ID_STATUS_SEND_TO_OTHER_CONG ||
+      ((contact.idStatus === ID_STATUS_RETURN_VISIT ||
         contact.idStatus === ID_STATUS_BIBLE_STUDY) &&
-      !isEmpty(getOr('', 'publisherName', contact))
+        !isEmpty(getOr('', 'publisherName', contact)))
     ) {
-      return ''
+      return {}
     }
-    return 'd-none'
+    return { visibility: 'hidden' }
+  }
+
+  thisDateAlreadyReachedMaxAllowed = ({
+    waitingFeedback,
+    lastConversationInDays,
+  }) => {
+    return (
+      waitingFeedback &&
+      lastConversationInDays !== '99999999999' &&
+      lastConversationInDays > MAX_DAYS_ALLOWED_WITH_NUMBERS
+    )
+  }
+
+  getStyleForFieldDays(contact) {
+    return this.thisDateAlreadyReachedMaxAllowed(contact) ? ' text-danger' : ''
+  }
+
+  showCampaignName() {
+    const { modeAllContacts } = this.props
+    const { campaignActive } = this.context
+
+    return !modeAllContacts && campaignActive ? ` - ${campaignActive.name}` : ''
+  }
+
+  getTitle(title) {
+    const { t } = this.props
+
+    return (
+      <React.Fragment>
+        <FontAwesomeIcon icon={faGlobeAmericas} /> {t(title)}
+        {this.showCampaignName()}
+      </React.Fragment>
+    )
+  }
+
+  setBackgroundForbidden(contact) {
+    return contains(contact.idStatus, this.state.statusForbidden)
+      ? 'bg-danger'
+      : ''
+  }
+
+  getInformationAboveName(contact) {
+    const { t } = this.props
+    return (
+      <span className="text-light ml-1">
+        {this.setBackgroundForbidden(contact) === 'bg-danger'
+          ? t('common:updatedByAt', {
+              name: contact.publisherNameUpdatedBy,
+              date: formatDateDMYHHmm(contact.updatedAt),
+            })
+          : `${t('lastSpokeToPublisherName')}: ${contact.publisherName}`}
+      </span>
+    )
   }
 
   render() {
-    const { t } = this.props
+    const { t, modeAllContacts } = this.props
+    const { isAtLeastElder } = this.context
     const {
       data,
       pagination,
       submitting,
       checksContactsPhones,
-      statusForbidden,
       error,
       hiddenFilter,
       headers,
       dataCVS,
+      queryParams: { filters },
     } = this.state
     const colSpan = '10'
+    const title = modeAllContacts
+      ? this.getTitle('listAllTitle')
+      : this.getTitle('listTitle')
+
+    const filtersParsed = JSON.parse(filters)
     return (
-      <ContainerCRUD title={t('listTitle')} {...this.props}>
+      <ContainerCRUD
+        color={modeAllContacts ? 'gray-dark' : 'success'}
+        title={title}
+        {...this.props}
+      >
         <Row>
           <Col xs={12} lg={3} xl={2} className={hiddenFilter ? 'd-none' : ''}>
             <FilterData
-              handleFilters={this.handleGetAll}
+              filters={filtersParsed}
+              handleFilters={this.handleFilter}
               refresh={submitting}
               error={error}
               showTypeCompany={true}
@@ -260,20 +383,23 @@ class Contacts extends React.Component {
             <Table striped bordered hover responsive size="sm">
               <thead>
                 <Search
-                  onFilter={this.handleGetAll}
+                  filters={filtersParsed}
+                  onFilter={this.handleFilter}
                   fields={['name', 'phone', 'note', 'owner']}
                   colspan={colSpan}
                   toggleFilter={this.toggleFilter}
                 />
                 <tr>
-                  <th>
-                    <Form.Check
-                      type="checkbox"
+                  <th style={{ width: '60px' }}>
+                    <Checkbox
                       id="checkall"
-                      name=""
-                      label=""
+                      name="all"
                       value="all"
                       onClick={this.handleCheckAll}
+                      color="success"
+                      className="marginLeftCheckbox"
+                      bigger
+                      animation="pulse"
                     />
                   </th>
                   <th>{t('phone')}</th>
@@ -287,6 +413,11 @@ class Contacts extends React.Component {
                   >
                     {t('lastConversationsInDays')}
                   </th>
+                  {modeAllContacts && (
+                    <th className="d-none d-lg-table-cell">
+                      {t('waitingFeedback')}
+                    </th>
+                  )}
                   <th style={{ minWidth: '116px' }}>{t('details')}</th>
                   <th style={{ minWidth: '189px' }}>
                     <NewContact afterClose={this.handleGetAll} />{' '}
@@ -295,7 +426,7 @@ class Contacts extends React.Component {
                       contactsData={data}
                       afterClose={this.afterSentPhones}
                     />{' '}
-                    {isAtLeastElder() && (
+                    {isAtLeastElder && (
                       <BatchChanges
                         checksContactsPhones={checksContactsPhones}
                         contactsData={data}
@@ -305,7 +436,9 @@ class Contacts extends React.Component {
                     <CSVLink
                       data={dataCVS}
                       headers={headers}
-                      filename={`${t('listTitle')}.csv`}
+                      filename={`${t(
+                        modeAllContacts ? 'listAllTitle' : 'listTitle'
+                      )}.csv`}
                       title={t('titleExportToCVS')}
                       className={`btn btn-primary ${
                         checksContactsPhones.length > 0 ? '' : 'disabled'
@@ -334,38 +467,43 @@ class Contacts extends React.Component {
                     (contact) => (
                       <tr
                         key={contact.phone}
-                        className={
-                          contains(contact.idStatus, statusForbidden)
-                            ? 'bg-danger'
-                            : ''
-                        }
+                        className={this.setBackgroundForbidden(contact)}
                       >
-                        <td>
-                          <Form.Check
-                            type="checkbox"
+                        <td style={{ minWidth: '60px' }}>
+                          <Checkbox
                             checked={contains(
                               contact.phone,
                               checksContactsPhones
                             )}
                             name="checksContactsPhones"
                             value={contact.phone}
-                            className="checkBoxPhones"
+                            color="success"
+                            className="marginLeftCheckbox"
+                            bigger
                             onChange={this.handleOnClick}
                           />
                         </td>
                         <td>{contact.phone}</td>
-                        <td className="d-none d-sm-table-cell">
-                          {contact.name}
-                          <div className={this.setSubRowVisible(contact)}>
+                        <td className="d-none d-sm-table-cell verticalBottom">
+                          <span>{contact.name}</span>
+                          <div style={this.setSubRowVisible(contact)}>
                             <Form.Text
                               className={`text-muted ${this.setRowColor(
                                 contact.idStatus
                               )}`}
                             >
-                              {t('lastSpokeToPublisherName')}:{' '}
-                              {contact.publisherName}
+                              {this.getInformationAboveName(contact)}
                             </Form.Text>
                           </div>
+                          {contact.campaignName && (
+                            <p className="contactedDuringCampaign ml-1">
+                              <small>
+                                {t('detailsContacts:campaignName', {
+                                  campaignName: contact.campaignName,
+                                })}
+                              </small>
+                            </p>
+                          )}
                         </td>
                         <td className="d-none d-lg-table-cell">
                           {t(
@@ -385,8 +523,28 @@ class Contacts extends React.Component {
                           {t(`status:${contact.statusDescription}`)}
                         </td>
                         <td className="d-none d-lg-table-cell">
-                          {t(`${contact.lastConversationInDays}`)}
+                          <OurToolTip
+                            info={t(contact.lastConversationInDays)}
+                            toolTipContent="toolTipWaitingFeedback"
+                            showTooltip={this.thisDateAlreadyReachedMaxAllowed(
+                              contact
+                            )}
+                            getStyleForFieldDays={() =>
+                              this.getStyleForFieldDays(contact)
+                            }
+                          />
                         </td>
+                        {modeAllContacts && (
+                          <td
+                            className={`d-none d-lg-table-cell text-${
+                              contact.waitingFeedback ? 'danger' : 'success'
+                            }`}
+                          >
+                            {t(
+                              `common:${contact.waitingFeedback ? 'yes' : 'no'}`
+                            )}
+                          </td>
+                        )}
                         <td>
                           <ListDetailsContact
                             contact={contact}
@@ -395,7 +553,7 @@ class Contacts extends React.Component {
                           />{' '}
                           <Button
                             title={t('common:list')}
-                            variant="success"
+                            variant="secondary"
                             as={Link}
                             to={`/contacts/${encodeURI(contact.phone)}/details`}
                           >
@@ -403,10 +561,12 @@ class Contacts extends React.Component {
                           </Button>
                         </td>
                         <td>
-                          <EditContact
-                            id={contact.phone}
-                            afterClose={() => this.handleGetAll()}
-                          />{' '}
+                          {!modeAllContacts && (
+                            <EditContact
+                              id={contact.phone}
+                              afterClose={() => this.handleGetAll()}
+                            />
+                          )}{' '}
                           <AskDelete
                             id={contact.phone}
                             funcToCallAfterConfirmation={this.handleDelete}
@@ -425,7 +585,7 @@ class Contacts extends React.Component {
                   <td colSpan={colSpan} style={{ border: 0 }}>
                     <Pagination
                       pagination={pagination}
-                      onClick={this.handleGetAll}
+                      onClick={this.handleFilter}
                       submitting={submitting}
                     />
                   </td>
@@ -438,6 +598,8 @@ class Contacts extends React.Component {
     )
   }
 }
+
+Contacts.contextType = ApplicationContext
 
 export default withTranslation([
   'contacts',

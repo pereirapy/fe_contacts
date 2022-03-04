@@ -21,7 +21,12 @@ const CheckNumber = (props) => {
     window.open(`${URL_SEND_MESSAGE}?phone=${phone}&text=${textToSend}`)
 
   return (
-    <Button variant="success" disabled={isEmpty(phone)} onClick={() => check()}>
+    <Button
+      style={{ position: 'relative', marginBottom: '-16px', top: '-17px' }}
+      variant="success"
+      disabled={isEmpty(phone)}
+      onClick={() => check()}
+    >
       <FontAwesomeIcon icon={faWhatsapp} />
     </Button>
   )

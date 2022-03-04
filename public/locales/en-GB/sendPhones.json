@@ -6,6 +6,8 @@
   "withoutDetails": "No Details",
   "labelPublisher": "Publisher",
   "ERROR_PUBLISHER_ALREADY_WAITING_FEEDBACK": "The number {{phone}} is already waiting a feedback. Please, take a note of this feedback before assign to other publisher",
-  "noPhone": "This publisher does not have a phone number"
+  "noPhone": "This publisher does not have a phone number",
+  "warningPhonesWaitingFeedback": "The {{total}} numbers bellow are waiting feedback by some publisher. You can will to send this numbers for someone, BUT those numbers will still assigned by original publisher!",
+  "warningPhoneWaitingFeedback": "The number bellow is waiting feedback by some publisher. You can will to send this number for someone, BUT this number will still assigned by original publisher!"
 
 }

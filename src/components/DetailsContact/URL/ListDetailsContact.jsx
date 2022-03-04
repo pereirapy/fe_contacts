@@ -1,21 +1,25 @@
 import React from 'react'
 import { withTranslation } from 'react-i18next'
 import ContainerCRUD from '../../../components/common/ContainerCRUD/ContainerCRUD'
-import moment from 'moment'
+import { formatDateDMYHHmm } from '../../../utils/forms'
 import { details } from '../../../services'
-import { getOr, map, first, isEmpty, some } from 'lodash/fp'
+import { getOr, map, first, isEmpty, some, isEqual } from 'lodash/fp'
 import { Button, Table, Row, Col, Container } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import AskDelete from '../../common/AskDelete/AskDelete'
 import NoRecords from '../../common/NoRecords/NoRecords'
 import Pagination from '../../common/Pagination/Pagination'
 import Search from '../../common/Search/Search'
-import { parseQuery } from '../../../utils/forms'
+import {
+  parseQuery,
+  setFiltersToURL,
+  getQueryParamsFromURL,
+} from '../../../utils/forms'
 import { RECORDS_PER_PAGE } from '../../../constants/application'
 import {
   faPlusSquare,
   faEdit,
-  faArrowLeft,
+  faAddressCard,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { showError } from '../../../utils/generic'
@@ -43,20 +47,41 @@ class ListDetailsContact extends React.Component {
       },
     }
     this.handleGetAllOneContact = this.handleGetAllOneContact.bind(this)
+    this.handleFilter = this.handleFilter.bind(this)
     this.handleDelete = this.handleDelete.bind(this)
-    this.notificationNotAllowedNewDetails = this.notificationNotAllowedNewDetails.bind(
-      this
-    )
+    this.notificationNotAllowedNewDetails =
+      this.notificationNotAllowedNewDetails.bind(this)
+  }
+
+  getLastPublisherThatTouched(detail) {
+    const { t } = this.props
+
+    return detail.updatedAt
+      ? t('common:updatedByAt', {
+          date: formatDateDMYHHmm(detail.updatedAt),
+          name: detail.publisherUpdatedByName,
+        })
+      : t('common:createdByAt', {
+          date: formatDateDMYHHmm(detail.createdAt),
+          name: detail.publisherCreatedByName,
+        })
   }
 
   isWaitingFeedback = (response) =>
     some({ waitingFeedback: true }, getOr([], 'data.data.list', response))
 
+  handleFilter(objQuery) {
+    const queryParams = parseQuery(objQuery, this.state)
+    setFiltersToURL(queryParams, this.props)
+  }
+
   async handleGetAllOneContact(objQuery) {
     this.setState({ loading: true })
     try {
       const phone = getOr(0, 'props.match.params.phone', this)
-      const queryParams = parseQuery(objQuery, this.state)
+      const queryParams = getQueryParamsFromURL(this.props)
+        ? getQueryParamsFromURL(this.props)
+        : this.state.queryParams
       const response = await details.getAllOneContact(phone, queryParams)
       const data = getOr([], 'data.data.list', response)
       const { name } = first(data) || { name: '' }
@@ -101,6 +126,21 @@ class ListDetailsContact extends React.Component {
     this.handleGetAllOneContact()
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    const { loading } = this.state
+    const prevSubmiting = prevState.loading
+    const prevQueryParams = prevState.queryParams
+    const queryParams = getQueryParamsFromURL(this.props)
+    if (
+      !loading &&
+      !prevSubmiting &&
+      queryParams &&
+      !isEqual(queryParams, prevQueryParams)
+    ) {
+      this.handleGetAllOneContact()
+    }
+  }
+
   getNameForTitle() {
     const { name } = this.state
     return !isEmpty(name) ? `- ${name}` : ''
@@ -117,29 +157,40 @@ class ListDetailsContact extends React.Component {
 
   render() {
     const { t, history } = this.props
-    const { data, phone, loading, pagination, waitingFeedback } = this.state
+    const {
+      data,
+      phone,
+      loading,
+      pagination,
+      waitingFeedback,
+      queryParams: { filters },
+    } = this.state
     const colSpan = 4
+    const title = (
+      <React.Fragment>
+        <FontAwesomeIcon icon={faAddressCard} />{' '}
+        {`${t('title')} #${phone} ${this.getNameForTitle()}`}
+      </React.Fragment>
+    )
+    const filtersParsed = JSON.parse(filters)
 
     return (
-      <ContainerCRUD title={t('title')} {...this.props}>
+      <ContainerCRUD color="orange" title={title} {...this.props}>
         <Container className="border p-4">
-          <Row>
-            <Col>
-              <h2>{`${t('title')} #${phone} ${this.getNameForTitle()}`}</h2>
-            </Col>
-          </Row>
           <Row>
             <Col>
               <Table striped bordered hover responsive>
                 <thead>
                   <Search
-                    onFilter={this.handleGetAllOneContact}
+                    filters={filtersParsed}
+                    onFilter={this.handleFilter}
                     fields={['publisher', 'details']}
                     colspan={colSpan}
+                    history={history}
                   />
                   <tr>
                     <th>{t('publisher')}</th>
-                    <th>{t('date')}</th>
+                    <th>{t('dateAndReponsible')}</th>
                     <th>{t('details')}</th>
                     <th style={{ minWidth: '116px' }}>
                       {waitingFeedback ? (
@@ -158,14 +209,7 @@ class ListDetailsContact extends React.Component {
                         >
                           <FontAwesomeIcon icon={faPlusSquare} />
                         </Button>
-                      )}{' '}
-                      <Button
-                        title={t('common:back')}
-                        variant="secondary"
-                        onClick={() => history.goBack()}
-                      >
-                        <FontAwesomeIcon icon={faArrowLeft} />
-                      </Button>
+                      )}
                     </th>
                   </tr>
                 </thead>
@@ -187,9 +231,9 @@ class ListDetailsContact extends React.Component {
                         <tr key={detail.id}>
                           <td>{detail.publisherName}</td>
                           <td>
-                            {moment(detail.createdAt).format(
-                              'DD/MM/YYYY HH:mm'
-                            )}
+                            <small>
+                              {this.getLastPublisherThatTouched(detail)}
+                            </small>
                           </td>
                           <td>{t(detail.information)}</td>
                           <td style={{ minWidth: '114px' }}>
@@ -221,7 +265,7 @@ class ListDetailsContact extends React.Component {
                     <td colSpan={colSpan} style={{ border: 0 }}>
                       <Pagination
                         pagination={pagination}
-                        onClick={this.handleGetAllOneContact}
+                        onClick={this.handleFilter}
                         loading={loading}
                       />
                     </td>

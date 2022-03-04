@@ -1,12 +1,18 @@
 import React from 'react'
 import { NavDropdown } from 'react-bootstrap'
-import { dropToken } from '../../utils/loginDataManager'
 import Swal from 'sweetalert2'
 import { withTranslation } from 'react-i18next'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
+import useApplicationContext from '../../hooks/useApplicationContext'
+import { buildContextData } from '../../utils/loginDataManager'
 
-const handleLogout = (props) => {
+const handleLogout = (props, dropToken, updateContext) => {
   const { history, t } = props
+
   dropToken()
+  const newContext = buildContextData()
+  updateContext(() => newContext)
   history.push('/')
   Swal.fire({
     title: t('YouWasLogoutSuccessfully'),
@@ -16,10 +22,16 @@ const handleLogout = (props) => {
   })
 }
 
-const Logout = (props) => (
-  <NavDropdown.Item onClick={() => handleLogout(props)}>
-    {props.t('btnLogout')}
-  </NavDropdown.Item>
-)
+const Logout = (props) => {
+  const { dropToken, updateContext } = useApplicationContext()
+
+  return (
+    <NavDropdown.Item
+      onClick={() => handleLogout(props, dropToken, updateContext)}
+    >
+      <FontAwesomeIcon icon={faSignOutAlt} /> {props.t('btnLogout')}
+    </NavDropdown.Item>
+  )
+}
 
 export default withTranslation(['logout'])(Logout)

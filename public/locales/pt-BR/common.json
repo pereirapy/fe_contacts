@@ -21,7 +21,7 @@
   "dataSuccessfullySaved": "Dados salvos com sucesso",
   "typeToSearch": "Digite para buscar...",
   "view": "Visualizar",
-  "warning": "Atenção",
+  "warning": "Atenção!!",
   "yes": "Sim",
   "btnSubmitting": "Enviando...",
   "btnSubmit": "Enviar",
@@ -53,6 +53,7 @@
   "ops": "Ops!!",
   "contacts_pkey": "Este número já existe",
   "contacts_phone2_unique": "O número do Telefone 2 já existe",
+  "status_description_unique": "Este estado já existe",
   "sendOverWhatsApp": "Enviar via WhatsApp",
   "total": "Total",
   "list": "Listagem",
@@ -62,13 +63,11 @@
   "placeHolderSelect": "Selecione...",
   "same": "Mesmo",
   "errorValidation": "Erro de validação",
-  "allFieldsIsEmpty": "Todos os campos estão vazios. Selecione pelo menos um"
-
-
-
-
-
-
-
-
+  "allFieldsIsEmpty": "Todos os campos estão vazios. Selecione pelo menos um",
+  "pageNotFound": "Página não encontrada",
+  "goToHome": "Ir a início",
+  "updatedByAt": "Atualizado por {{name}} em {{date}}",
+  "createdByAt": "Criado por {{name}} em {{date}}",
+  "campaigns_name_unique": "Este nome de campanha já existe",
+  "ERROR_ID_CAMPAIGN_IS_MISSING": "Campanha não encontrada"
 }

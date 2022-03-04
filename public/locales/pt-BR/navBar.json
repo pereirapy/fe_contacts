@@ -6,6 +6,10 @@
   "status": "Status",
   "languages": "Idiomas",
   "admin": "Administração",
-  "allContacts": "Sem pendências",
-  "allContactsWaitingFeedback": "Aguardam resposta"
+  "allContacts": "Todos",
+  "allContactsAvailable": "Sem pendências",
+  "allContactsWaitingFeedback": "Aguardam resposta",
+  "campaigns": "Campanhas",
+  "adminCampaigns": "Administrar",
+  "allCampaigns": "Todas"
 }

@@ -3,8 +3,8 @@ import publishers from './modules/publishers'
 import contacts from './modules/contacts'
 import details from './modules/details'
 import status from './modules/status'
+import campaigns from './modules/campaigns'
 import languages from './modules/languages'
-import translations from './modules/translations'
 import responsibility from './modules/responsibility'
 import locations from './modules/locations'
 
@@ -15,7 +15,7 @@ export {
   details,
   status,
   languages,
-  translations,
   responsibility,
-  locations
+  locations,
+  campaigns,
 }

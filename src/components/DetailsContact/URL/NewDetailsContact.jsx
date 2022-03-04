@@ -1,13 +1,18 @@
 import React from 'react'
 import { withTranslation } from 'react-i18next'
 import ContainerCRUD from '../../../components/common/ContainerCRUD/ContainerCRUD'
+import ElementError from '../../../components/common/ElementError/ElementError'
 import SimpleReactValidator from 'simple-react-validator'
 import { getOr, pick, get } from 'lodash/fp'
 import FormDetails from '../FormDetails'
 import { getLocale, handleInputChangeGeneric } from '../../../utils/forms'
 import { details, publishers, contacts, locations } from '../../../services'
 import { reducePublishers } from '../../../stateReducers/publishers'
-import { showError, showSuccessful, ifEmptySetNull } from '../../../utils/generic'
+import {
+  showError,
+  showSuccessful,
+  ifEmptySetNull,
+} from '../../../utils/generic'
 import { Container } from 'react-bootstrap'
 import { GENDER_UNKNOWN } from '../../../constants/contacts'
 import { reduceLocations } from '../../../stateReducers/locations'
@@ -17,6 +22,8 @@ import {
   ID_STATUS_DEFAULT,
   ID_LOCATION_DEFAULT,
 } from '../../../constants/valuesPredefined'
+import { faAddressCard } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const fields = {
   information: '',
@@ -47,7 +54,7 @@ class NewDetailsContact extends React.Component {
     this.validator = new SimpleReactValidator({
       autoForceUpdate: this,
       locale: getLocale(this.props),
-      element: (message) => <div className="text-danger">{message}</div>,
+      element: (message) => <ElementError message={message} />,
     })
   }
 
@@ -126,12 +133,26 @@ class NewDetailsContact extends React.Component {
   }
 
   render() {
-    const { form, validated, publishersOptions, loading, locationsOptions, phone } = this.state
+    const {
+      form,
+      validated,
+      publishersOptions,
+      loading,
+      locationsOptions,
+      phone,
+    } = this.state
     const { t, history } = this.props
+    const title = (
+      <React.Fragment>
+        {' '}
+        <FontAwesomeIcon icon={faAddressCard} />{' '}
+        {`${t('common:new')} ${t('detailsContacts:title')} #${phone}`}
+      </React.Fragment>
+    )
+
     return (
-      <ContainerCRUD title={t('title')} {...this.props}>
+      <ContainerCRUD title={title} {...this.props}>
         <Container className="border p-4">
-          <h1>{`${t('common:new')} ${t('detailsContacts:title')} #${phone}`}</h1>
           <FormDetails
             validator={this.validator}
             loading={loading}

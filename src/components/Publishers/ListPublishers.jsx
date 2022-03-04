@@ -4,19 +4,25 @@ import ContainerCRUD from '../../components/common/ContainerCRUD/ContainerCRUD'
 import { withTranslation } from 'react-i18next'
 import { publishers } from '../../services'
 import Swal from 'sweetalert2'
-import { getOr, map, isEmpty } from 'lodash/fp'
+import { getOr, map, isEmpty, isEqual } from 'lodash/fp'
 import AskDelete from '../common/AskDelete/AskDelete'
 import EditPublisher from './EditPublisher'
 import NewPublisher from './NewPublisher'
 import { showError } from '../../utils/generic'
-import { getUserData } from '../../utils/loginDataManager'
 import Pagination from '../common/Pagination/Pagination'
 import Search from '../common/Search/Search'
-import { parseQuery } from '../../utils/forms'
+import {
+  parseQuery,
+  setFiltersToURL,
+  getQueryParamsFromURL,
+} from '../../utils/forms'
 import { RECORDS_PER_PAGE } from '../../constants/application'
 import FilterData from '../common/FilterData/FilterData'
 import ReactPlaceholder from 'react-placeholder'
 import NoRecords from '../common/NoRecords/NoRecords'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faBriefcase } from '@fortawesome/free-solid-svg-icons'
+import { ApplicationContext } from '../../contexts/application'
 
 class Publishers extends React.Component {
   constructor(props) {
@@ -27,7 +33,7 @@ class Publishers extends React.Component {
       hiddenFilter: false,
       pagination: {},
       queryParams: {
-        sort: 'publishers.name:ASC',
+        sort: 'publishers.active:DESC, publishers.name:ASC',
         perPage: RECORDS_PER_PAGE,
         currentPage: 1,
         filters: JSON.stringify({
@@ -40,19 +46,21 @@ class Publishers extends React.Component {
     }
     this.handleGetAll = this.handleGetAll.bind(this)
     this.handleDelete = this.handleDelete.bind(this)
-    this.showErrorNotAllowedDeleteCurrentUser = this.showErrorNotAllowedDeleteCurrentUser.bind(
-      this
-    )
+    this.showErrorNotAllowedDeleteCurrentUser =
+      this.showErrorNotAllowedDeleteCurrentUser.bind(this)
     this.toggleFilter = this.toggleFilter.bind(this)
+    this.handleFilter = this.handleFilter.bind(this)
   }
 
-  async handleGetAll(objQuery) {
+  async handleGetAll() {
     const { t } = this.props
     this.setState({
       submitting: true,
     })
     try {
-      const queryParams = parseQuery(objQuery, this.state)
+      const queryParams = getQueryParamsFromURL(this.props)
+        ? getQueryParamsFromURL(this.props)
+        : this.state.queryParams
       const response = await publishers.getAllWithPagination(queryParams)
       this.setState({
         data: getOr([], 'data.data.list', response),
@@ -81,7 +89,8 @@ class Publishers extends React.Component {
 
   async handleDelete(id) {
     const { t } = this.props
-    if (id === getOr(0, 'id', getUserData())) {
+    const { user } = this.context
+    if (id === getOr(0, 'id', user)) {
       this.showErrorNotAllowedDeleteCurrentUser()
       return
     }
@@ -98,24 +107,61 @@ class Publishers extends React.Component {
       })
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     this.handleGetAll()
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { submitting } = this.state
+    const prevSubmiting = prevState.submitting
+    const prevQueryParams = prevState.queryParams
+    const queryParams = getQueryParamsFromURL(this.props)
+    if (
+      !submitting &&
+      !prevSubmiting &&
+      queryParams &&
+      !isEqual(queryParams, prevQueryParams)
+    ) {
+      this.handleGetAll()
+    }
   }
 
   toggleFilter() {
     this.setState({ hiddenFilter: !getOr(false, 'hiddenFilter', this.state) })
   }
 
+  handleFilter(objQuery) {
+    const queryParams = parseQuery(objQuery, this.state)
+    setFiltersToURL(queryParams, this.props)
+  }
+
   render() {
     const { t } = this.props
-    const { data, pagination, submitting, error, hiddenFilter } = this.state
+    const {
+      data,
+      pagination,
+      submitting,
+      error,
+      hiddenFilter,
+      queryParams: { filters },
+    } = this.state
     const colSpan = '11'
+    const filtersParsed = JSON.parse(filters)
+
+    const title = (
+      <React.Fragment>
+        {' '}
+        <FontAwesomeIcon icon={faBriefcase} /> {t('listTitle')}{' '}
+      </React.Fragment>
+    )
+
     return (
-      <ContainerCRUD title={t('listTitle')} {...this.props}>
+      <ContainerCRUD color="blue" title={title} {...this.props}>
         <Row>
           <Col xs={12} lg={3} xl={2} className={hiddenFilter ? 'd-none' : ''}>
             <FilterData
-              handleFilters={this.handleGetAll}
+              filters={filtersParsed}
+              handleFilters={this.handleFilter}
               refresh={submitting}
               error={error}
               getFilters={publishers.getAllFilters}
@@ -125,7 +171,8 @@ class Publishers extends React.Component {
             <Table striped bordered hover responsive>
               <thead>
                 <Search
-                  onFilter={this.handleGetAll}
+                  filters={filtersParsed}
+                  onFilter={this.handleFilter}
                   fields={['name', 'phone', 'email']}
                   colspan={colSpan}
                   toggleFilter={this.toggleFilter}
@@ -196,7 +243,7 @@ class Publishers extends React.Component {
                     <Pagination
                       pagination={pagination}
                       submitting={submitting}
-                      onClick={this.handleGetAll}
+                      onClick={this.handleFilter}
                     />
                   </td>
                 </tr>
@@ -208,6 +255,9 @@ class Publishers extends React.Component {
     )
   }
 }
+
+Publishers.contextType = ApplicationContext
+
 export default withTranslation(['publishers', 'common', 'responsibility'])(
   Publishers
 )

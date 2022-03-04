@@ -1,11 +1,16 @@
 import React from 'react'
 import { withTranslation } from 'react-i18next'
 import OurModal from '../common/OurModal/OurModal'
+import ElementError from '../common/ElementError/ElementError'
 import SimpleReactValidator from 'simple-react-validator'
-import { getLocale, handleInputChangeGeneric } from '../../utils/forms'
+import {
+  getLocale,
+  handleInputChangeGeneric,
+  numberStartsWithInvalidCharacter,
+} from '../../utils/forms'
 import { contacts, publishers, locations } from '../../services'
 import FormContacts from './FormContacts'
-import { faUserPlus } from '@fortawesome/free-solid-svg-icons'
+import { faUserPlus, faPlusSquare } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { showError, showSuccessful, ifEmptySetNull } from '../../utils/generic'
 import { getOr, get } from 'lodash/fp'
@@ -55,7 +60,11 @@ class NewContact extends React.Component {
     this.validator = new SimpleReactValidator({
       autoForceUpdate: this,
       locale: getLocale(this.props),
-      element: (message) => <div className="text-danger">{message}</div>,
+      element: (message) => <ElementError message={message} />,
+      validators: {
+        numberStartsWithInvalidCharacter:
+          numberStartsWithInvalidCharacter(this),
+      },
     })
   }
 
@@ -135,7 +144,6 @@ class NewContact extends React.Component {
     this.validator.hideMessages()
   }
 
-
   render() {
     const {
       form,
@@ -146,6 +154,14 @@ class NewContact extends React.Component {
       locationsOptions,
     } = this.state
     const { t, afterClose } = this.props
+    const title = (
+      <React.Fragment>
+        {' '}
+        <FontAwesomeIcon icon={faUserPlus} />{' '}
+        {`${t('common:new')} ${t('titleCrud')}`}{' '}
+      </React.Fragment>
+    )
+
     return (
       <OurModal
         body={FormContacts}
@@ -163,8 +179,8 @@ class NewContact extends React.Component {
         publishersOptions={publishersOptions}
         statusOptions={statusOptions}
         buttonTitle={t('common:new')}
-        title={`${t('common:new')} ${t('titleCrud')}`}
-        buttonText={<FontAwesomeIcon icon={faUserPlus} />}
+        title={title}
+        buttonText={<FontAwesomeIcon icon={faPlusSquare} />}
       />
     )
   }

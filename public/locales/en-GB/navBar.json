@@ -6,6 +6,10 @@
   "status": "Status",
   "languages": "Languages",
   "admin": "Administration",
-  "allContacts": "No pending issues",
-  "allContactsWaitingFeedback": "Waiting feedback"
+  "allContactsAvailable": "No pending issues",
+  "allContacts": "All",
+  "allContactsWaitingFeedback": "Waiting feedback",
+  "campaigns": "Campaigns",
+  "adminCampaigns": "Administration",
+  "allCampaigns": "All"
 }

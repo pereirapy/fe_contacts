@@ -55,7 +55,7 @@ class LanguageSelect extends React.Component {
       t,
       label,
       rules,
-      placeHolderSelect
+      placeHolderSelect,
     } = this.props
     const { languagesOptions, error, loading } = this.state
 

@@ -3,11 +3,16 @@ import { Form, InputGroup, Button } from 'react-bootstrap'
 import { getOr, reduce } from 'lodash/fp'
 import { withTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSearch, faFilter } from '@fortawesome/free-solid-svg-icons'
+import {
+  faSearch,
+  faFilter,
+  faArrowLeft,
+} from '@fortawesome/free-solid-svg-icons'
 
 const Search = (props) => {
-  const { onFilter, t, name, colspan, fields, toggleFilter } = props
-
+  const { onFilter, t, name, colspan, fields, toggleFilter, filters, history } =
+    props
+  const valueFromURL = filters ? filters[fields[0]] || '' : ''
   const sendSearch = (event) => {
     if (event.key === 'Enter') {
       toSearch(event)
@@ -21,11 +26,11 @@ const Search = (props) => {
       {},
       fields
     )
-    onFilter({ filters: newValues })
+    onFilter({ filters: newValues, currentPage: 1 })
   }
 
   return (
-    <>
+    <React.Fragment>
       <tr>
         <th colSpan={colspan || '7'}>
           <InputGroup>
@@ -40,12 +45,25 @@ const Search = (props) => {
                   <FontAwesomeIcon icon={faFilter} />
                 </Button>
               )}
+              {history && (
+                <>
+                  {' '}
+                  <Button
+                    title={t('common:back')}
+                    variant="secondary"
+                    onClick={() => history.goBack()}
+                  >
+                    <FontAwesomeIcon icon={faArrowLeft} />
+                  </Button>{' '}
+                </>
+              )}
               <InputGroup.Text>
                 <FontAwesomeIcon icon={faSearch} />
               </InputGroup.Text>
             </InputGroup.Prepend>
             <Form.Control
               name={name || 'search'}
+              defaultValue={valueFromURL}
               type="text"
               placeholder={t('placeHolder')}
               onKeyPress={sendSearch}
@@ -57,7 +75,7 @@ const Search = (props) => {
       <tr>
         <th colSpan={colspan || '7'} style={{ border: 0 }}></th>
       </tr>
-    </>
+    </React.Fragment>
   )
 }
 

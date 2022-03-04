@@ -3,6 +3,7 @@
   "titleCrud": "Detalhe do Contato",
   "publisher": "Publicador",
   "date": "Data",
+  "dateAndReponsible": "Data & Responsável",
   "information": "Informação",
   "informationLabel": "Informações",
   "informationPlaceHolder": "Escreva aqui as informações da conversa que o publicador teve com este contato",
@@ -10,5 +11,7 @@
   "phone": "Telefone",
   "notificationNotAllowedNewDetails": "Antes de registrar uma nova conversa favor informar os detalhes da que está pendente",
   "[WAITING_FEEDBACK]": "Aguardando resposta",
-  "ERROR_PUBLISHER_ALREADY_WAITING_FEEDBACK": "Este contato já está aguardando uma resposta. Favor anotar essa resposta antes de designar para outro publicador"
+  "ERROR_PUBLISHER_ALREADY_WAITING_FEEDBACK": "Este contato já está aguardando uma resposta. Favor anotar essa resposta antes de designar para outro publicador",
+  "details": "Details",
+  "campaignName": "Contactado durante a campanha {{campaignName}}"
 }

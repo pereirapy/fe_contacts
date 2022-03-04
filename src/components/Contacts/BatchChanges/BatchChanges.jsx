@@ -1,6 +1,7 @@
 import React from 'react'
 import { withTranslation } from 'react-i18next'
 import OurModal from '../../common/OurModal/OurModal'
+import ElementError from '../../common/ElementError/ElementError'
 import { join, get, pipe, values, omitBy, isNil, every } from 'lodash/fp'
 import SimpleReactValidator from 'simple-react-validator'
 import { getLocale, handleInputChangeGeneric } from '../../../utils/forms'
@@ -38,7 +39,7 @@ class BatchChanges extends React.Component {
     this.validator = new SimpleReactValidator({
       autoForceUpdate: this,
       locale: getLocale(this.props),
-      element: (message) => <div className="text-danger">{message}</div>,
+      element: (message) => <ElementError message={message} />,
     })
   }
 
@@ -46,7 +47,7 @@ class BatchChanges extends React.Component {
     this.setState({ loading: true })
     const publishersOptions = reducePublishers(await publishers.getAll())
 
-    this.setState({ loading: false, publishersOptions })
+    this.setState({ loading: false, publishersOptions, form: fields })
   }
 
   handleInputChange(event) {

@@ -1,0 +1,20 @@
+{
+  "title": "Campanha",
+  "titleList": "Lista das Campanhas",
+  "new": "Nova",
+  "name": "Nome",
+  "namePlaceHolder": "Digite um nome para essa campanha",
+  "dateStart": "Data inicial",
+  "dateStartPlaceHolder": "Escolha uma data inicial",
+  "dateFinalPlaceHolder": "Escolha uma data final",
+  "dateFinal": "Data final",
+  "listTitle": "Contatos da campanha {{campaign}}",
+  "ERROR_CAMPAIGN_SAME_INTERVAL_DATE": "A campanha {{campaign}} tem o mesmo periodo de duração",
+  "listAllTitle": "Lista de todos contatos da campanha {{campaign}}",
+  "detailscontacts_idcampaign_foreign": "Esta campanha esta vinculada a algum contato",
+  "seeCampaignDetails": "Ver os números contatados durante a campanha",
+  "chartsTitle": "Gráficos do andamento da campanha",
+  "seeCampaignCharts": "Ver os gráficos da campanha"
+
+
+}

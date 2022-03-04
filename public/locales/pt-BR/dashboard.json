@@ -6,15 +6,19 @@
   "withoutContact": "Sem contato",
   "totalContactsAssignByMeWaitingFeedback": "Por mim",
   "totalContactsWaitingFeedback": "Outros",
+  "titleChartCampaignActive": "Campanha {{campaignName}}",
   "titleChartContacts": "Contatados Vs. não contatados",
   "titleChartWaitingFeedback": "Aguardam meu comentario Vs. de outros",
-  "titleChartWaitingFeedbackByPublishers": "Aguardam comentario por cada publicador",
+  "titleChartWaitingFeedbackByPublishers": "Aguardam comentário por publicador",
   "titleChartGender": "Contatados por gênero",
   "titleChartLanguage": "Contatados por idioma",
   "noName": "No Name",
   "titleChartType": "Contatos por tipo",
   "titleChartByLocationsContacted": "Contatados por localidade",
-  "unknown": "Desconhecida"
+  "unknown": "Desconhecida",
+  "moreInformation": "Mais informações",
+  "daysToFinishActiveCampaign": "faltam {{days}} dias para terminar a campanha"
+
 
 
 }

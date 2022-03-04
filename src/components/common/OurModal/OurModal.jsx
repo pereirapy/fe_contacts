@@ -54,7 +54,7 @@ class OurModal extends Component {
     const { modalShow } = this.state
     const Component = this.props.body
     return (
-      <>
+      <React.Fragment>
         <Button
           title={buttonTitle || ''}
           variant={buttonVariant || 'primary'}
@@ -83,7 +83,7 @@ class OurModal extends Component {
             <Button onClick={this.onHide}>{t('close')}</Button>
           </Modal.Footer>
         </Modal>
-      </>
+      </React.Fragment>
     )
   }
 }

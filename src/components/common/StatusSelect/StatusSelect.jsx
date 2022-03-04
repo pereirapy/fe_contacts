@@ -53,7 +53,7 @@ class StatusSelect extends React.Component {
       t,
       label,
       rules,
-      placeHolderSelect
+      placeHolderSelect,
     } = this.props
     const { statusOptions, loading, error } = this.state
 

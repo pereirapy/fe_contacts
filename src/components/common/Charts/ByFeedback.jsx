@@ -5,7 +5,7 @@ import { PieChart } from 'react-minimal-pie-chart'
 import { get, isEmpty, getOr, compact } from 'lodash/fp'
 import { round } from 'lodash'
 import ReactPlaceholder from 'react-placeholder'
-import { isAtLeastElder } from '../../utils/loginDataManager'
+import useApplicationContext from '../../../hooks/useApplicationContext'
 
 const getByFeedback = (t, data) => {
   if (
@@ -57,22 +57,32 @@ const getByFeedback = (t, data) => {
 const ByFeedback = (props) => {
   const { t } = useTranslation(['dashboard', 'common'])
   const byFeedback = getByFeedback(t, get('data', props))
-  const offsetLG = isAtLeastElder() ? 2 : 3
+  const { isAtLeastElder } = useApplicationContext()
+
+  const offsetMD = isAtLeastElder ? 2 : 0
+  const spanLG = isAtLeastElder ? 3 : 4
+  const spanXL = isAtLeastElder ? 3 : 4
+
   return (
     <Col
       xs={{ span: 8, offset: 2 }}
-      lg={{ span: 2, offset: offsetLG }}
+      md={{ span: 4, offset: offsetMD }}
+      lg={{ span: spanLG, offset: 0 }}
+      xl={{ span: spanXL, offset: 0 }}
       className="mt-2"
     >
       <Card>
-        <Card.Header className="text-center" style={{ minHeight: '73px' }}>
+        <Card.Header
+          className="text-center titleCard"
+          style={{ minHeight: '87px' }}
+        >
           {t('titleChartWaitingFeedback')}
         </Card.Header>
-        <Card.Body>
+        <Card.Body style={{ textAlign: '-webkit-center' }}>
           <ReactPlaceholder
             showLoadingAnimation={true}
             type="round"
-            style={{ width: 230, height: 230 }}
+            className="size-react-placeholder"
             ready={!props.loading}
             rows={1}
           >

@@ -5,6 +5,7 @@ import { PieChart } from 'react-minimal-pie-chart'
 import { get, isEmpty, find, getOr, pipe, curry, filter } from 'lodash/fp'
 import { round } from 'lodash'
 import ReactPlaceholder from 'react-placeholder'
+import useApplicationContext from '../../../hooks/useApplicationContext'
 
 const getByType = (t, data) => {
   const parseObject = (label, color, data) => ({
@@ -28,31 +29,37 @@ const getByType = (t, data) => {
     curry(parseObject)('residential', '#3ED1F5')
   )(getOr({}, 'totalContactsByType', data))
 
-  return filter((typeCompany) => typeCompany.value > 0, [
-    objectTypeCompany,
-    objectTypeResidential,
-  ])
+  return filter(
+    (typeCompany) => typeCompany.value > 0,
+    [objectTypeCompany, objectTypeResidential]
+  )
 }
 
 const ByType = (props) => {
   const { t } = useTranslation(['dashboard', 'common', 'contacts'])
   const byType = getByType(t, get('data', props))
+  const { isAtLeastElder } = useApplicationContext()
+
+  const spanLG = isAtLeastElder ? 3 : 4
+  const spanXL = isAtLeastElder ? 3 : 4
 
   return (
     <Col
       xs={{ span: 8, offset: 2 }}
-      lg={{ span: 2, offset: 0 }}
+      md={{ span: 4, offset: 0 }}
+      lg={{ span: spanLG, offset: 0 }}
+      xl={{ span: spanXL, offset: 0 }}
       className="mt-2"
     >
       <Card>
-        <Card.Header className="text-center" style={{ minHeight: '73px' }}>
+        <Card.Header className="text-center" style={{ minHeight: '87px' }}>
           {t('titleChartType')}
         </Card.Header>
-        <Card.Body>
+        <Card.Body style={{ textAlign: '-webkit-center' }}>
           <ReactPlaceholder
             showLoadingAnimation={true}
             type="round"
-            style={{ width: 230, height: 230 }}
+            className="size-react-placeholder"
             ready={!props.loading}
             rows={1}
           >

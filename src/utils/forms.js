@@ -1,13 +1,26 @@
-import { getOr, omit, trim, isString } from 'lodash/fp'
+import {
+  getOr,
+  omit,
+  trim,
+  isString,
+  startsWith,
+  isEmpty,
+  pipe,
+} from 'lodash/fp'
+import GqlBuilder from 'graphql-query-builder-v2'
+import moment from 'moment'
+import { START_NUMBER_NOT_ALLOWED } from '../constants/contacts'
 
-export const unformatDate = (date) => {
-  const split = date.slice(0, 10).split('-')
-  return `${split[2]}/${split[1]}/${split[0]}`
-}
+export const formatDateDMY = (date) => moment(date).format('DD/MM/YYYY')
 
-export const formatDate = (date) => {
-  const split = date.split('/')
-  return `${split[2]}-${split[1]}-${split[0]}`
+export const formatDateDMYHHmm = (date) =>
+  date ? moment(date).format('DD/MM/YYYY HH:mm') : null
+
+export const diffDate = (date, truncate = true) => {
+  var today = new moment(new Date())
+  var momentDate = new moment(date)
+  const diff = moment.duration(today.diff(momentDate)).asDays()
+  return truncate ? Math.trunc(diff) : diff
 }
 
 export const getLocale = (props) => props.i18n.language
@@ -26,21 +39,41 @@ export const handleInputChangeGeneric = (event, componentReact) => {
   })
 }
 
+export const getQueryParamsFromURL = (props) => {
+  const { location } = props
+  if (!isEmpty(location.search))
+    return pipe(
+      (search) => new URLSearchParams(search),
+      (search) => search.get('search'),
+      JSON.parse
+    )(location.search)
+  else return false
+}
+
+export const setFiltersToURL = (queryParams, props) => {
+  const { history } = props
+
+  const search = '?search=' + JSON.stringify(queryParams)
+  history.push({ search })
+}
+
 export const parseQuery = (objQuery, state) => {
   return {
     ...getOr({}, 'queryParams', state),
+    currentPage: 1,
     ...omit(['filters'], objQuery),
     ...appendFilters(objQuery, state),
   }
 }
 
 export const appendFilters = (filters, state) => {
-  const newFilters = getOr({}, 'filters', filters)
+  const newPreFilters = {
+    ...JSON.parse(getOr('{}', 'queryParams.filters', state)),
+    ...getOr({}, 'filters', filters),
+  }
+
   return {
-    filters: JSON.stringify({
-      ...JSON.parse(getOr('{}', 'queryParams.filters', state)),
-      ...newFilters,
-    }),
+    filters: JSON.stringify(newPreFilters),
   }
 }
 
@@ -58,3 +91,39 @@ export const toQueryString = (paramsObject) =>
         `${encodeURIComponent(key)}=${encodeURIComponent(paramsObject[key])}`
     )
     .join('&')
+
+export const buildGql = (type, { name, find, filter, variables = null }) => {
+  const query = new GqlBuilder(name, variables)
+
+  if (filter) {
+    query.filter(filter)
+  }
+
+  if (find) {
+    query.find(find)
+  }
+
+  return type === 'mutation'
+    ? `
+        ${type} {${query.toString()}}
+      `.trim()
+    : `
+      ?${type}={${query.toString()}}
+    `.trim()
+}
+
+export const numberStartsWithInvalidCharacter = (componentReact) => ({
+  message: componentReact.props?.t('numberStartsWithInvalidCharacter', {
+    character: START_NUMBER_NOT_ALLOWED,
+  }),
+  rule: (val) => !startsWith(START_NUMBER_NOT_ALLOWED, val),
+  required: true,
+})
+
+export const mustBeEqualFieldPassword = (componentReact) => ({
+  message: componentReact.props?.t('mustBeEqualFieldPassword'),
+  rule: (val) =>
+    val === componentReact.state.form.password ||
+    isEmpty(componentReact.state.form.password),
+  required: true,
+})

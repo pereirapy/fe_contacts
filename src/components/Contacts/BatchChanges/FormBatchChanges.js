@@ -18,7 +18,7 @@ const FormBatchChanges = (props) => {
     handleInputChange,
     validated,
     validator,
-    phones
+    phones,
   } = props
   return (
     <ReactPlaceholder
@@ -28,15 +28,19 @@ const FormBatchChanges = (props) => {
       rows={12}
     >
       <Form>
-      <Row className="mb-2">
-        <Col lg={12} xs={12} scroll="true">
-          <h6>{t('phonesSelected')}</h6>
-          <div style={{ overflowY: 'auto', maxHeight: '150px' }}>{phones}</div>
-        </Col>
-      </Row>
-      <Row className="mb-2" style={{borderBottom: '1px solid #dee2e6'}}><hr /></Row>
         <Row className="mb-2">
-        <Col xs={3} lg={2}>
+          <Col lg={12} xs={12} scroll="true">
+            <h6>{t('phonesSelected')}</h6>
+            <div style={{ overflowY: 'auto', maxHeight: '150px' }}>
+              {phones}
+            </div>
+          </Col>
+        </Row>
+        <Row className="mb-2" style={{ borderBottom: '1px solid #dee2e6' }}>
+          <hr />
+        </Row>
+        <Row className="mb-2">
+          <Col xs={3} lg={2}>
             <Form.Group controlId="typeCompanySame">
               <Form.Check
                 type="radio"
@@ -81,7 +85,7 @@ const FormBatchChanges = (props) => {
               validated={validated}
               value={form.idLanguage}
               onChange={handleInputChange}
-              placeHolderSelect='same'
+              placeHolderSelect="same"
             />
           </Col>
           <Col xs={12} lg={6}>
@@ -93,7 +97,7 @@ const FormBatchChanges = (props) => {
               value={form.idPublisher}
               options={publishersOptions}
               onChange={handleInputChange}
-              placeHolderSelect='same'
+              placeHolderSelect="same"
               rules="required"
             />
           </Col>
@@ -117,7 +121,7 @@ const FormBatchChanges = (props) => {
               validated={validated}
               value={form.idStatus}
               onChange={handleInputChange}
-              placeHolderSelect='same'
+              placeHolderSelect="same"
               rules="required"
             />
           </Col>

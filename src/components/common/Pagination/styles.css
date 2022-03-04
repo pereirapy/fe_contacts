@@ -1,0 +1,5 @@
+.pagination {
+  display: inline-flex !important;
+  position: relative;
+  left: -4px;
+}

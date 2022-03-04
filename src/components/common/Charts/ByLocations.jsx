@@ -1,13 +1,19 @@
-import React from 'react'
-import { Col, Card, Row, ListGroup } from 'react-bootstrap'
+import React, { useState } from 'react'
+import { Col, Card, Row, ListGroup, Button } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { PieChart } from 'react-minimal-pie-chart'
-import { get, isEmpty, getOr, map, isNil } from 'lodash/fp'
+import { get, isEmpty, getOr, map, isNil, pipe, orderBy } from 'lodash/fp'
 import { round } from 'lodash'
-import { randomColor } from '../../utils/generic'
+import { randomColor } from '../../../utils/generic'
 import ReactPlaceholder from 'react-placeholder'
+import useApplicationContext from '../../../hooks/useApplicationContext'
 
 const getByLocations = (t, data) =>
+  pipe(orderBy(['percent'], 'desc'), (data) => parseLocationsData(t, data))(
+    getOr([], 'totalContactsByLocationContacted', data)
+  )
+
+const parseLocationsData = (t, data) =>
   map(
     (dataLocation) => ({
       title: `${round(getOr(0, 'percent', dataLocation), 2)}% (${getOr(
@@ -17,7 +23,9 @@ const getByLocations = (t, data) =>
       )}) ${
         isNil(get('locationName', dataLocation))
           ? t('unknown')
-          : getOr(t('noName'), 'locationName', dataLocation) + ' - ' + getOr(t('noName'), 'departmentName', dataLocation)
+          : getOr(t('noName'), 'locationName', dataLocation) +
+            ' - ' +
+            getOr(t('noName'), 'departmentName', dataLocation)
       } `,
       value: getOr(0, 'percent', dataLocation),
       label: isNil(get('locationName', dataLocation))
@@ -25,33 +33,47 @@ const getByLocations = (t, data) =>
         : get('locationName', dataLocation),
       color: randomColor(),
     }),
-    getOr([], 'totalContactsByLocationContacted', data)
+    data
   )
 
 const ByLocations = (props) => {
   const { t } = useTranslation(['dashboard', 'common'])
   const byLocations = getByLocations(t, get('data', props))
+  const [detailsByLocations, toggleDetailsByPLocations] = useState(false)
+  const { isAtLeastElder } = useApplicationContext()
+
+  const spanLG = isAtLeastElder ? 3 : 4
+  const spanXL = isAtLeastElder ? 3 : 4
+  const offsetMD = isAtLeastElder ? 2 : 0
 
   return (
     <Col
       xs={{ span: 8, offset: 2 }}
-      lg={{ span: 2, offset: 0 }}
+      md={{ span: 4, offset: offsetMD }}
+      lg={{ span: spanLG, offset: 0 }}
+      xl={{ span: spanXL, offset: 0 }}
       className="mt-2"
     >
       <Card>
-        <Card.Header className="text-center" style={{ minHeight: '73px' }}>
-          {t('titleChartByLocationsContacted')}
+        <Card.Header className="text-center" style={{ minHeight: '87px' }}>
+          <Button
+            variant="link"
+            title={t('moreInformation')}
+            onClick={() => toggleDetailsByPLocations((prevState) => !prevState)}
+          >
+            {t('titleChartByLocationsContacted')}
+          </Button>
         </Card.Header>
-        <Card.Body>
+        <Card.Body style={{ textAlign: '-webkit-center' }}>
           <ReactPlaceholder
             showLoadingAnimation={true}
             type="round"
-            style={{ width: 230, height: 230 }}
+            className="size-react-placeholder"
             ready={!props.loading}
             rows={1}
           >
             {!isEmpty(byLocations) ? (
-              <>
+              <React.Fragment>
                 <Row>
                   <Col>
                     <PieChart
@@ -61,7 +83,10 @@ const ByLocations = (props) => {
                     />
                   </Col>
                 </Row>
-                <Row className="mt-2">
+                <Row
+                  className="mt-2"
+                  style={{ display: detailsByLocations ? 'block' : 'none' }}
+                >
                   <Col>
                     <ListGroup>
                       {map(
@@ -80,7 +105,7 @@ const ByLocations = (props) => {
                     </ListGroup>
                   </Col>
                 </Row>
-              </>
+              </React.Fragment>
             ) : (
               <Card.Text className="text-center">
                 {t('common:noData')}

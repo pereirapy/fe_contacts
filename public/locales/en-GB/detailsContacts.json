@@ -3,6 +3,7 @@
   "titleCrud": "Detail of Contact",
   "publisher": "Publisher",
   "date": "Date",
+  "dateAndReponsible": "Date & Responsible",
   "information": "Information",
   "informationLabel": "Informations",
   "informationPlaceHolder": "Write here infornations about the conversation that the public has with this contact",
@@ -10,5 +11,7 @@
   "phone": "Phone",
   "notificationNotAllowedNewDetails": "Before create a new conversation, please, write the feedback of last contact",
   "[WAITING_FEEDBACK]": "Waiting for feedback",
-  "ERROR_PUBLISHER_ALREADY_WAITING_FEEDBACK": "This contact is already waiting a feedback. Please, take a note of this feedback before assign to other publisher"
+  "ERROR_PUBLISHER_ALREADY_WAITING_FEEDBACK": "This contact is already waiting a feedback. Please, take a note of this feedback before assign to other publisher",
+  "details": "Details",
+  "campaignName": "Contacted during the campaign {{campaignName}}"
 }

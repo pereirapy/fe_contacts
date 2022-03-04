@@ -6,5 +6,8 @@
   "withoutDetails": "Sem detalhes",
   "labelPublisher": "Publicador",
   "ERROR_PUBLISHER_ALREADY_WAITING_FEEDBACK": "O número {{phone}} já está aguardando uma resposta. Favor anotar essa resposta antes de designar para outro publicador",
-  "noPhone": "Este publicador não tem um numero de celular"
+  "noPhone": "Este publicador não tem um numero de celular",
+  "warningPhonesWaitingFeedback": "Os {{total}} números abaixo estão aguardando resposta de algum publicador. Você poderá enviar esses números para alguém, PORÉM eles continuarão designados para o publicador original!",
+  "warningPhoneWaitingFeedback": "O número abaixo está aguardando resposta de algum publicador. Você poderá envia-lo para alguém, PORÉM ele continuará designado para o publicador original!"
+
 }

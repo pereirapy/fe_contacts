@@ -8,6 +8,5 @@
   "bibleStudy": "Bible Study",
   "returnVisit": "Return Visit",
   "noVisit": "No Visit",
-  "sentToOtherCongregation": "Sent to other congregation",
-  "status_description_unique": "This status already exists"
+  "sentToOtherCongregation": "Forwarded"
 }

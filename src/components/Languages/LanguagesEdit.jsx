@@ -5,14 +5,15 @@ import { get, omit } from 'lodash/fp'
 import SimpleReactValidator from 'simple-react-validator'
 import { getLocale, handleInputChangeGeneric } from '../../utils/forms'
 import OurModal from '../common/OurModal/OurModal'
-import { faEdit } from '@fortawesome/free-solid-svg-icons'
+import ElementError from '../common/ElementError/ElementError'
+import { faEdit, faLanguage } from '@fortawesome/free-solid-svg-icons'
 import LanguagesForm from './LanguagesForm.jsx'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { showError, showSuccessful } from '../../utils/generic'
 
 const fields = {
   name: '',
-  color: ''
+  color: '',
 }
 
 class StatusEdit extends React.Component {
@@ -28,11 +29,11 @@ class StatusEdit extends React.Component {
     this.validator = new SimpleReactValidator({
       autoForceUpdate: this,
       locale: getLocale(this.props),
-      element: (message) => <div className="text-danger">{message}</div>,
+      element: (message) => <ElementError message={message} />,
     })
     this.resetForm = this.resetForm.bind(this)
     this.handleChangeColor = this.handleChangeColor.bind(this)
-    this.onEnter= this.onEnter.bind(this)
+    this.onEnter = this.onEnter.bind(this)
   }
 
   handleInputChange(event) {
@@ -81,10 +82,16 @@ class StatusEdit extends React.Component {
     this.setState({ form: data })
   }
 
-
   render() {
     const { form, validated } = this.state
     const { t, afterClose } = this.props
+    const title = (
+      <React.Fragment>
+        {' '}
+        <FontAwesomeIcon icon={faLanguage} />{' '}
+        {`${t('common:edit')} ${t('titleModal')}`}{' '}
+      </React.Fragment>
+    )
 
     return (
       <OurModal
@@ -98,8 +105,9 @@ class StatusEdit extends React.Component {
         onExit={afterClose}
         onEnter={this.onEnter}
         onClose={this.resetForm}
-        title={`${t('common:edit')} ${t('titleModal')}`}
+        title={title}
         buttonText={<FontAwesomeIcon icon={faEdit} />}
+        buttonVariant="success"
       />
     )
   }

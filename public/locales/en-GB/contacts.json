@@ -1,5 +1,6 @@
 {
   "title": "Contacts",
+  "listAllTitle": "List of all contacts",
   "listTitle": "List of contacts without pending issues",
   "titleWaitingFeedback": "List of contacts waiting feedback",
   "titleCrud": "Contact",
@@ -32,7 +33,13 @@
   "99999999999": "No contact",
   "createdAt":"Generate at",
   "titleExportToCVS": "Export selected contacts to Excel",
+  "titleExportToCVSWaitingFeedback": "Export selected contacts to Excel - Waiting Feedback",
   "lastSpokeToPublisherName": "Last spoke to",
-  "ERROR_CONTACT_PHONE_ALREADY_EXISTS": "This contact phone already exists in the contact {{name}} {{phone}}"
+  "ERROR_CONTACT_PHONE_ALREADY_EXISTS": "This contact phone already exists in the contact {{name}} {{phone}}",
+  "[WAITING_FEEDBACK]": "Waiting for feedback",
+  "deleteRecordWaitingFeedback": "Are you sure that you wants remove this number from list of waiting feedback?",
+  "diffDate": "{{days}} days",
+  "toolTipWaitingFeedback": "This contact is already with this publisher more than is allow. Please, communicate with this publisher to get the feedback",
+  "numberStartsWithInvalidCharacter": "This number starts with the invalid character {{character}}"
 
 }

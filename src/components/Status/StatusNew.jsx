@@ -4,7 +4,8 @@ import { status } from '../../services'
 import SimpleReactValidator from 'simple-react-validator'
 import { getLocale, handleInputChangeGeneric } from '../../utils/forms'
 import OurModal from '../common/OurModal/OurModal'
-import { faPlusSquare } from '@fortawesome/free-solid-svg-icons'
+import ElementError from '../common/ElementError/ElementError'
+import { faPlusSquare, faTags } from '@fortawesome/free-solid-svg-icons'
 import StatusForm from './StatusForm.jsx'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { showError, showSuccessful } from '../../utils/generic'
@@ -28,7 +29,7 @@ class StatusNew extends React.Component {
     this.validator = new SimpleReactValidator({
       autoForceUpdate: this,
       locale: getLocale(this.props),
-      element: (message) => <div className="text-danger">{message}</div>,
+      element: (message) => <ElementError message={message} />,
     })
   }
 
@@ -68,6 +69,12 @@ class StatusNew extends React.Component {
   render() {
     const { form, validated, submitting } = this.state
     const { t, afterClose } = this.props
+    const title = (
+      <React.Fragment>
+        {' '}
+        <FontAwesomeIcon icon={faTags} /> {`${t('common:new')} ${t('title')}`}{' '}
+      </React.Fragment>
+    )
 
     return (
       <OurModal
@@ -80,7 +87,7 @@ class StatusNew extends React.Component {
         form={form}
         onExit={afterClose}
         onClose={this.resetForm}
-        title={`${t('common:new')} ${t('title')}`}
+        title={title}
         buttonText={<FontAwesomeIcon icon={faPlusSquare} />}
       />
     )

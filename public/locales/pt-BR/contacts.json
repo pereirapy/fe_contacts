@@ -1,5 +1,6 @@
 {
   "title": "Contatos",
+  "listAllTitle": "Lista de todos contatos",
   "listTitle": "Lista de contatos sem pendências",
   "titleWaitingFeedback": "Lista de contatos que aguardam resposta",
   "titleCrud": "Contato",
@@ -32,8 +33,17 @@
   "99999999999": "Sem conversa",
   "createdAt":"Gerado em",
   "titleExportToCVS": "Exportar contatos selecionados ao Excel",
+  "titleExportToCVSWaitingFeedback": "Exportar contatos selecionados ao Excel - Aguardam resposta",
   "lastSpokeToPublisherName": "Falou por último com",
-  "ERROR_CONTACT_PHONE_ALREADY_EXISTS": "Este telefone de contato já existe no contato {{name}} {{phone}}"
+  "ERROR_CONTACT_PHONE_ALREADY_EXISTS": "Este telefone de contato já existe no contato {{name}} {{phone}}",
+  "[WAITING_FEEDBACK]": "Aguardando resposta",
+  "deleteRecordWaitingFeedback": "Tem certeza que deseja remover este número da lista de aguardando resposta?",
+  "diffDate": "{{days}} dias",
+  "toolTipWaitingFeedback": "Este contato já está com esse publicador mais do que o permitido. Favor se comunicar com o publicador para colher as informações.",
+  "numberStartsWithInvalidCharacter": "Este número começa com o caracter inválido {{character}}"
+
+
+
 
 
 

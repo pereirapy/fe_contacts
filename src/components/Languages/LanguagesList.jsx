@@ -10,6 +10,8 @@ import LanguagesNew from './LanguagesNew'
 import LanguagesEdit from './LanguagesEdit'
 import NoRecords from '../common/NoRecords/NoRecords'
 import { parseErrorMessage } from '../../utils/generic'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faLanguage } from '@fortawesome/free-solid-svg-icons'
 
 class LanguagesList extends React.Component {
   constructor(props) {
@@ -62,8 +64,15 @@ class LanguagesList extends React.Component {
   render() {
     const { t } = this.props
     const { data } = this.state
+    const title = (
+      <React.Fragment>
+        {' '}
+        <FontAwesomeIcon icon={faLanguage} /> {t('titleCrud')}{' '}
+      </React.Fragment>
+    )
+
     return (
-      <ContainerCRUD title={t('titleCrud')} {...this.props}>
+      <ContainerCRUD color="teal" title={title} {...this.props}>
         <Table striped bordered hover responsive>
           <thead>
             <tr>
@@ -82,7 +91,9 @@ class LanguagesList extends React.Component {
                   <tr key={language.id}>
                     <td>{language.name}</td>
                     <td>{t(language.name)}</td>
-                    <td style={{ backgroundColor:`${language.color}` }}>{t('colorLabel')}</td>
+                    <td style={{ backgroundColor: `${language.color}` }}>
+                      {t('colorLabel')}
+                    </td>
                     <td>
                       <LanguagesEdit
                         data={language}

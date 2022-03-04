@@ -33,11 +33,10 @@ const getByGender = (t, data) => {
     curry(parseObject)('male', '#007bff')
   )(getOr({}, 'totalContactsByGenderContacted', data))
 
-  return filter((gender) => gender.value > 0, [
-    objectGenderUndefined,
-    objectGenderMale,
-    objectGenderFemale,
-  ])
+  return filter(
+    (gender) => gender.value > 0,
+    [objectGenderUndefined, objectGenderMale, objectGenderFemale]
+  )
 }
 
 const ByGender = (props) => {
@@ -47,18 +46,20 @@ const ByGender = (props) => {
   return (
     <Col
       xs={{ span: 8, offset: 2 }}
-      lg={{ span: 2, offset: 0 }}
+      md={{ span: 4, offset: 0 }}
+      lg={{ span: 4, offset: 0 }}
+      xl={{ span: 4, offset: 0 }}
       className="mt-2"
     >
       <Card>
-        <Card.Header className="text-center" style={{ minHeight: '73px' }}>
+        <Card.Header className="text-center" style={{ minHeight: '87px' }}>
           {t('titleChartGender')}
         </Card.Header>
-        <Card.Body>
+        <Card.Body style={{ textAlign: '-webkit-center' }}>
           <ReactPlaceholder
             showLoadingAnimation={true}
             type="round"
-            style={{ width: 230, height: 230 }}
+            className="size-react-placeholder"
             ready={!props.loading}
             rows={1}
           >

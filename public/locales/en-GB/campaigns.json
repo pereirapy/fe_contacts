@@ -1,0 +1,17 @@
+{
+  "title": "Campaign",
+  "titleList": "List of Campaigns",
+  "new": "New",
+  "name": "Name",
+  "dateStart": "Start Date",
+  "dateStartPlaceHolder": "Choose a start date",
+  "dateFinalPlaceHolder": "Choose a final date",
+  "dateFinal": "Final Date",
+  "listTitle": "Contacts of campaign {{campaign}}",
+  "ERROR_CAMPAIGN_SAME_INTERVAL_DATE": "The campaign {{campaign}} has the same interval",
+  "listAllTitle": "List all contacts of campaign {{campaign}}",
+  "detailscontacts_idcampaign_foreign": "This campaign has relationship with some contact",
+  "seeCampaignDetails": "To see the numbers that was contacted during the campaign",
+  "chartsTitle": "Campaign progress charts",
+  "seeCampaignCharts": "To see the charts of this campaign"
+}

@@ -8,7 +8,7 @@
 // resources are updated in the background.
 
 // To learn more about the benefits of this model and instructions on how to
-// opt-in, read https://bit.ly/CRA-PWA
+// opt-in, read https://cra.link/PWA
 
 const isLocalhost = Boolean(
   window.location.hostname === 'localhost' ||
@@ -43,7 +43,7 @@ export function register(config) {
         navigator.serviceWorker.ready.then(() => {
           console.log(
             'This web app is being served cache-first by a service ' +
-              'worker. To learn more, visit https://bit.ly/CRA-PWA'
+              'worker. To learn more, visit https://cra.link/PWA'
           )
         })
       } else {
@@ -51,8 +51,6 @@ export function register(config) {
         registerValidSW(swUrl, config)
       }
     })
-
-    start()
   }
 }
 
@@ -73,7 +71,7 @@ function registerValidSW(swUrl, config) {
               // content until all client tabs are closed.
               console.log(
                 'New content is available and will be used when all ' +
-                  'tabs for this page are closed. See https://bit.ly/CRA-PWA.'
+                  'tabs for this page are closed. See https://cra.link/PWA.'
               )
 
               // Execute callback
@@ -141,56 +139,3 @@ export function unregister() {
       })
   }
 }
-
-function start() {
-  installSW()
-  fetchSW()
-}
-
-function installSW() {
-  var CACHE_NAME = 'contacts-sw-v1'
-  var urlsToCache = ['/', '/static/css/', '/static/js/']
-
-  window.addEventListener('install', function (event) {
-    // Perform install steps
-    event.waitUntil(
-      caches.open(CACHE_NAME).then(function (cache) {
-        return cache.addAll(urlsToCache)
-      })
-    )
-  })
-}
-
-function fetchSW() {
-  window.addEventListener('fetch', function (event) {
-    event.respondWith(
-      caches.match(event.request).then(function (response) {
-        // Cache hit - return response
-        if (response) {
-          return response
-        }
-        return fetch(event.request, {
-          credentials: 'include',
-        })
-      })
-    )
-  })
-}
-
-// export function updateSW() {
-//   window.addEventListener("activate", function (event) {
-//     var cacheAllowlist = ["pages-cache-v1", "blog-posts-cache-v1"];
-
-//     event.waitUntil(
-//       caches.keys().then(function (cacheNames) {
-//         return Promise.all(
-//           cacheNames.map(function (cacheName) {
-//             if (cacheAllowlist.indexOf(cacheName) === -1) {
-//               return caches.delete(cacheName);
-//             }
-//           })
-//         );
-//       })
-//     );
-//   });
-// }

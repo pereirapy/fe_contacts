@@ -1,9 +1,45 @@
-.page-header {
-  background-color: #15b6c3;
-}
-
 .page-header h1 {
-  color: white;
+  color: #f1f1f1;
   font: 700 2rem Archivo;
   padding: 1rem 0;
+}
+
+.bg-blue {
+  background-color: #007bff;
+}
+.bg-indigo {
+  background-color: #6610f2;
+}
+.bg-purple {
+  background-color: #6f42c1;
+}
+.bg-pink {
+  background-color: #e83e8c;
+}
+.bg-red {
+  background-color: #dc3545;
+}
+.bg-orange {
+  background-color: #fd7e14;
+}
+.bg-yellow {
+  background-color: #ffc107;
+}
+.bg-green {
+  background-color: #28a745;
+}
+.bg-teal {
+  background-color: #20c997;
+}
+.bg-cyan {
+  background-color: #17a2b8;
+}
+.bg-white {
+  background-color: #fff;
+}
+.bg-gray {
+  background-color: #6c757d;
+}
+.bg-gray-dark {
+  background-color: #343a40;
 }

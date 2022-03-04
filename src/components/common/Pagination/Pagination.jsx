@@ -4,6 +4,7 @@ import { toNumber, isNil } from 'lodash/fp'
 import { withTranslation } from 'react-i18next'
 import { ITEMS_PAGINATION } from '../../../constants/application'
 import ReactPlaceholder from 'react-placeholder'
+import './styles.css'
 
 const PaginationComponent = (props) => {
   const { lastPage, to, from, currentPage, totalRows } = props.pagination
@@ -74,7 +75,7 @@ const PaginationComponent = (props) => {
               : null
           }
         />
-        <Pagination>{items}</Pagination>
+        {items}
         <Pagination.Next
           onClick={() =>
             currentPage !== to && to <= lastPage
@@ -89,11 +90,11 @@ const PaginationComponent = (props) => {
               : null
           }
         />
-        <span className="ml-2 mt-2 text-primary">
-          {' '}
-          - {t('total')}: {totalRows || 0}
-        </span>
       </Pagination>
+      <span className="ml-2 mt-2 text-primary d-none d-sm-inline">
+        {' '}
+        - {t('total')}: {totalRows || 0}
+      </span>
     </ReactPlaceholder>
   )
 }
