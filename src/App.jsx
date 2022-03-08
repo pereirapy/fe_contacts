@@ -8,16 +8,18 @@ import { campaigns } from './services/'
 const App = () => {
   const [context, setContext] = useState(buildContextData())
   const initContext = { ...context, updateContext: setContext }
+  const { hasToken } = context
 
   useEffect(() => {
     async function fetchCampaignActive() {
-      const response = await campaigns.getDetailsActive()
-      const campaignActive = response.data.data || null
-      setContext((previous) => ({ ...previous, campaignActive }))
+      const responseActive = await campaigns.getDetailsActive()
+      const campaignActive = responseActive.data.data || null
+      const responseNext = await campaigns.getDetailsNext()
+      const campaignNext = responseNext.data.data || null
+      setContext((previous) => ({ ...previous, campaignActive, campaignNext }))
     }
-
-    fetchCampaignActive()
-  }, [])
+    if (hasToken) fetchCampaignActive()
+  }, [hasToken])
 
   return (
     <Suspense fallback={<Loading />}>

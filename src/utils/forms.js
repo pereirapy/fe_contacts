@@ -17,11 +17,15 @@ export const formatDateDMYHHmm = (date) =>
   date ? moment(date).format('DD/MM/YYYY HH:mm') : null
 
 export const diffDate = (date, truncate = true) => {
-  var today = new moment(new Date())
-  var momentDate = new moment(date)
-  const diff = moment.duration(today.diff(momentDate)).asDays()
+  var now = moment(new Date()) 
+  var end = moment(date) 
+  var duration = moment.duration(now.diff(end))
+  var diff = duration.asDays()
+
   return truncate ? Math.trunc(diff) : diff
 }
+
+
 
 export const getLocale = (props) => props.i18n.language
 

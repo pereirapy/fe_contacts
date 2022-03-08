@@ -18,23 +18,69 @@ import ChartByLocations from './ByLocations'
 import ChartByType from './ByType'
 import './charts.styles.css'
 
+const calculateHowManyDays = (date) => {
+  const diffInDays = diffDate(date, false)
+  const diffInDaysPositive = Math.abs(diffInDays)
+
+  if (diffInDays > 0) return 0
+  else
+    return diffInDaysPositive % 1 === 0
+      ? diffInDaysPositive
+      : Math.round(diffInDaysPositive) + 1
+}
+
+function CardHeaderCampaignActiveNext({
+  name,
+  date,
+  color,
+  translationKey,
+  t,
+}) {
+  return (
+    <Card.Header as="h5" className={`text-center bg-${color} text-white`}>
+      {t(translationKey, {
+        name: name,
+        count: calculateHowManyDays(date),
+      })}
+    </Card.Header>
+  )
+}
+
+function CardHeaderCampaign({ campaign, campaignNext, t }) {
+  return campaign ? (
+    <CardHeaderCampaignActiveNext
+      name={campaign.name}
+      date={campaign.dateFinal}
+      color="success"
+      translationKey="daysToFinishActiveCampaign"
+      t={t}
+    />
+  ) : (
+    <CardHeaderCampaignActiveNext
+      name={campaignNext.name}
+      date={campaignNext.dateStart}
+      color="warning"
+      translationKey="daysToStartNextCampaign"
+      t={t}
+    />
+  )
+}
+
 function RenderChartsWithCampaign({
   data,
   loading,
   isAtLeastElder,
   campaign,
+  campaignNext,
   t,
 }) {
   return (
     <Card>
-      <Card.Header as="h5" className="text-center bg-success text-white">
-        {campaign.name} -{' '}
-        <span>
-          {t('daysToFinishActiveCampaign', {
-            days: diffDate(campaign.dateFinal),
-          })}
-        </span>
-      </Card.Header>
+      <CardHeaderCampaign
+        campaign={campaign}
+        campaignNext={campaignNext}
+        t={t}
+      />
       <Card.Body>
         <RenderOnlyCharts
           data={data}
@@ -64,13 +110,21 @@ function RenderOnlyCharts({ data, loading, isAtLeastElder }) {
   )
 }
 
-function RenderCharts({ data, loading, isAtLeastElder, campaign, t }) {
-  return campaign ? (
+function RenderCharts({
+  data,
+  loading,
+  isAtLeastElder,
+  campaign,
+  t,
+  campaignNext,
+}) {
+  return campaign || campaignNext ? (
     <RenderChartsWithCampaign
       data={data}
       loading={loading}
       isAtLeastElder={isAtLeastElder}
       campaign={campaign}
+      campaignNext={campaignNext}
       t={t}
     />
   ) : (
@@ -96,7 +150,9 @@ class Charts extends React.Component {
   async handleGetSummary() {
     this.setState({ loading: true })
     const { campaign } = this.props
-    const getData = campaign?.id ? contacts.getSummaryOneCampaign : contacts.getSummary
+    const getData = campaign?.id
+      ? contacts.getSummaryOneCampaign
+      : contacts.getSummary
 
     try {
       const response = await getData(campaign?.id)
@@ -126,7 +182,7 @@ class Charts extends React.Component {
 
   render() {
     const { data, loading, error } = this.state
-    const { isAtLeastElder } = this.context
+    const { isAtLeastElder, campaignNext } = this.context
     const { t, campaign } = this.props
     return (
       <Container>
@@ -142,6 +198,7 @@ class Charts extends React.Component {
             loading={loading}
             isAtLeastElder={isAtLeastElder}
             campaign={campaign}
+            campaignNext={campaignNext}
             t={t}
           />
         )}

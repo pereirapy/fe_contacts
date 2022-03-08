@@ -3,6 +3,7 @@ import { toQueryString } from '../../utils/forms'
 
 const getAll = () => api.get('/campaigns')
 const getDetailsActive = () => api.get('/campaigns/active/details')
+const getDetailsNext = () => api.get('/campaigns/next')
 const getOne = (id) => api.get(`/campaigns/${id}`)
 const getAllContactsOne = (id, params) =>
   api.get(`/campaigns/${id}/all${toQueryString(params)}`)
@@ -18,6 +19,7 @@ const allExport = {
   getAll,
   getAllContactsOne,
   getDetailsActive,
+  getDetailsNext,
   getAllContactsOneFilters,
   getOne,
   dellOne,

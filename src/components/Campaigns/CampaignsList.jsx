@@ -42,9 +42,11 @@ class CampaignsList extends React.Component {
 
   async updateCampaignActive() {
     const { updateContext } = this.context
-    const response = await campaigns.getDetailsActive()
-    const campaignActive = response.data.data || null
-    updateContext((previous) => ({ ...previous, campaignActive }))
+    const responseActive = await campaigns.getDetailsActive()
+    const campaignActive = responseActive.data.data || null
+    const responseNext = await campaigns.getDetailsNext()
+    const campaignNext = responseNext.data.data || null
+  updateContext((previous) => ({ ...previous, campaignActive, campaignNext }))
   }
 
   async handleDelete(id) {
