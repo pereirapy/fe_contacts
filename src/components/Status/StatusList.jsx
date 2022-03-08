@@ -1,17 +1,19 @@
 import React from 'react'
 import { Table, Container } from 'react-bootstrap'
-import ContainerCRUD from '../../components/common/ContainerCRUD/ContainerCRUD'
 import { withTranslation } from 'react-i18next'
-import { status } from '../../services'
-import { map, isEmpty } from 'lodash/fp'
-import AskDelete from '../common/AskDelete/AskDelete'
-import StatusEdit from './StatusEdit'
-import StatusNew from './StatusNew'
-import NoRecords from '../common/NoRecords/NoRecords'
-import { showError } from '../../utils/generic'
-import ReactPlaceholder from 'react-placeholder'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTags } from '@fortawesome/free-solid-svg-icons'
+import ReactPlaceholder from 'react-placeholder'
+import { map, isEmpty } from 'lodash/fp'
+
+import { status } from '../../services'
+import { showError } from '../../utils/generic'
+import NoRecords from '../common/NoRecords/NoRecords'
+
+import StatusEdit from './StatusEdit'
+import StatusNew from './StatusNew'
+import AskDelete from '../common/AskDelete/AskDelete'
+import ContainerCRUD from '../../components/common/ContainerCRUD/ContainerCRUD'
 
 class StatusList extends React.Component {
   constructor(props) {
@@ -49,19 +51,31 @@ class StatusList extends React.Component {
     this.handleGetAll()
   }
 
+  getTitle(onlyText) {
+    const { t } = this.props
+    const title = t('titleList')
+
+    return onlyText ? (
+      title
+    ) : (
+      <React.Fragment>
+        <FontAwesomeIcon icon={faTags} /> {title}
+      </React.Fragment>
+    )
+  }
+
   render() {
     const { t } = this.props
     const { data, loading } = this.state
     const colSpan = 3
-    const title = (
-      <React.Fragment>
-        {' '}
-        <FontAwesomeIcon icon={faTags} /> {t('titleList')}{' '}
-      </React.Fragment>
-    )
 
     return (
-      <ContainerCRUD color="purple" title={title} {...this.props}>
+      <ContainerCRUD
+        color="purple"
+        title={this.getTitle()}
+        titleOnlyText={this.getTitle(true)}
+        {...this.props}
+      >
         <Container>
           <Table striped bordered hover responsive>
             <thead>

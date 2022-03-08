@@ -3,11 +3,11 @@ import { get } from 'lodash/fp'
 import { withTranslation } from 'react-i18next'
 import { Row, Col, Container, Card } from 'react-bootstrap'
 
-import { contacts } from '../../../services'
+import { ApplicationContext } from '../../../contexts/application'
 import { showError, parseErrorMessage } from '../../../utils/generic'
 import { diffDate } from '../../../utils/forms'
-import ShowErrorComponent from '../ShowError/ShowError'
-import { ApplicationContext } from '../../../contexts/application'
+import { contacts } from '../../../services'
+import './charts.styles.css'
 
 import ChartByContacted from './ByContacted'
 import ChartByFeedback from './ByFeedback'
@@ -16,7 +16,7 @@ import ChartByLanguage from './ByLanguage'
 import ChartByPublishers from './ByPublishers'
 import ChartByLocations from './ByLocations'
 import ChartByType from './ByType'
-import './charts.styles.css'
+import ShowErrorComponent from '../ShowError/ShowError'
 
 const calculateHowManyDays = (date) => {
   const diffInDays = diffDate(date, false)

@@ -1,8 +1,11 @@
 import React from 'react'
 import { Table, Row, Col } from 'react-bootstrap'
-import ContainerCRUD from '../../components/common/ContainerCRUD/ContainerCRUD'
 import { withTranslation } from 'react-i18next'
-import { details } from '../../services'
+import { CSVLink } from 'react-csv'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faFileExcel, faHourglass } from '@fortawesome/free-solid-svg-icons'
+import { Checkbox } from 'pretty-checkbox-react'
+import ReactPlaceholder from 'react-placeholder'
 import {
   map,
   getOr,
@@ -15,10 +18,6 @@ import {
   find,
   isEqual,
 } from 'lodash/fp'
-import AskDelete from '../common/AskDelete/AskDelete'
-import NoRecords from '../common/NoRecords/NoRecords'
-import Pagination from '../common/Pagination/Pagination'
-import Search from '../common/Search/Search'
 import {
   parseQuery,
   formatDateDMY,
@@ -30,19 +29,22 @@ import {
   RECORDS_PER_PAGE,
   MAX_DAYS_ALLOWED_WITH_NUMBERS,
 } from '../../constants/application'
-import FilterData from '../common/FilterData/FilterData'
-import EditDetailsContact from '../DetailsContact/Modal/EditDetailsContact'
-import SendPhones from './SendPhones/SendPhones'
-import AssignNewPublisher from './AssignNewPublisher/AssignNewPublisher'
-import { showError } from '../../utils/generic'
-import ReactPlaceholder from 'react-placeholder'
-import { CSVLink } from 'react-csv'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faFileExcel, faHourglass } from '@fortawesome/free-solid-svg-icons'
-import OurToolTip from '../common/OurToolTip/OurToolTip'
-import { Checkbox } from 'pretty-checkbox-react'
+
+import { details } from '../../services'
 import { ApplicationContext } from '../../contexts/application'
+import { showError } from '../../utils/generic'
 import './styles.css'
+
+import Search from '../common/Search/Search'
+import AskDelete from '../common/AskDelete/AskDelete'
+import NoRecords from '../common/NoRecords/NoRecords'
+import Pagination from '../common/Pagination/Pagination'
+import FilterData from '../common/FilterData/FilterData'
+import OurToolTip from '../common/OurToolTip/OurToolTip'
+import SendPhones from './SendPhones/SendPhones'
+import EditDetailsContact from '../DetailsContact/Modal/EditDetailsContact'
+import AssignNewPublisher from './AssignNewPublisher/AssignNewPublisher'
+import ContainerCRUD from '../../components/common/ContainerCRUD/ContainerCRUD'
 
 class ContactsWaitingFeedbackList extends React.Component {
   constructor(props) {
@@ -237,13 +239,16 @@ class ContactsWaitingFeedbackList extends React.Component {
       : 'link'
   }
 
-  getTitle() {
+  getTitle(onlyText) {
     const { t } = this.props
     const { campaignActive } = this.context
-    return (
+    const campaignName = campaignActive ? ` - ${campaignActive.name}` : ''
+    const title = `${t('titleWaitingFeedback')}${campaignName}`
+    return onlyText ? (
+      title
+    ) : (
       <React.Fragment>
-        <FontAwesomeIcon icon={faHourglass} /> {t('titleWaitingFeedback')}
-        {campaignActive && ` - ${campaignActive.name}`}
+        <FontAwesomeIcon icon={faHourglass} /> {title}
       </React.Fragment>
     )
   }
@@ -264,10 +269,13 @@ class ContactsWaitingFeedbackList extends React.Component {
     const colSpan = '9'
     const filtersParsed = JSON.parse(filters)
 
-    const title = this.getTitle('titleWaitingFeedback')
-
     return (
-      <ContainerCRUD color="warning" title={title} {...this.props}>
+      <ContainerCRUD
+        color="warning"
+        title={this.getTitle()}
+        titleOnlyText={this.getTitle(true)}
+        {...this.props}
+      >
         <Row>
           <Col xs={12} lg={3} xl={2} className={hiddenFilter ? 'd-none' : ''}>
             <FilterData

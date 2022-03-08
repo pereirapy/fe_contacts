@@ -6,11 +6,11 @@ import { getOr, isEmpty } from 'lodash/fp'
 
 import { campaigns } from '../../services'
 import { showError } from '../../utils/generic'
+import { ApplicationContext } from '../../contexts/application'
+
 import ContainerCRUD from '../common/ContainerCRUD/ContainerCRUD'
 import Loading from '../common/Loading/Loading'
-
 import Charts from '../common/Charts/Charts'
-import { ApplicationContext } from '../../contexts/application'
 
 class CampaignCharts extends React.Component {
   constructor(props) {
@@ -53,13 +53,15 @@ class CampaignCharts extends React.Component {
     }
   }
 
-  getTitle() {
+  getTitle(onlyText) {
     const { t } = this.props
     const { data } = this.state
-    return (
+    const title = t('chartsTitle', { campaign: data?.name })
+    return onlyText ? (
+      title
+    ) : (
       <React.Fragment>
-        <FontAwesomeIcon icon={faBullhorn} />{' '}
-        {t('chartsTitle', { campaign: data?.name })}
+        <FontAwesomeIcon icon={faBullhorn} /> {title}
       </React.Fragment>
     )
   }
@@ -75,6 +77,7 @@ class CampaignCharts extends React.Component {
       <ContainerCRUD
         color={'gray-dark'}
         title={this.getTitle()}
+        titleOnlyText={this.getTitle(true)}
         {...this.props}
       >
         {loading ? <Loading /> : <Charts campaign={data} />}

@@ -1,6 +1,19 @@
 import React from 'react'
 import { withTranslation } from 'react-i18next'
 import { Form, Card, Col } from 'react-bootstrap'
+import ReactPlaceholder from 'react-placeholder'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Checkbox, Radio } from 'pretty-checkbox-react'
+import {
+  faFilter,
+  faUser,
+  faVenusMars,
+  faLanguage,
+  faTags,
+  faBuilding,
+  faMapMarkedAlt,
+  faWeight,
+} from '@fortawesome/free-solid-svg-icons'
 import {
   pipe,
   uniq,
@@ -12,22 +25,11 @@ import {
   contains,
   isEqual,
 } from 'lodash/fp'
+
 import { parseErrorMessage } from '../../../utils/generic'
-import ReactPlaceholder from 'react-placeholder'
-import SuperSelect from '../SuperSelect/SuperSelect'
 import { reduceFiltersLocations } from '../../../stateReducers/locations'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faFilter,
-  faUser,
-  faVenusMars,
-  faLanguage,
-  faTags,
-  faBuilding,
-  faMapMarkedAlt,
-  faWeight,
-} from '@fortawesome/free-solid-svg-icons'
-import { Checkbox, Radio } from 'pretty-checkbox-react'
+
+import SuperSelect from '../SuperSelect/SuperSelect'
 
 class FilterData extends React.Component {
   constructor(props) {
@@ -454,4 +456,5 @@ export default withTranslation([
   'languages',
   'status',
   'contacts',
+  'responsibility',
 ])(FilterData)

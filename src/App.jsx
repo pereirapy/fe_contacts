@@ -1,9 +1,11 @@
 import React, { Suspense, useState, useEffect } from 'react'
+
 import Routes from './routes/routes'
-import Loading from './components/common/Loading/Loading'
 import { ApplicationContext } from './contexts/application'
 import { buildContextData } from './utils/loginDataManager'
 import { campaigns } from './services/'
+
+import Loading from './components/common/Loading/Loading'
 
 const App = () => {
   const [context, setContext] = useState(buildContextData())

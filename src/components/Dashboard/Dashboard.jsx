@@ -22,7 +22,7 @@ class Dashboard extends React.Component {
     const { campaignActive } = this.context
 
     return (
-      <ContainerWithNavBar {...this.props}>
+      <ContainerWithNavBar {...this.props} titleOnlyText={t('titleOnlyText')}>
         <Row className="mt-4">
           <Col
             xl={{ span: 4, offset: 2 }}

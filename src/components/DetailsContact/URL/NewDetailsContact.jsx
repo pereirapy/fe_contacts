@@ -1,29 +1,31 @@
 import React from 'react'
 import { withTranslation } from 'react-i18next'
-import ContainerCRUD from '../../../components/common/ContainerCRUD/ContainerCRUD'
-import ElementError from '../../../components/common/ElementError/ElementError'
 import SimpleReactValidator from 'simple-react-validator'
 import { getOr, pick, get } from 'lodash/fp'
-import FormDetails from '../FormDetails'
-import { getLocale, handleInputChangeGeneric } from '../../../utils/forms'
-import { details, publishers, contacts, locations } from '../../../services'
-import { reducePublishers } from '../../../stateReducers/publishers'
+import { faAddressCard } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Container } from 'react-bootstrap'
+
 import {
   showError,
   showSuccessful,
   ifEmptySetNull,
 } from '../../../utils/generic'
-import { Container } from 'react-bootstrap'
-import { GENDER_UNKNOWN } from '../../../constants/contacts'
-import { reduceLocations } from '../../../stateReducers/locations'
 import {
   ID_LANGUAGE_DEFAULT,
   ID_GENDER_DEFAULT,
   ID_STATUS_DEFAULT,
   ID_LOCATION_DEFAULT,
 } from '../../../constants/valuesPredefined'
-import { faAddressCard } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { GENDER_UNKNOWN } from '../../../constants/contacts'
+import { reduceLocations } from '../../../stateReducers/locations'
+import { reducePublishers } from '../../../stateReducers/publishers'
+import { getLocale, handleInputChangeGeneric } from '../../../utils/forms'
+import { details, publishers, contacts, locations } from '../../../services'
+
+import ContainerCRUD from '../../../components/common/ContainerCRUD/ContainerCRUD'
+import ElementError from '../../../components/common/ElementError/ElementError'
+import FormDetails from '../FormDetails'
 
 const fields = {
   information: '',
@@ -132,26 +134,31 @@ class NewDetailsContact extends React.Component {
     }
   }
 
-  render() {
-    const {
-      form,
-      validated,
-      publishersOptions,
-      loading,
-      locationsOptions,
-      phone,
-    } = this.state
-    const { t, history } = this.props
-    const title = (
+  getTitle(onlyText) {
+    const { phone } = this.state
+    const { t } = this.props
+    const title = `${t('common:new')} ${t('detailsContacts:title')} #${phone}`
+
+    return onlyText ? (
+      title
+    ) : (
       <React.Fragment>
-        {' '}
-        <FontAwesomeIcon icon={faAddressCard} />{' '}
-        {`${t('common:new')} ${t('detailsContacts:title')} #${phone}`}
+        <FontAwesomeIcon icon={faAddressCard} /> {title}
       </React.Fragment>
     )
+  }
+
+  render() {
+    const { form, validated, publishersOptions, loading, locationsOptions } =
+      this.state
+    const { history } = this.props
 
     return (
-      <ContainerCRUD title={title} {...this.props}>
+      <ContainerCRUD
+        title={this.getTitle()}
+        titleOnlyText={this.getTitle(true)}
+        {...this.props}
+      >
         <Container className="border p-4">
           <FormDetails
             validator={this.validator}

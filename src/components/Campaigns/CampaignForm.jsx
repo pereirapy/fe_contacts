@@ -1,8 +1,9 @@
 import React from 'react'
 import { Button, Form, Row, Col } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
-import SuperFormControl from '../common/SuperFormControl/SuperFormControl'
 import moment from 'moment'
+
+import SuperFormControl from '../common/SuperFormControl/SuperFormControl'
 
 const CampaignForm = (props) => {
   const { t } = useTranslation(['campaigns', 'common'])

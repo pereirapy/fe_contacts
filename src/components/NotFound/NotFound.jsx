@@ -1,10 +1,11 @@
 import React from 'react'
-import logo from '../../assets/images/logo.png'
-import ContainerWithNavBar from '../common/ContainerWithNavBar/ContainerWithNavBar'
 import { Row, Col, Image, Button } from 'react-bootstrap'
 import { withTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
+
+import logo from '../../assets/images/logo.png'
+import ContainerWithNavBar from '../common/ContainerWithNavBar/ContainerWithNavBar'
 
 const Landing = (props) => {
   const { history, t } = props
@@ -14,7 +15,7 @@ const Landing = (props) => {
   }
 
   return (
-    <ContainerWithNavBar {...props}>
+    <ContainerWithNavBar {...props} titleOnlyText={t('pageNotFound')}>
       <Row className="text-center">
         <Col lg={{ span: 3, offset: 2 }} xs={12}>
           <h1 style={{ marginTop: '25%' }}>

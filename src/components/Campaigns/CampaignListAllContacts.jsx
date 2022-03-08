@@ -2,7 +2,7 @@ import React from 'react'
 import { Button, Table, Row, Col, Form } from 'react-bootstrap'
 import ContainerCRUD from '../common/ContainerCRUD/ContainerCRUD'
 import { withTranslation } from 'react-i18next'
-import { campaigns } from '../../services'
+import { Link } from 'react-router-dom'
 import {
   map,
   getOr,
@@ -22,12 +22,11 @@ import {
   faFileExcel,
   faBullhorn,
 } from '@fortawesome/free-solid-svg-icons'
+import { Checkbox } from 'pretty-checkbox-react'
+import ReactPlaceholder from 'react-placeholder'
+import { CSVLink } from 'react-csv'
 
-import ListDetailsContact from '../DetailsContact/Modal/ListDetailsContact'
-import { Link } from 'react-router-dom'
-import NoRecords from '../common/NoRecords/NoRecords'
-import Pagination from '../common/Pagination/Pagination'
-import Search from '../common/Search/Search'
+import { campaigns } from '../../services'
 import {
   parseQuery,
   formatDateDMYHHmm,
@@ -45,16 +44,17 @@ import {
   ID_STATUS_NO_VISIT,
   ID_STATUS_SEND_TO_OTHER_CONG,
 } from '../../constants/status'
-
-import FilterData from '../common/FilterData/FilterData'
-import EditContact from '../Contacts/EditContact'
-import { showError } from '../../utils/generic'
-import ReactPlaceholder from 'react-placeholder'
-import { CSVLink } from 'react-csv'
-import OurToolTip from '../common/OurToolTip/OurToolTip'
-import { Checkbox } from 'pretty-checkbox-react'
 import { ApplicationContext } from '../../contexts/application'
+import { showError } from '../../utils/generic'
 import './styles.css'
+
+import NoRecords from '../common/NoRecords/NoRecords'
+import Pagination from '../common/Pagination/Pagination'
+import Search from '../common/Search/Search'
+import FilterData from '../common/FilterData/FilterData'
+import OurToolTip from '../common/OurToolTip/OurToolTip'
+import EditContact from '../Contacts/EditContact'
+import ListDetailsContact from '../DetailsContact/Modal/ListDetailsContact'
 
 class CampaignListAllContacts extends React.Component {
   constructor(props) {
@@ -304,13 +304,15 @@ class CampaignListAllContacts extends React.Component {
     return this.thisDateAlreadyReachedMaxAllowed(contact) ? ' text-danger' : ''
   }
 
-  getTitle() {
+  getTitle(onlyText) {
     const { t } = this.props
     const { campaignData } = this.state
-    return (
+    const title = t('campaigns:listAllTitle', { campaign: campaignData?.name })
+    return onlyText ? (
+      title
+    ) : (
       <React.Fragment>
-        <FontAwesomeIcon icon={faBullhorn} />{' '}
-        {t('campaigns:listAllTitle', { campaign: campaignData?.name })}
+        <FontAwesomeIcon icon={faBullhorn} /> {title}
       </React.Fragment>
     )
   }
@@ -350,14 +352,14 @@ class CampaignListAllContacts extends React.Component {
     } = this.state
     const colSpan = '10'
 
-    const title = this.getTitle()
     const idCampaign = getOr(0, 'props.match.params.id', this)
 
     const filtersParsed = JSON.parse(filters)
     return (
       <ContainerCRUD
         color={modeAllContacts ? 'gray-dark' : 'success'}
-        title={title}
+        title={this.getTitle()}
+        titleOnlyText={this.getTitle(true)}
         {...this.props}
       >
         <Row>

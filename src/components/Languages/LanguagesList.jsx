@@ -1,17 +1,19 @@
 import React from 'react'
 import { Table } from 'react-bootstrap'
-import ContainerCRUD from '../../components/common/ContainerCRUD/ContainerCRUD'
 import { withTranslation } from 'react-i18next'
-import { languages } from '../../services'
-import Swal from 'sweetalert2'
 import { getOr, map, isEmpty } from 'lodash/fp'
-import AskDelete from '../common/AskDelete/AskDelete'
-import LanguagesNew from './LanguagesNew'
-import LanguagesEdit from './LanguagesEdit'
-import NoRecords from '../common/NoRecords/NoRecords'
-import { parseErrorMessage } from '../../utils/generic'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLanguage } from '@fortawesome/free-solid-svg-icons'
+import Swal from 'sweetalert2'
+
+import { languages } from '../../services'
+import { parseErrorMessage } from '../../utils/generic'
+
+import LanguagesNew from './LanguagesNew'
+import LanguagesEdit from './LanguagesEdit'
+import AskDelete from '../common/AskDelete/AskDelete'
+import NoRecords from '../common/NoRecords/NoRecords'
+import ContainerCRUD from '../../components/common/ContainerCRUD/ContainerCRUD'
 
 class LanguagesList extends React.Component {
   constructor(props) {
@@ -61,18 +63,30 @@ class LanguagesList extends React.Component {
     this.handleGetAll()
   }
 
+  getTitle(onlyText) {
+    const { t } = this.props
+    const title = t('titleCrud')
+
+    return onlyText ? (
+      title
+    ) : (
+      <React.Fragment>
+        <FontAwesomeIcon icon={faLanguage} /> {title}
+      </React.Fragment>
+    )
+  }
+
   render() {
     const { t } = this.props
     const { data } = this.state
-    const title = (
-      <React.Fragment>
-        {' '}
-        <FontAwesomeIcon icon={faLanguage} /> {t('titleCrud')}{' '}
-      </React.Fragment>
-    )
 
     return (
-      <ContainerCRUD color="teal" title={title} {...this.props}>
+      <ContainerCRUD
+        color="teal"
+        title={this.getTitle()}
+        titleOnlyText={this.getTitle(true)}
+        {...this.props}
+      >
         <Table striped bordered hover responsive>
           <thead>
             <tr>

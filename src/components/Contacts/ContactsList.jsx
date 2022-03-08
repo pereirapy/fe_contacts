@@ -1,8 +1,10 @@
 import React from 'react'
 import { Button, Table, Row, Col, Form } from 'react-bootstrap'
-import ContainerCRUD from '../../components/common/ContainerCRUD/ContainerCRUD'
 import { withTranslation } from 'react-i18next'
-import { contacts } from '../../services'
+import { Link } from 'react-router-dom'
+import ReactPlaceholder from 'react-placeholder'
+import { CSVLink } from 'react-csv'
+import { Checkbox } from 'pretty-checkbox-react'
 import {
   map,
   getOr,
@@ -16,7 +18,6 @@ import {
   isNil,
   isEqual,
 } from 'lodash/fp'
-import AskDelete from '../common/AskDelete/AskDelete'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faList,
@@ -24,11 +25,6 @@ import {
   faGlobeAmericas,
 } from '@fortawesome/free-solid-svg-icons'
 
-import ListDetailsContact from '../DetailsContact/Modal/ListDetailsContact'
-import { Link } from 'react-router-dom'
-import NoRecords from '../common/NoRecords/NoRecords'
-import Pagination from '../common/Pagination/Pagination'
-import Search from '../common/Search/Search'
 import {
   parseQuery,
   formatDateDMYHHmm,
@@ -46,19 +42,23 @@ import {
   ID_STATUS_NO_VISIT,
   ID_STATUS_SEND_TO_OTHER_CONG,
 } from '../../constants/status'
+import { showError } from '../../utils/generic'
+import { ApplicationContext } from '../../contexts/application'
+import { contacts } from '../../services'
+import './styles.css'
 
+import ContainerCRUD from '../../components/common/ContainerCRUD/ContainerCRUD'
+import AskDelete from '../common/AskDelete/AskDelete'
+import NoRecords from '../common/NoRecords/NoRecords'
+import Pagination from '../common/Pagination/Pagination'
+import Search from '../common/Search/Search'
 import FilterData from '../common/FilterData/FilterData'
+import OurToolTip from '../common/OurToolTip/OurToolTip'
+import ListDetailsContact from '../DetailsContact/Modal/ListDetailsContact'
 import NewContact from './NewContact'
 import EditContact from './EditContact'
 import SendPhones from './SendPhones/SendPhones'
 import BatchChanges from './BatchChanges/BatchChanges'
-import { showError } from '../../utils/generic'
-import ReactPlaceholder from 'react-placeholder'
-import { CSVLink } from 'react-csv'
-import OurToolTip from '../common/OurToolTip/OurToolTip'
-import { Checkbox } from 'pretty-checkbox-react'
-import { ApplicationContext } from '../../contexts/application'
-import './styles.css'
 
 class Contacts extends React.Component {
   constructor(props) {
@@ -311,13 +311,14 @@ class Contacts extends React.Component {
     return !modeAllContacts && campaignActive ? ` - ${campaignActive.name}` : ''
   }
 
-  getTitle(title) {
+  getTitle(title, onlyText) {
     const { t } = this.props
-
-    return (
+    const fullTitle = `${t(title)} ${this.showCampaignName()}`
+    return onlyText ? (
+      fullTitle
+    ) : (
       <React.Fragment>
-        <FontAwesomeIcon icon={faGlobeAmericas} /> {t(title)}
-        {this.showCampaignName()}
+        <FontAwesomeIcon icon={faGlobeAmericas} /> {fullTitle}
       </React.Fragment>
     )
   }
@@ -360,12 +361,16 @@ class Contacts extends React.Component {
     const title = modeAllContacts
       ? this.getTitle('listAllTitle')
       : this.getTitle('listTitle')
+    const titleOnlyText = modeAllContacts
+      ? this.getTitle('listAllTitle', true)
+      : this.getTitle('listTitle', true)
 
     const filtersParsed = JSON.parse(filters)
     return (
       <ContainerCRUD
         color={modeAllContacts ? 'gray-dark' : 'success'}
         title={title}
+        titleOnlyText={titleOnlyText}
         {...this.props}
       >
         <Row>

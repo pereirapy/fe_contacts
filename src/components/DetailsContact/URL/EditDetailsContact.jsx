@@ -1,11 +1,12 @@
 import React from 'react'
 import { withTranslation } from 'react-i18next'
-import { details, publishers, locations } from '../../../services'
-import ContainerCRUD from '../../../components/common/ContainerCRUD/ContainerCRUD'
-import ElementError from '../../../components/common/ElementError/ElementError'
+import { faAddressCard } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { getOr, pick, get } from 'lodash/fp'
-import FormDetails from '../FormDetails'
 import SimpleReactValidator from 'simple-react-validator'
+import { Container } from 'react-bootstrap'
+
+import { details, publishers, locations } from '../../../services'
 import {
   getLocale,
   handleInputChangeGeneric,
@@ -17,11 +18,11 @@ import {
   ifEmptySetNull,
 } from '../../../utils/generic'
 import { WAITING_FEEDBACK, GENDER_UNKNOWN } from '../../../constants/contacts'
-import { Container } from 'react-bootstrap'
 import { reducePublishers } from '../../../stateReducers/publishers'
 import { reduceLocations } from '../../../stateReducers/locations'
-import { faAddressCard } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import ContainerCRUD from '../../../components/common/ContainerCRUD/ContainerCRUD'
+import ElementError from '../../../components/common/ElementError/ElementError'
+import FormDetails from '../FormDetails'
 
 const fields = {
   information: '',
@@ -50,6 +51,8 @@ class EditDetailsContact extends React.Component {
       phone: getOr(0, 'match.params.phone', props),
     }
     this.handleGetOne = this.handleGetOne.bind(this)
+    this.getTitle = this.getTitle.bind(this)
+    
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleInputChange = this.handleInputChange.bind(this)
     this.getLastPublisherThatTouched =
@@ -154,6 +157,18 @@ class EditDetailsContact extends React.Component {
     this.handleGetOne()
   }
 
+  getTitle(onlyText) {
+    const { t } = this.props
+    const { phone } = this.state
+    const title = `${t('common:edit')} ${t('detailsContacts:title')} #${phone}`
+
+    return onlyText ? title : (
+      <React.Fragment>
+        <FontAwesomeIcon icon={faAddressCard} /> {title}
+      </React.Fragment>
+    )
+  }
+
   render() {
     const {
       form,
@@ -161,20 +176,12 @@ class EditDetailsContact extends React.Component {
       publishersOptions,
       loading,
       locationsOptions,
-      phone,
     } = this.state
-    const { t, history } = this.props
-    const title = (
-      <React.Fragment>
-        {' '}
-        <FontAwesomeIcon icon={faAddressCard} />{' '}
-        {`${t('common:edit')} ${t('detailsContacts:title')} #${phone}`}
-      </React.Fragment>
-    )
+    const { history } = this.props
 
     return (
       <React.Fragment>
-        <ContainerCRUD title={title} {...this.props}>
+        <ContainerCRUD title={this.getTitle()} titleOnlyText={this.getTitle(true)} {...this.props}>
           <Container className="border p-4">
             <FormDetails
               validator={this.validator}

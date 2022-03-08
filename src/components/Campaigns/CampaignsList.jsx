@@ -4,19 +4,23 @@ import ReactPlaceholder from 'react-placeholder'
 import { withTranslation } from 'react-i18next'
 import { map, isEmpty } from 'lodash/fp'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSearchPlus, faBullhorn, faChartPie } from '@fortawesome/free-solid-svg-icons'
+import { Link } from 'react-router-dom'
+import {
+  faSearchPlus,
+  faBullhorn,
+  faChartPie,
+} from '@fortawesome/free-solid-svg-icons'
 
 import { showError } from '../../utils/generic'
 import { campaigns } from '../../services'
 import { formatDateDMY } from '../../utils/forms'
+import { ApplicationContext } from '../../contexts/application'
 
 import NoRecords from '../common/NoRecords/NoRecords'
 import AskDelete from '../common/AskDelete/AskDelete'
 import ContainerCRUD from '../common/ContainerCRUD/ContainerCRUD'
 import CampaignNew from './CampaignNew'
 import CampaignEdit from './CampaignEdit'
-import { ApplicationContext } from '../../contexts/application'
-import { Link } from 'react-router-dom'
 
 class CampaignsList extends React.Component {
   constructor(props) {
@@ -46,7 +50,7 @@ class CampaignsList extends React.Component {
     const campaignActive = responseActive.data.data || null
     const responseNext = await campaigns.getDetailsNext()
     const campaignNext = responseNext.data.data || null
-  updateContext((previous) => ({ ...previous, campaignActive, campaignNext }))
+    updateContext((previous) => ({ ...previous, campaignActive, campaignNext }))
   }
 
   async handleDelete(id) {
@@ -65,19 +69,30 @@ class CampaignsList extends React.Component {
     this.handleGetAll()
   }
 
+  getTitle(onlyText) {
+    const { t } = this.props
+    const title = t('titleList')
+    return onlyText ? (
+      title
+    ) : (
+      <React.Fragment>
+        <FontAwesomeIcon icon={faBullhorn} /> {title}
+      </React.Fragment>
+    )
+  }
+
   render() {
     const { t } = this.props
     const { data, loading } = this.state
     const colSpan = 4
-    const title = (
-      <React.Fragment>
-        {' '}
-        <FontAwesomeIcon icon={faBullhorn} /> {t('titleList')}{' '}
-      </React.Fragment>
-    )
 
     return (
-      <ContainerCRUD color="indigo" title={title} {...this.props}>
+      <ContainerCRUD
+        color="indigo"
+        title={this.getTitle()}
+        titleOnlyText={this.getTitle(true)}
+        {...this.props}
+      >
         <Container>
           <Table striped bordered hover responsive>
             <thead>

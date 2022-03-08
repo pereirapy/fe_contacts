@@ -1,30 +1,32 @@
 import React from 'react'
 import { withTranslation } from 'react-i18next'
-import ContainerCRUD from '../../../components/common/ContainerCRUD/ContainerCRUD'
-import { formatDateDMYHHmm } from '../../../utils/forms'
-import { details } from '../../../services'
 import { getOr, map, first, isEmpty, some, isEqual } from 'lodash/fp'
 import { Button, Table, Row, Col, Container } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
-import AskDelete from '../../common/AskDelete/AskDelete'
-import NoRecords from '../../common/NoRecords/NoRecords'
-import Pagination from '../../common/Pagination/Pagination'
-import Search from '../../common/Search/Search'
-import {
-  parseQuery,
-  setFiltersToURL,
-  getQueryParamsFromURL,
-} from '../../../utils/forms'
-import { RECORDS_PER_PAGE } from '../../../constants/application'
 import {
   faPlusSquare,
   faEdit,
   faAddressCard,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { showError } from '../../../utils/generic'
 import ReactPlaceholder from 'react-placeholder'
 import Swal from 'sweetalert2'
+
+import { showError } from '../../../utils/generic'
+import { formatDateDMYHHmm } from '../../../utils/forms'
+import { details } from '../../../services'
+import { RECORDS_PER_PAGE } from '../../../constants/application'
+import {
+parseQuery,
+  setFiltersToURL,
+  getQueryParamsFromURL,
+} from '../../../utils/forms'
+
+import AskDelete from '../../common/AskDelete/AskDelete'
+import NoRecords from '../../common/NoRecords/NoRecords'
+import Pagination from '../../common/Pagination/Pagination'
+import Search from '../../common/Search/Search'
+import ContainerCRUD from '../../../components/common/ContainerCRUD/ContainerCRUD'
 
 class ListDetailsContact extends React.Component {
   constructor(props) {
@@ -155,6 +157,21 @@ class ListDetailsContact extends React.Component {
     })
   }
 
+  getTitle(onlyText) {
+    const { t } = this.props
+    const { phone } = this.state
+
+    const title = `${t('title')} #${phone} ${this.getNameForTitle()}`
+
+    return onlyText ? (
+      title
+    ) : (
+      <React.Fragment>
+        <FontAwesomeIcon icon={faAddressCard} /> {title}
+      </React.Fragment>
+    )
+  }
+
   render() {
     const { t, history } = this.props
     const {
@@ -166,16 +183,10 @@ class ListDetailsContact extends React.Component {
       queryParams: { filters },
     } = this.state
     const colSpan = 4
-    const title = (
-      <React.Fragment>
-        <FontAwesomeIcon icon={faAddressCard} />{' '}
-        {`${t('title')} #${phone} ${this.getNameForTitle()}`}
-      </React.Fragment>
-    )
     const filtersParsed = JSON.parse(filters)
 
     return (
-      <ContainerCRUD color="orange" title={title} {...this.props}>
+      <ContainerCRUD color="orange" title={this.getTitle()} titleOnlyText={this.getTitle(true)} {...this.props}>
         <Container className="border p-4">
           <Row>
             <Col>

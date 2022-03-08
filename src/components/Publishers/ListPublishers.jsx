@@ -1,28 +1,30 @@
 import React from 'react'
 import { Table, Row, Col } from 'react-bootstrap'
-import ContainerCRUD from '../../components/common/ContainerCRUD/ContainerCRUD'
 import { withTranslation } from 'react-i18next'
-import { publishers } from '../../services'
-import Swal from 'sweetalert2'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faBriefcase } from '@fortawesome/free-solid-svg-icons'
 import { getOr, map, isEmpty, isEqual } from 'lodash/fp'
-import AskDelete from '../common/AskDelete/AskDelete'
-import EditPublisher from './EditPublisher'
-import NewPublisher from './NewPublisher'
+import ReactPlaceholder from 'react-placeholder'
+import Swal from 'sweetalert2'
+
+import { publishers } from '../../services'
 import { showError } from '../../utils/generic'
-import Pagination from '../common/Pagination/Pagination'
-import Search from '../common/Search/Search'
 import {
   parseQuery,
   setFiltersToURL,
   getQueryParamsFromURL,
 } from '../../utils/forms'
 import { RECORDS_PER_PAGE } from '../../constants/application'
-import FilterData from '../common/FilterData/FilterData'
-import ReactPlaceholder from 'react-placeholder'
-import NoRecords from '../common/NoRecords/NoRecords'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBriefcase } from '@fortawesome/free-solid-svg-icons'
 import { ApplicationContext } from '../../contexts/application'
+
+import Search from '../common/Search/Search'
+import Pagination from '../common/Pagination/Pagination'
+import AskDelete from '../common/AskDelete/AskDelete'
+import FilterData from '../common/FilterData/FilterData'
+import NoRecords from '../common/NoRecords/NoRecords'
+import EditPublisher from './EditPublisher'
+import NewPublisher from './NewPublisher'
+import ContainerCRUD from '../../components/common/ContainerCRUD/ContainerCRUD'
 
 class Publishers extends React.Component {
   constructor(props) {
@@ -135,6 +137,19 @@ class Publishers extends React.Component {
     setFiltersToURL(queryParams, this.props)
   }
 
+  getTitle(onlyText) {
+    const { t } = this.props
+    const title = t('listTitle')
+
+    return onlyText ? (
+      title
+    ) : (
+      <React.Fragment>
+        <FontAwesomeIcon icon={faBriefcase} /> {title}
+      </React.Fragment>
+    )
+  }
+
   render() {
     const { t } = this.props
     const {
@@ -148,15 +163,13 @@ class Publishers extends React.Component {
     const colSpan = '11'
     const filtersParsed = JSON.parse(filters)
 
-    const title = (
-      <React.Fragment>
-        {' '}
-        <FontAwesomeIcon icon={faBriefcase} /> {t('listTitle')}{' '}
-      </React.Fragment>
-    )
-
     return (
-      <ContainerCRUD color="blue" title={title} {...this.props}>
+      <ContainerCRUD
+        color="blue"
+        title={this.getTitle()}
+        titleOnlyText={this.getTitle(true)}
+        {...this.props}
+      >
         <Row>
           <Col xs={12} lg={3} xl={2} className={hiddenFilter ? 'd-none' : ''}>
             <FilterData
