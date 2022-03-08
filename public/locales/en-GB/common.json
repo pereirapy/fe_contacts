@@ -69,7 +69,10 @@
   "updatedByAt": "Updated by {{name}} at {{date}}",
   "createdByAt": "Created by {{name}} at {{date}}",
   "campaigns_name_unique": "This campaign name already exists",
-  "ERROR_ID_CAMPAIGN_IS_MISSING": "Campaign not found"
+  "ERROR_ID_CAMPAIGN_IS_MISSING": "Campaign not found",
+  "appName": "Contacts",
+  "appDescription": "It is a App to help JW in the telephone preaching work"
+
 
 
 

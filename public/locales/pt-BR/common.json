@@ -7,7 +7,7 @@
   "edit": "Editar",
   "error": "Erro",
   "finish": "Finalizar",
-  "home": "Casa",
+  "home": "Início",
   "more": "Mais",
   "next": "Próximo",
   "no": "Não",
@@ -64,10 +64,13 @@
   "same": "Mesmo",
   "errorValidation": "Erro de validação",
   "allFieldsIsEmpty": "Todos os campos estão vazios. Selecione pelo menos um",
-  "pageNotFound": "Página não encontrada",
+  "pageNotFound": "Página inexistente",
   "goToHome": "Ir a início",
   "updatedByAt": "Atualizado por {{name}} em {{date}}",
   "createdByAt": "Criado por {{name}} em {{date}}",
   "campaigns_name_unique": "Este nome de campanha já existe",
-  "ERROR_ID_CAMPAIGN_IS_MISSING": "Campanha não encontrada"
+  "ERROR_ID_CAMPAIGN_IS_MISSING": "Campanha não encontrada",
+  "appName": "Contatos",
+  "appDescription": "Este é um App para ajudar as TJ com o trabalho de pregação por telefone"
+
 }
