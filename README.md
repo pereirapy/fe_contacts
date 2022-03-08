@@ -18,7 +18,7 @@
   - Enable automatic deploys
   - Go to `Settings` tab -> Reveal Config Vars and add two:
     - `REACT_APP_API_PATH` as key and `/` as the value
-    - `REACT_APP_API_URL` as key and `HERE WILL THE THE URL OF YOUR BACKEND APP` as the value
+    - `REACT_APP_API_URL` as key and `HERE WILL THE URL OF YOUR BACKEND APP PROVIDED BY HEROKU` as the value
   - Go to `Deploy` tab -> Manual deploy -> Choose a branch to deploy -> Deploy Branch
   - Those information you will use in frontend app
 - In heroku the app will run automatically the script `npm start`
