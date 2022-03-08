@@ -6,12 +6,13 @@
 
 2 - Development environment:
 
+- run `npm install`
 - run `npm run dev`
 - Go to the url that you see in your terminal
 
 3 - Production environment:
 
-- Creates a new app for the frontend
+- Creates a new app for the frontend using Heroku (You need to have a account here)
   - Go to `https://dashboard.heroku.com/apps` and create a new app
   - Connect with your GitHub repo that has your FRONTEND files
   - Enable automatic deploys
@@ -41,16 +42,16 @@ In the project directory, you can run:
 
 ### `yarn test`
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Launches the test runner in the interactive watch mode.
+- See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
 ### `yarn build`
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- Builds the app for production to the `build` folder.
+- It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+- The build is minified and the filenames include the hashes.
+- Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
