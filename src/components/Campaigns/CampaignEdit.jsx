@@ -1,16 +1,17 @@
 import React from 'react'
-import { withTranslation } from 'react-i18next'
-import { campaigns } from '../../services'
 import { get, getOr } from 'lodash/fp'
+import { withTranslation } from 'react-i18next'
 import SimpleReactValidator from 'simple-react-validator'
+import { faEdit, faBullhorn } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
 import { getLocale, handleInputChangeGeneric } from '../../utils/forms'
+import { showError, showSuccessful } from '../../utils/generic'
+import { campaigns } from '../../services'
+
 import OurModal from '../common/OurModal/OurModal'
 import ElementError from '../common/ElementError/ElementError'
-import { faEdit, faBullhorn } from '@fortawesome/free-solid-svg-icons'
 import CampaignForm from './CampaignForm.jsx'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { showError, showSuccessful } from '../../utils/generic'
-import moment from 'moment'
 
 const fields = {
   name: '',
@@ -51,7 +52,6 @@ class CampaignEdit extends React.Component {
 
     const { form } = this.state
     const { t } = this.props
-
     try {
       await campaigns.updateOne(get('id', form), form)
       showSuccessful(t)
@@ -72,12 +72,7 @@ class CampaignEdit extends React.Component {
   }
 
   componentDidMount() {
-    const { data } = this.props
-    const form = {
-      ...data,
-      dateStart: moment(data.dateStart).format('YYYY-MM-DD'),
-      dateFinal: moment(data.dateFinal).format('YYYY-MM-DD'),
-    }
+    const { data: form } = this.props
     this.setState({ form })
   }
 

@@ -60,7 +60,12 @@ const CampaignForm = (props) => {
             onChange={handleInputChange}
             rules={[
               { required: true },
-              { after_or_equal: moment(form.dateStart).add(1, 'day') },
+              {
+                after_or_equal: moment(form.dateStart, 'YYYY-MM-DD').add(
+                  1,
+                  'day'
+                ),
+              },
             ]}
           />
         </Col>

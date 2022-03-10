@@ -7,7 +7,7 @@
 2 - Development environment:
 
 - run `npm install`
-- run `npm dev`
+- run `npm run dev`
 - Go to the url that you see in your terminal
 
 3 - Production environment:
@@ -32,7 +32,7 @@
 
 In the project directory, you can run:
 
-### `npm dev`
+### `npm run dev`
 
 - Runs the app in the development mode.
 - Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
@@ -46,12 +46,12 @@ In the project directory, you can run:
 - Before execute this script, you have to execute `npm build`.
 - Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-### `npm test`
+### `npm run test`
 
 - Launches the test runner in the interactive watch mode.
 - See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm build`
+### `npm run build`
 
 - Builds the app for production to the `build` folder.
 - It correctly bundles React in production mode and optimizes the build for the best performance.
@@ -61,7 +61,7 @@ In the project directory, you can run:
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm eject`
+### `npm run eject`
 
 **Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
@@ -97,6 +97,6 @@ This section has moved here: <https://facebook.github.io/create-react-app/docs/a
 
 This section has moved here: <https://facebook.github.io/create-react-app/docs/deployment>
 
-### `npm build` fails to minify
+### `npm run build` fails to minify
 
 This section has moved here: <https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify>

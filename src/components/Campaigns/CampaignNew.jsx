@@ -1,16 +1,18 @@
 import React from 'react'
-import { withTranslation } from 'react-i18next'
-import { campaigns } from '../../services'
-import SimpleReactValidator from 'simple-react-validator'
-import { getLocale, handleInputChangeGeneric } from '../../utils/forms'
-import OurModal from '../common/OurModal/OurModal'
-import ElementError from '../common/ElementError/ElementError'
-import { faPlusSquare, faBullhorn } from '@fortawesome/free-solid-svg-icons'
-import CampaignForm from './CampaignForm.jsx'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { showError, showSuccessful } from '../../utils/generic'
 import moment from 'moment'
 import { getOr } from 'lodash/fp'
+import { withTranslation } from 'react-i18next'
+import SimpleReactValidator from 'simple-react-validator'
+import { faPlusSquare, faBullhorn } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
+import { campaigns } from '../../services'
+import { getLocale, handleInputChangeGeneric } from '../../utils/forms'
+import { showError, showSuccessful } from '../../utils/generic'
+
+import OurModal from '../common/OurModal/OurModal'
+import ElementError from '../common/ElementError/ElementError'
+import CampaignForm from './CampaignForm.jsx'
 
 const fields = {
   name: '',
@@ -53,7 +55,6 @@ class CampaignNew extends React.Component {
 
     const { form } = this.state
     const { t } = this.props
-
     try {
       await campaigns.create(form)
       showSuccessful(t)

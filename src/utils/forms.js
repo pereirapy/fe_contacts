@@ -1,3 +1,5 @@
+import moment from 'moment'
+import GqlBuilder from 'graphql-query-builder-v2'
 import {
   getOr,
   omit,
@@ -7,25 +9,23 @@ import {
   isEmpty,
   pipe,
 } from 'lodash/fp'
-import GqlBuilder from 'graphql-query-builder-v2'
-import moment from 'moment'
 import { START_NUMBER_NOT_ALLOWED } from '../constants/contacts'
 
-export const formatDateDMY = (date) => moment(date).format('DD/MM/YYYY')
+export const formatDateDMY = (date) =>
+  moment(date, 'YYYY-MM-DD').format('DD/MM/YYYY')
 
 export const formatDateDMYHHmm = (date) =>
   date ? moment(date).format('DD/MM/YYYY HH:mm') : null
 
 export const diffDate = (date, truncate = true) => {
-  var now = moment(new Date()) 
-  var end = moment(date) 
-  var duration = moment.duration(now.diff(end))
-  var diff = duration.asDays()
+  const today = moment().format('YYYY-MM-DD')
+  const now = moment(today, 'YYYY-MM-DD')
+  const end = moment(date, 'YYYY-MM-DD')
+  const duration = moment.duration(now.diff(end))
+  const diff = duration.asDays()
 
   return truncate ? Math.trunc(diff) : diff
 }
-
-
 
 export const getLocale = (props) => props.i18n.language
 
@@ -80,12 +80,6 @@ export const appendFilters = (filters, state) => {
     filters: JSON.stringify(newPreFilters),
   }
 }
-
-export const objectFlip = (obj) =>
-  Object.keys(obj).reduce((ret, key) => {
-    ret[obj[key]] = key
-    return ret
-  }, {})
 
 export const toQueryString = (paramsObject) =>
   '?' +
