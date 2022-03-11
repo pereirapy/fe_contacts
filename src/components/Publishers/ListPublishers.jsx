@@ -1,30 +1,27 @@
 import React from 'react'
-import { Table, Row, Col } from 'react-bootstrap'
-import { withTranslation } from 'react-i18next'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBriefcase } from '@fortawesome/free-solid-svg-icons'
-import { getOr, map, isEmpty, isEqual } from 'lodash/fp'
-import ReactPlaceholder from 'react-placeholder'
 import Swal from 'sweetalert2'
+import ReactPlaceholder from 'react-placeholder'
+import { withTranslation } from 'react-i18next'
+import { Table, Row, Col } from 'react-bootstrap'
+import { getOr, map, isEmpty, isEqual } from 'lodash/fp'
+import { faBriefcase } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import { publishers } from '../../services'
 import { showError } from '../../utils/generic'
-import {
-  parseQuery,
-  setFiltersToURL,
-  getQueryParamsFromURL,
-} from '../../utils/forms'
+import { getQueryParamsFromURL } from '../../utils/forms'
 import { RECORDS_PER_PAGE } from '../../constants/application'
 import { ApplicationContext } from '../../contexts/application'
+import { handleFilter, toggleFilter } from '../../utils/contactsHelper'
 
+import EditPublisher from './EditPublisher'
 import Search from '../common/Search/Search'
-import Pagination from '../common/Pagination/Pagination'
+import NewPublisher from './NewPublisher'
+import NoRecords from '../common/NoRecords/NoRecords'
 import AskDelete from '../common/AskDelete/AskDelete'
 import FilterData from '../common/FilterData/FilterData'
-import NoRecords from '../common/NoRecords/NoRecords'
-import EditPublisher from './EditPublisher'
-import NewPublisher from './NewPublisher'
-import ContainerCRUD from '../../components/common/ContainerCRUD/ContainerCRUD'
+import Pagination from '../common/Pagination/Pagination'
+import ContainerCRUD from '../common/ContainerCRUD/ContainerCRUD'
 
 class Publishers extends React.Component {
   constructor(props) {
@@ -50,8 +47,6 @@ class Publishers extends React.Component {
     this.handleDelete = this.handleDelete.bind(this)
     this.showErrorNotAllowedDeleteCurrentUser =
       this.showErrorNotAllowedDeleteCurrentUser.bind(this)
-    this.toggleFilter = this.toggleFilter.bind(this)
-    this.handleFilter = this.handleFilter.bind(this)
   }
 
   async handleGetAll() {
@@ -128,15 +123,6 @@ class Publishers extends React.Component {
     }
   }
 
-  toggleFilter() {
-    this.setState({ hiddenFilter: !getOr(false, 'hiddenFilter', this.state) })
-  }
-
-  handleFilter(objQuery) {
-    const queryParams = parseQuery(objQuery, this.state)
-    setFiltersToURL(queryParams, this.props)
-  }
-
   getTitle(onlyText) {
     const { t } = this.props
     const title = t('listTitle')
@@ -174,7 +160,9 @@ class Publishers extends React.Component {
           <Col xs={12} lg={3} xl={2} className={hiddenFilter ? 'd-none' : ''}>
             <FilterData
               filters={filtersParsed}
-              handleFilters={this.handleFilter}
+              handleFilters={(objQuery) =>
+                handleFilter({ objQuery, componentReact: this })
+              }
               refresh={submitting}
               error={error}
               getFilters={publishers.getAllFilters}
@@ -185,10 +173,15 @@ class Publishers extends React.Component {
               <thead>
                 <Search
                   filters={filtersParsed}
-                  onFilter={this.handleFilter}
+                  onFilter={(objQuery) =>
+                    handleFilter({
+                      objQuery,
+                      componentReact: this,
+                    })
+                  }
                   fields={['name', 'phone', 'email']}
                   colspan={colSpan}
-                  toggleFilter={this.toggleFilter}
+                  toggleFilter={() => toggleFilter(this)}
                 />
                 <tr>
                   <th>{t('name')}</th>
@@ -197,7 +190,7 @@ class Publishers extends React.Component {
                   <th>{t('privilege')}</th>
                   <th>{t('active')}</th>
                   <th>
-                    <NewPublisher afterClose={() => this.handleGetAll()} />
+                    <NewPublisher afterClose={this.handleGetAll} />
                   </th>
                 </tr>
               </thead>
@@ -235,7 +228,7 @@ class Publishers extends React.Component {
                         <td style={{ minWidth: '114px' }}>
                           <EditPublisher
                             id={publishers.id}
-                            afterClose={() => this.handleGetAll()}
+                            afterClose={this.handleGetAll}
                           />{' '}
                           <AskDelete
                             id={publishers.id}
@@ -256,7 +249,12 @@ class Publishers extends React.Component {
                     <Pagination
                       pagination={pagination}
                       submitting={submitting}
-                      onClick={this.handleFilter}
+                      onClick={(objQuery) =>
+                        handleFilter({
+                          objQuery,
+                          componentReact: this,
+                        })
+                      }
                     />
                   </td>
                 </tr>

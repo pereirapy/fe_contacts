@@ -1,19 +1,19 @@
 import React from 'react'
-import { Table } from 'react-bootstrap'
-import { withTranslation } from 'react-i18next'
-import { getOr, map, isEmpty } from 'lodash/fp'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faLanguage } from '@fortawesome/free-solid-svg-icons'
 import Swal from 'sweetalert2'
+import { Table } from 'react-bootstrap'
+import { getOr, map, isEmpty } from 'lodash/fp'
+import { withTranslation } from 'react-i18next'
+import { faLanguage } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import { languages } from '../../services'
 import { parseErrorMessage } from '../../utils/generic'
 
 import LanguagesNew from './LanguagesNew'
 import LanguagesEdit from './LanguagesEdit'
-import AskDelete from '../common/AskDelete/AskDelete'
 import NoRecords from '../common/NoRecords/NoRecords'
-import ContainerCRUD from '../../components/common/ContainerCRUD/ContainerCRUD'
+import AskDelete from '../common/AskDelete/AskDelete'
+import ContainerCRUD from '../common/ContainerCRUD/ContainerCRUD'
 
 class LanguagesList extends React.Component {
   constructor(props) {

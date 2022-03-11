@@ -1,8 +1,10 @@
 import React from 'react'
-import { Button, Table, Row, Col, Form } from 'react-bootstrap'
-import ContainerCRUD from '../common/ContainerCRUD/ContainerCRUD'
-import { withTranslation } from 'react-i18next'
+import { CSVLink } from 'react-csv'
 import { Link } from 'react-router-dom'
+import { withTranslation } from 'react-i18next'
+import ReactPlaceholder from 'react-placeholder'
+import { Checkbox } from 'pretty-checkbox-react'
+import { Button, Table, Row, Col, Form } from 'react-bootstrap'
 import { map, getOr, isEmpty, contains, isEqual } from 'lodash/fp'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -10,12 +12,7 @@ import {
   faFileExcel,
   faBullhorn,
 } from '@fortawesome/free-solid-svg-icons'
-import { Checkbox } from 'pretty-checkbox-react'
-import ReactPlaceholder from 'react-placeholder'
-import { CSVLink } from 'react-csv'
 
-import { campaigns, details } from '../../services'
-import { getQueryParamsFromURL } from '../../utils/forms'
 import {
   handleFilter,
   toggleFilter,
@@ -30,21 +27,24 @@ import {
   getStyleForFieldDays,
   uncheckCheckboxSelectAll,
 } from '../../utils/contactsHelper'
-import { RECORDS_PER_PAGE } from '../../constants/application'
 import {
   ID_STATUS_NO_VISIT,
   ID_STATUS_SEND_TO_OTHER_CONG,
 } from '../../constants/status'
-import { ApplicationContext } from '../../contexts/application'
 import { showError } from '../../utils/generic'
+import { campaigns, details } from '../../services'
+import { getQueryParamsFromURL } from '../../utils/forms'
+import { RECORDS_PER_PAGE } from '../../constants/application'
+import { ApplicationContext } from '../../contexts/application'
 
+import Search from '../common/Search/Search'
 import AskDelete from '../common/AskDelete/AskDelete'
 import NoRecords from '../common/NoRecords/NoRecords'
 import Pagination from '../common/Pagination/Pagination'
-import Search from '../common/Search/Search'
 import FilterData from '../common/FilterData/FilterData'
 import OurToolTip from '../common/OurToolTip/OurToolTip'
 import EditContact from '../Contacts/EditContact'
+import ContainerCRUD from '../common/ContainerCRUD/ContainerCRUD'
 import ListDetailsContact from '../DetailsContact/Modal/ListDetailsContact'
 import './styles.css'
 
@@ -83,7 +83,6 @@ class CampaignListAllContacts extends React.Component {
     }
     this.handleGetAll = this.handleGetAll.bind(this)
     this.handleDelete = this.handleDelete.bind(this)
-    this.afterSentPhones = this.afterSentPhones.bind(this)
   }
 
   async handleGetAll() {
@@ -135,10 +134,6 @@ class CampaignListAllContacts extends React.Component {
         this.setState({ submitting: false })
         showError(error, t, 'contacts')
       })
-  }
-
-  afterSentPhones() {
-    this.handleGetAll()
   }
 
   componentDidMount() {

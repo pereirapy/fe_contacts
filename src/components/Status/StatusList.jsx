@@ -1,19 +1,19 @@
 import React from 'react'
-import { Table, Container } from 'react-bootstrap'
-import { withTranslation } from 'react-i18next'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTags } from '@fortawesome/free-solid-svg-icons'
-import ReactPlaceholder from 'react-placeholder'
 import { map, isEmpty } from 'lodash/fp'
+import { withTranslation } from 'react-i18next'
+import ReactPlaceholder from 'react-placeholder'
+import { Table, Container } from 'react-bootstrap'
+import { faTags } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import { status } from '../../services'
 import { showError } from '../../utils/generic'
-import NoRecords from '../common/NoRecords/NoRecords'
 
-import StatusEdit from './StatusEdit'
 import StatusNew from './StatusNew'
+import StatusEdit from './StatusEdit'
+import NoRecords from '../common/NoRecords/NoRecords'
 import AskDelete from '../common/AskDelete/AskDelete'
-import ContainerCRUD from '../../components/common/ContainerCRUD/ContainerCRUD'
+import ContainerCRUD from '../common/ContainerCRUD/ContainerCRUD'
 
 class StatusList extends React.Component {
   constructor(props) {

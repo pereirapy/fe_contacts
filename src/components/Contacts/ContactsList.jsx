@@ -1,24 +1,12 @@
 import React from 'react'
-import { Button, Table, Row, Col, Form } from 'react-bootstrap'
-import { withTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
-import ReactPlaceholder from 'react-placeholder'
 import { CSVLink } from 'react-csv'
+import { Link } from 'react-router-dom'
+import { withTranslation } from 'react-i18next'
+import ReactPlaceholder from 'react-placeholder'
 import { Checkbox } from 'pretty-checkbox-react'
-import {
-  map,
-  getOr,
-  isEmpty,
-  pipe,
-  uniq,
-  compact,
-  remove,
-  contains,
-  find,
-  isNil,
-  isEqual,
-} from 'lodash/fp'
+import { Button, Table, Row, Col, Form } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { map, getOr, isEmpty, contains, isEqual } from 'lodash/fp'
 import {
   faList,
   faFileExcel,
@@ -26,39 +14,43 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 
 import {
-  parseQuery,
-  formatDateDMYHHmm,
-  getQueryParamsFromURL,
-  setFiltersToURL,
-} from '../../utils/forms'
+  handleFilter,
+  toggleFilter,
+  handleCheckAll,
+  parseDataCVS,
+  handleOnClick,
+  thisDateAlreadyReachedMaxAllowed,
+  getStyleForFieldDays,
+  uncheckCheckboxSelectAll,
+  setBackgroundForbidden,
+  getInformationAboveName,
+  setSubRowVisible,
+  setRowColor,
+  showInformationAboutCampaign,
+} from '../../utils/contactsHelper'
 import {
-  RECORDS_PER_PAGE,
-  MAX_DAYS_ALLOWED_WITH_NUMBERS,
-} from '../../constants/application'
-import {
-  ID_STATUS_AVAILABLE,
-  ID_STATUS_BIBLE_STUDY,
-  ID_STATUS_RETURN_VISIT,
   ID_STATUS_NO_VISIT,
   ID_STATUS_SEND_TO_OTHER_CONG,
 } from '../../constants/status'
-import { showError } from '../../utils/generic'
-import { ApplicationContext } from '../../contexts/application'
 import { contacts } from '../../services'
-import './styles.css'
+import { showError } from '../../utils/generic'
+import { getQueryParamsFromURL } from '../../utils/forms'
+import { RECORDS_PER_PAGE } from '../../constants/application'
+import { ApplicationContext } from '../../contexts/application'
 
-import ContainerCRUD from '../../components/common/ContainerCRUD/ContainerCRUD'
-import AskDelete from '../common/AskDelete/AskDelete'
-import NoRecords from '../common/NoRecords/NoRecords'
-import Pagination from '../common/Pagination/Pagination'
-import Search from '../common/Search/Search'
-import FilterData from '../common/FilterData/FilterData'
-import OurToolTip from '../common/OurToolTip/OurToolTip'
-import ListDetailsContact from '../DetailsContact/Modal/ListDetailsContact'
 import NewContact from './NewContact'
 import EditContact from './EditContact'
+import Search from '../common/Search/Search'
 import SendPhones from './SendPhones/SendPhones'
+import AskDelete from '../common/AskDelete/AskDelete'
+import NoRecords from '../common/NoRecords/NoRecords'
 import BatchChanges from './BatchChanges/BatchChanges'
+import OurToolTip from '../common/OurToolTip/OurToolTip'
+import Pagination from '../common/Pagination/Pagination'
+import FilterData from '../common/FilterData/FilterData'
+import ContainerCRUD from '../common/ContainerCRUD/ContainerCRUD'
+import ListDetailsContact from '../DetailsContact/Modal/ListDetailsContact'
+import './styles.css'
 
 class Contacts extends React.Component {
   constructor(props) {
@@ -93,31 +85,11 @@ class Contacts extends React.Component {
     }
     this.handleGetAll = this.handleGetAll.bind(this)
     this.handleDelete = this.handleDelete.bind(this)
-    this.handleCheckAll = this.handleCheckAll.bind(this)
-    this.afterSentPhones = this.afterSentPhones.bind(this)
-    this.handleOnClick = this.handleOnClick.bind(this)
-    this.toggleFilter = this.toggleFilter.bind(this)
-    this.parseDataCVS = this.parseDataCVS.bind(this)
-    this.setRowColor = this.setRowColor.bind(this)
-    this.setSubRowVisible = this.setSubRowVisible.bind(this)
-    this.getInformationAboveName = this.getInformationAboveName.bind(this)
-    this.setBackgroundForbidden = this.setBackgroundForbidden.bind(this)
-    this.handleFilter = this.handleFilter.bind(this)
-    this.showCampaignName = this.showCampaignName.bind(this)
-  }
-
-  uncheckCheckboxSelectAll() {
-    document.getElementById('checkall').checked = false
-  }
-
-  handleFilter(objQuery) {
-    const queryParams = parseQuery(objQuery, this.state)
-    setFiltersToURL(queryParams, this.props)
   }
 
   async handleGetAll() {
     this.setState({ submitting: true, checksContactsPhones: [] })
-    this.uncheckCheckboxSelectAll()
+    uncheckCheckboxSelectAll()
     const { t } = this.props
     try {
       const queryParams = getQueryParamsFromURL(this.props)
@@ -163,37 +135,6 @@ class Contacts extends React.Component {
       })
   }
 
-  handleOnClick(event) {
-    const {
-      target: { value, checked },
-    } = event
-    const newValues = checked
-      ? pipe(uniq, compact)([...this.state.checksContactsPhones, value])
-      : remove(
-          (valueSaved) => valueSaved === value,
-          this.state.checksContactsPhones
-        )
-
-    this.setState({
-      checksContactsPhones: newValues,
-    })
-  }
-
-  handleCheckAll(event) {
-    const {
-      target: { checked },
-    } = event
-
-    const newValues = checked
-      ? map((contact) => contact.phone, this.state.data)
-      : []
-    this.setState({ checksContactsPhones: newValues })
-  }
-
-  afterSentPhones() {
-    this.handleGetAll()
-  }
-
   componentDidMount() {
     const { isPublisher } = this.context
     if (isPublisher) {
@@ -219,127 +160,20 @@ class Contacts extends React.Component {
     }
   }
 
-  toggleFilter() {
-    this.setState({ hiddenFilter: !getOr(false, 'hiddenFilter', this.state) })
-  }
+  getTitle(onlyText) {
+    const { t, modeAllContacts } = this.props
+    const title = modeAllContacts ? 'listAllTitle' : 'listTitle'
 
-  parseDataCVS() {
-    const { t } = this.props
-    const { checksContactsPhones, data } = this.state
-    const dataCVS = map((phone) => {
-      const contact = find((item) => item.phone === phone, data)
-      return {
-        ...contact,
-        gender: t(contact.gender),
-        typeCompany: t(`${contact.typeCompany ? 'commercial' : 'residential'}`),
-        languageName: t(`languages:${contact.languageName}`),
-        statusDescription: t(`status:${contact.statusDescription}`),
-        locationName: isNil(contact.idLocation)
-          ? t('unknownLocation')
-          : `${contact.locationName} - ${contact.departmentName}`,
-        lastConversationInDays: t(`${contact.lastConversationInDays}`),
-        details: contact.information,
-      }
-    }, checksContactsPhones)
-    this.setState({
-      dataCVS,
-      headers: [
-        { label: t('phone'), key: 'phone' },
-        { label: t('name'), key: 'name' },
-        { label: t('owner'), key: 'owner' },
-        { label: t('gender'), key: 'gender' },
-        { label: t('typeCompany'), key: 'typeCompany' },
-        { label: t('language'), key: 'languageName' },
-        { label: t('status'), key: 'statusDescription' },
-        { label: t('location'), key: 'locationName' },
-        {
-          label: t('lastConversationsInDays'),
-          key: 'lastConversationInDays',
-        },
-        { label: t('details'), key: 'details' },
-      ],
-    })
-  }
-
-  setRowColor(idStatus) {
-    let color
-    switch (idStatus) {
-      case ID_STATUS_AVAILABLE:
-        color = 'text-success'
-        break
-      case ID_STATUS_BIBLE_STUDY:
-      case ID_STATUS_RETURN_VISIT:
-        color = 'bg-warning'
-        break
-      default:
-        color = ''
-    }
-    return color
-  }
-
-  setSubRowVisible(contact) {
-    if (
-      contact.idStatus === ID_STATUS_SEND_TO_OTHER_CONG ||
-      ((contact.idStatus === ID_STATUS_RETURN_VISIT ||
-        contact.idStatus === ID_STATUS_BIBLE_STUDY) &&
-        !isEmpty(getOr('', 'publisherName', contact)))
-    ) {
-      return {}
-    }
-    return { visibility: 'hidden' }
-  }
-
-  thisDateAlreadyReachedMaxAllowed = ({
-    waitingFeedback,
-    lastConversationInDays,
-  }) => {
-    return (
-      waitingFeedback &&
-      lastConversationInDays !== '99999999999' &&
-      lastConversationInDays > MAX_DAYS_ALLOWED_WITH_NUMBERS
-    )
-  }
-
-  getStyleForFieldDays(contact) {
-    return this.thisDateAlreadyReachedMaxAllowed(contact) ? ' text-danger' : ''
-  }
-
-  showCampaignName() {
-    const { modeAllContacts } = this.props
     const { campaignActive } = this.context
+    const campaignName = campaignActive ? ` - ${campaignActive.name}` : ''
+    const fullTitle = `${t(title)}${campaignName}`
 
-    return !modeAllContacts && campaignActive ? ` - ${campaignActive.name}` : ''
-  }
-
-  getTitle(title, onlyText) {
-    const { t } = this.props
-    const fullTitle = `${t(title)} ${this.showCampaignName()}`
     return onlyText ? (
       fullTitle
     ) : (
       <React.Fragment>
         <FontAwesomeIcon icon={faGlobeAmericas} /> {fullTitle}
       </React.Fragment>
-    )
-  }
-
-  setBackgroundForbidden(contact) {
-    return contains(contact.idStatus, this.state.statusForbidden)
-      ? 'bg-danger'
-      : ''
-  }
-
-  getInformationAboveName(contact) {
-    const { t } = this.props
-    return (
-      <span className="text-light ml-1">
-        {this.setBackgroundForbidden(contact) === 'bg-danger'
-          ? t('common:updatedByAt', {
-              name: contact.publisherNameUpdatedBy,
-              date: formatDateDMYHHmm(contact.updatedAt),
-            })
-          : `${t('lastSpokeToPublisherName')}: ${contact.publisherName}`}
-      </span>
     )
   }
 
@@ -358,12 +192,8 @@ class Contacts extends React.Component {
       queryParams: { filters },
     } = this.state
     const colSpan = '10'
-    const title = modeAllContacts
-      ? this.getTitle('listAllTitle')
-      : this.getTitle('listTitle')
-    const titleOnlyText = modeAllContacts
-      ? this.getTitle('listAllTitle', true)
-      : this.getTitle('listTitle', true)
+    const title = this.getTitle()
+    const titleOnlyText = this.getTitle(true)
 
     const filtersParsed = JSON.parse(filters)
     return (
@@ -377,7 +207,9 @@ class Contacts extends React.Component {
           <Col xs={12} lg={3} xl={2} className={hiddenFilter ? 'd-none' : ''}>
             <FilterData
               filters={filtersParsed}
-              handleFilters={this.handleFilter}
+              handleFilters={(objQuery) =>
+                handleFilter({ objQuery, componentReact: this })
+              }
               refresh={submitting}
               error={error}
               showTypeCompany={true}
@@ -389,10 +221,15 @@ class Contacts extends React.Component {
               <thead>
                 <Search
                   filters={filtersParsed}
-                  onFilter={this.handleFilter}
+                  onFilter={(objQuery) =>
+                    handleFilter({
+                      objQuery,
+                      componentReact: this,
+                    })
+                  }
                   fields={['name', 'phone', 'note', 'owner']}
                   colspan={colSpan}
-                  toggleFilter={this.toggleFilter}
+                  toggleFilter={() => toggleFilter(this)}
                 />
                 <tr>
                   <th style={{ width: '60px' }}>
@@ -400,7 +237,12 @@ class Contacts extends React.Component {
                       id="checkall"
                       name="all"
                       value="all"
-                      onClick={this.handleCheckAll}
+                      onClick={(event) =>
+                        handleCheckAll({
+                          event,
+                          componentReact: this,
+                        })
+                      }
                       color="success"
                       className="marginLeftCheckbox"
                       bigger
@@ -429,7 +271,7 @@ class Contacts extends React.Component {
                     <SendPhones
                       checksContactsPhones={checksContactsPhones}
                       contactsData={data}
-                      afterClose={this.afterSentPhones}
+                      afterClose={this.handleGetAll}
                     />{' '}
                     {isAtLeastElder && (
                       <BatchChanges
@@ -448,7 +290,7 @@ class Contacts extends React.Component {
                       className={`btn btn-primary ${
                         checksContactsPhones.length > 0 ? '' : 'disabled'
                       }`}
-                      onClick={this.parseDataCVS}
+                      onClick={() => parseDataCVS(this)}
                     >
                       <FontAwesomeIcon icon={faFileExcel} />
                     </CSVLink>
@@ -472,7 +314,10 @@ class Contacts extends React.Component {
                     (contact) => (
                       <tr
                         key={contact.phone}
-                        className={this.setBackgroundForbidden(contact)}
+                        className={setBackgroundForbidden({
+                          contact,
+                          componentReact: this,
+                        })}
                       >
                         <td style={{ minWidth: '60px' }}>
                           <Checkbox
@@ -485,30 +330,33 @@ class Contacts extends React.Component {
                             color="success"
                             className="marginLeftCheckbox"
                             bigger
-                            onChange={this.handleOnClick}
+                            onChange={(event) =>
+                              handleOnClick({
+                                event,
+                                componentReact: this,
+                              })
+                            }
                           />
                         </td>
                         <td>{contact.phone}</td>
                         <td className="d-none d-sm-table-cell verticalBottom">
                           <span>{contact.name}</span>
-                          <div style={this.setSubRowVisible(contact)}>
+                          <div style={setSubRowVisible(contact)}>
                             <Form.Text
-                              className={`text-muted ${this.setRowColor(
+                              className={`text-muted ${setRowColor(
                                 contact.idStatus
                               )}`}
                             >
-                              {this.getInformationAboveName(contact)}
+                              {getInformationAboveName({
+                                contact,
+                                componentReact: this,
+                              })}
                             </Form.Text>
                           </div>
-                          {contact.campaignName && (
-                            <p className="contactedDuringCampaign ml-1">
-                              <small>
-                                {t('detailsContacts:campaignName', {
-                                  campaignName: contact.campaignName,
-                                })}
-                              </small>
-                            </p>
-                          )}
+                          {showInformationAboutCampaign({
+                            detailContact: contact,
+                            componentReact: this,
+                          })}
                         </td>
                         <td className="d-none d-lg-table-cell">
                           {t(
@@ -521,7 +369,7 @@ class Contacts extends React.Component {
                           {t(`languages:${contact.languageName}`)}
                         </td>
                         <td
-                          className={`d-none d-lg-table-cell ${this.setRowColor(
+                          className={`d-none d-lg-table-cell ${setRowColor(
                             contact.idStatus
                           )}`}
                         >
@@ -531,11 +379,11 @@ class Contacts extends React.Component {
                           <OurToolTip
                             info={t(contact.lastConversationInDays)}
                             toolTipContent="toolTipWaitingFeedback"
-                            showTooltip={this.thisDateAlreadyReachedMaxAllowed(
+                            showTooltip={thisDateAlreadyReachedMaxAllowed(
                               contact
                             )}
                             getStyleForFieldDays={() =>
-                              this.getStyleForFieldDays(contact)
+                              getStyleForFieldDays(contact)
                             }
                           />
                         </td>
@@ -590,7 +438,12 @@ class Contacts extends React.Component {
                   <td colSpan={colSpan} style={{ border: 0 }}>
                     <Pagination
                       pagination={pagination}
-                      onClick={this.handleFilter}
+                      onClick={(objQuery) =>
+                        handleFilter({
+                          objQuery,
+                          componentReact: this,
+                        })
+                      }
                       submitting={submitting}
                     />
                   </td>

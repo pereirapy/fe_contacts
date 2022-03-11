@@ -1,23 +1,13 @@
 import React from 'react'
-import { Table, Row, Col } from 'react-bootstrap'
-import { withTranslation } from 'react-i18next'
 import { CSVLink } from 'react-csv'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faFileExcel, faHourglass } from '@fortawesome/free-solid-svg-icons'
-import { Checkbox } from 'pretty-checkbox-react'
+import { withTranslation } from 'react-i18next'
 import ReactPlaceholder from 'react-placeholder'
+import { Checkbox } from 'pretty-checkbox-react'
+import { Table, Row, Col } from 'react-bootstrap'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { map, getOr, isEmpty, contains, isEqual } from 'lodash/fp'
+import { faFileExcel, faHourglass } from '@fortawesome/free-solid-svg-icons'
 
-import {
-  map,
-  getOr,
-  isEmpty,
-  contains,
-  isEqual,
-} from 'lodash/fp'
-import {
-  formatDateDMY,
-  getQueryParamsFromURL,
-} from '../../utils/forms'
 import {
   handleFilter,
   toggleFilter,
@@ -28,24 +18,23 @@ import {
   getStyleForFieldDays,
   uncheckCheckboxSelectAll,
 } from '../../utils/contactsHelper'
-import { showInformationAboutCampaign } from '../../utils/contactsHelper'
-import { showError } from '../../utils/generic'
-import {
-  RECORDS_PER_PAGE,
-} from '../../constants/application'
 import { details } from '../../services'
+import { showError } from '../../utils/generic'
+import { RECORDS_PER_PAGE } from '../../constants/application'
 import { ApplicationContext } from '../../contexts/application'
+import { showInformationAboutCampaign } from '../../utils/contactsHelper'
+import { formatDateDMY, getQueryParamsFromURL } from '../../utils/forms'
 
 import Search from '../common/Search/Search'
+import SendPhones from './SendPhones/SendPhones'
 import AskDelete from '../common/AskDelete/AskDelete'
 import NoRecords from '../common/NoRecords/NoRecords'
 import Pagination from '../common/Pagination/Pagination'
 import FilterData from '../common/FilterData/FilterData'
 import OurToolTip from '../common/OurToolTip/OurToolTip'
-import SendPhones from './SendPhones/SendPhones'
+import ContainerCRUD from '../common/ContainerCRUD/ContainerCRUD'
 import EditDetailsContact from '../DetailsContact/Modal/EditDetailsContact'
 import AssignNewPublisher from './AssignNewPublisher/AssignNewPublisher'
-import ContainerCRUD from '../../components/common/ContainerCRUD/ContainerCRUD'
 import './styles.css'
 
 class ContactsWaitingFeedbackList extends React.Component {
@@ -76,6 +65,7 @@ class ContactsWaitingFeedbackList extends React.Component {
           genders: [],
           languages: [],
           status: [],
+          campaigns: [],
         }),
       },
     }
@@ -122,31 +112,24 @@ class ContactsWaitingFeedbackList extends React.Component {
       })
   }
 
-
   componentDidMount() {
     this.handleGetAll()
   }
 
   componentDidUpdate(prevProps, prevState) {
     const { submitting } = this.state
-    const prevSubmiting = prevState.submitting
+    const prevSubmitting = prevState.submitting
     const prevQueryParams = prevState.queryParams
     const queryParams = getQueryParamsFromURL(this.props)
     if (
       !submitting &&
-      !prevSubmiting &&
+      !prevSubmitting &&
       queryParams &&
       !isEqual(queryParams, prevQueryParams)
     ) {
       this.handleGetAll()
     }
   }
-
-  afterSentPhones() {
-    this.handleGetAll()
-  }
-
-
 
   getTitle(onlyText) {
     const { t } = this.props
@@ -254,7 +237,7 @@ class ContactsWaitingFeedbackList extends React.Component {
                     <SendPhones
                       checksContactsPhones={checksContactsPhones}
                       contactsData={data}
-                      afterClose={this.afterSentPhones}
+                      afterClose={this.handleGetAll}
                     />{' '}
                     <AssignNewPublisher
                       checksContactsPhones={checksContactsPhones}

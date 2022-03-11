@@ -1,32 +1,32 @@
 import React from 'react'
-import { withTranslation } from 'react-i18next'
-import { getOr, map, first, isEmpty, some, isEqual } from 'lodash/fp'
-import { Button, Table, Row, Col, Container } from 'react-bootstrap'
+import Swal from 'sweetalert2'
 import { Link } from 'react-router-dom'
+import { withTranslation } from 'react-i18next'
+import ReactPlaceholder from 'react-placeholder'
+import { getOr, map, first, isEmpty, isEqual } from 'lodash/fp'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Button, Table, Row, Col, Container } from 'react-bootstrap'
 import {
   faPlusSquare,
   faEdit,
   faAddressCard,
 } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import ReactPlaceholder from 'react-placeholder'
-import Swal from 'sweetalert2'
 
-import { showError } from '../../../utils/generic'
-import { formatDateDMYHHmm } from '../../../utils/forms'
-import { details } from '../../../services'
-import { RECORDS_PER_PAGE } from '../../../constants/application'
 import {
-parseQuery,
-  setFiltersToURL,
-  getQueryParamsFromURL,
-} from '../../../utils/forms'
+  handleFilter,
+  getLastPublisherThatTouched,
+  isWaitingFeedback,
+} from '../../../utils/contactsHelper'
+import { details } from '../../../services'
+import { showError } from '../../../utils/generic'
+import { getQueryParamsFromURL } from '../../../utils/forms'
+import { RECORDS_PER_PAGE } from '../../../constants/application'
 
+import Search from '../../common/Search/Search'
 import AskDelete from '../../common/AskDelete/AskDelete'
 import NoRecords from '../../common/NoRecords/NoRecords'
 import Pagination from '../../common/Pagination/Pagination'
-import Search from '../../common/Search/Search'
-import ContainerCRUD from '../../../components/common/ContainerCRUD/ContainerCRUD'
+import ContainerCRUD from '../../common/ContainerCRUD/ContainerCRUD'
 
 class ListDetailsContact extends React.Component {
   constructor(props) {
@@ -49,32 +49,9 @@ class ListDetailsContact extends React.Component {
       },
     }
     this.handleGetAllOneContact = this.handleGetAllOneContact.bind(this)
-    this.handleFilter = this.handleFilter.bind(this)
     this.handleDelete = this.handleDelete.bind(this)
     this.notificationNotAllowedNewDetails =
       this.notificationNotAllowedNewDetails.bind(this)
-  }
-
-  getLastPublisherThatTouched(detail) {
-    const { t } = this.props
-
-    return detail.updatedAt
-      ? t('common:updatedByAt', {
-          date: formatDateDMYHHmm(detail.updatedAt),
-          name: detail.publisherUpdatedByName,
-        })
-      : t('common:createdByAt', {
-          date: formatDateDMYHHmm(detail.createdAt),
-          name: detail.publisherCreatedByName,
-        })
-  }
-
-  isWaitingFeedback = (response) =>
-    some({ waitingFeedback: true }, getOr([], 'data.data.list', response))
-
-  handleFilter(objQuery) {
-    const queryParams = parseQuery(objQuery, this.state)
-    setFiltersToURL(queryParams, this.props)
   }
 
   async handleGetAllOneContact(objQuery) {
@@ -90,7 +67,7 @@ class ListDetailsContact extends React.Component {
 
       this.setState({
         data,
-        waitingFeedback: this.isWaitingFeedback(response),
+        waitingFeedback: isWaitingFeedback(response),
         pagination: getOr({}, 'data.data.pagination', response),
         error: false,
         queryParams,
@@ -124,6 +101,7 @@ class ListDetailsContact extends React.Component {
         showError(error, t, 'detailsContacts')
       })
   }
+
   componentDidMount() {
     this.handleGetAllOneContact()
   }
@@ -143,11 +121,6 @@ class ListDetailsContact extends React.Component {
     }
   }
 
-  getNameForTitle() {
-    const { name } = this.state
-    return !isEmpty(name) ? `- ${name}` : ''
-  }
-
   notificationNotAllowedNewDetails() {
     const { t } = this.props
     Swal.fire({
@@ -159,9 +132,9 @@ class ListDetailsContact extends React.Component {
 
   getTitle(onlyText) {
     const { t } = this.props
-    const { phone } = this.state
-
-    const title = `${t('title')} #${phone} ${this.getNameForTitle()}`
+    const { phone, name } = this.state
+    const nameForTitle = !isEmpty(name) ? `- ${name}` : ''
+    const title = `${t('title')} #${phone} ${nameForTitle}`
 
     return onlyText ? (
       title
@@ -186,7 +159,12 @@ class ListDetailsContact extends React.Component {
     const filtersParsed = JSON.parse(filters)
 
     return (
-      <ContainerCRUD color="orange" title={this.getTitle()} titleOnlyText={this.getTitle(true)} {...this.props}>
+      <ContainerCRUD
+        color="orange"
+        title={this.getTitle()}
+        titleOnlyText={this.getTitle(true)}
+        {...this.props}
+      >
         <Container className="border p-4">
           <Row>
             <Col>
@@ -194,7 +172,12 @@ class ListDetailsContact extends React.Component {
                 <thead>
                   <Search
                     filters={filtersParsed}
-                    onFilter={this.handleFilter}
+                    onFilter={(objQuery) =>
+                      handleFilter({
+                        objQuery,
+                        componentReact: this,
+                      })
+                    }
                     fields={['publisher', 'details']}
                     colspan={colSpan}
                     history={history}
@@ -243,7 +226,10 @@ class ListDetailsContact extends React.Component {
                           <td>{detail.publisherName}</td>
                           <td>
                             <small>
-                              {this.getLastPublisherThatTouched(detail)}
+                              {getLastPublisherThatTouched({
+                                detail,
+                                componentReact: this,
+                              })}
                             </small>
                           </td>
                           <td>{t(detail.information)}</td>
@@ -276,7 +262,12 @@ class ListDetailsContact extends React.Component {
                     <td colSpan={colSpan} style={{ border: 0 }}>
                       <Pagination
                         pagination={pagination}
-                        onClick={this.handleFilter}
+                        onClick={(objQuery) =>
+                          handleFilter({
+                            objQuery,
+                            componentReact: this,
+                          })
+                        }
                         loading={loading}
                       />
                     </td>

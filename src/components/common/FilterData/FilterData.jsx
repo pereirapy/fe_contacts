@@ -13,6 +13,7 @@ import {
   faBuilding,
   faMapMarkedAlt,
   faWeight,
+  faBullhorn,
 } from '@fortawesome/free-solid-svg-icons'
 import {
   pipe,
@@ -45,6 +46,7 @@ class FilterData extends React.Component {
         responsibility: [],
         publishersResponsibles: [],
         locations: [],
+        campaigns: [],
         typeCompany: '-1',
       },
       data: {
@@ -53,6 +55,7 @@ class FilterData extends React.Component {
         checksStatus: [],
         checksResponsibility: [],
         checksPublishersResponsibilities: [],
+        checksCampaigns: [],
         selectLocations: [],
         radiosTypeCompany: [],
       },
@@ -112,6 +115,7 @@ class FilterData extends React.Component {
           checksLanguages: getOr([], 'languages', data),
           checksStatus: getOr([], 'status', data),
           checksResponsibility: getOr([], 'responsibility', data),
+          checksCampaigns: getOr([], 'campaigns', data),
           checksPublishersResponsibilities: getOr(
             [],
             'publishersResponsibles',
@@ -167,6 +171,7 @@ class FilterData extends React.Component {
         typeCompany,
         publishersResponsibles,
         locations,
+        campaigns,
       },
       data: {
         checksGender,
@@ -174,6 +179,7 @@ class FilterData extends React.Component {
         checksLanguages,
         checksStatus,
         checksPublishersResponsibilities,
+        checksCampaigns,
         radiosTypeCompany,
         selectLocations,
       },
@@ -184,6 +190,7 @@ class FilterData extends React.Component {
       isEmpty(checksLanguages) &&
       isEmpty(checksResponsibility) &&
       isEmpty(checksPublishersResponsibilities) &&
+      isEmpty(checksCampaigns) &&
       isEmpty(selectLocations) &&
       isEmpty(checksStatus)
     const { t, showTypeCompany = false } = this.props
@@ -198,6 +205,38 @@ class FilterData extends React.Component {
         <Col className="text-center text-muted">
           {!loading && noData && t('common:noData')}
         </Col>
+        {(loading || !isEmpty(checksCampaigns)) && !error && (
+          <Col className="mb-4">
+            <Card>
+              <Card.Body>
+                <Card.Title>
+                  <FontAwesomeIcon icon={faBullhorn} />{' '}
+                  {t('campaignsTitleFilter')}
+                </Card.Title>
+                <ReactPlaceholder
+                  showLoadingAnimation={true}
+                  type="text"
+                  ready={!loading}
+                  rows={3}
+                >
+                  <SuperSelect
+                    name="campaigns"
+                    value={campaigns}
+                    isMulti={true}
+                    options={map(
+                      ({ idCampaign, campaignName }) => ({
+                        label: `${campaignName}`,
+                        value: idCampaign,
+                      }),
+                      checksCampaigns
+                    )}
+                    onChange={this.handleGetValuesTraditional}
+                  />
+                </ReactPlaceholder>
+              </Card.Body>
+            </Card>
+          </Col>
+        )}
         {(loading || !isEmpty(checksPublishersResponsibilities)) && !error && (
           <Col className="mb-4">
             <Card>

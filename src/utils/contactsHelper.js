@@ -1,4 +1,9 @@
 import {
+  parseQuery,
+  setFiltersToURL,
+  formatDateDMYHHmm,
+} from './forms'
+import {
   map,
   getOr,
   isEmpty,
@@ -9,15 +14,15 @@ import {
   find,
   isNil,
   contains,
+  some
 } from 'lodash/fp'
-import { parseQuery, setFiltersToURL, formatDateDMYHHmm, formatDateDMY, diffDate } from './forms'
-import { MAX_DAYS_ALLOWED_WITH_NUMBERS } from '../constants/application'
 import {
   ID_STATUS_AVAILABLE,
   ID_STATUS_BIBLE_STUDY,
   ID_STATUS_RETURN_VISIT,
   ID_STATUS_SEND_TO_OTHER_CONG,
 } from '../constants/status'
+import { MAX_DAYS_ALLOWED_WITH_NUMBERS } from '../constants/application'
 
 export function handleFilter({ objQuery, componentReact }) {
   const queryParams = parseQuery(objQuery, componentReact.state)
@@ -184,10 +189,20 @@ export function showInformationAboutCampaign({
   )
 }
 
-export function getDateWithDays(date) {
-  const { t } = this.props
+export function getLastPublisherThatTouched({ detail, componentReact }) {
+  const { t } = componentReact.props
 
-  return `${formatDateDMY(date)} (${t('diffDate', {
-    days: diffDate(date),
-  })})`
+  return detail.updatedAt
+    ? t('common:updatedByAt', {
+        date: formatDateDMYHHmm(detail.updatedAt),
+        name: detail.publisherUpdatedByName,
+      })
+    : t('common:createdByAt', {
+        date: formatDateDMYHHmm(detail.createdAt),
+        name: detail.publisherCreatedByName,
+      })
+}
+
+export function isWaitingFeedback(response) {
+  return some({ waitingFeedback: true }, getOr([], 'data.data.list', response))
 }
