@@ -3,19 +3,7 @@ import { Button, Table, Row, Col, Form } from 'react-bootstrap'
 import ContainerCRUD from '../common/ContainerCRUD/ContainerCRUD'
 import { withTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import {
-  map,
-  getOr,
-  isEmpty,
-  pipe,
-  uniq,
-  compact,
-  remove,
-  contains,
-  find,
-  isNil,
-  isEqual,
-} from 'lodash/fp'
+import { map, getOr, isEmpty, contains, isEqual } from 'lodash/fp'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faList,
@@ -26,28 +14,31 @@ import { Checkbox } from 'pretty-checkbox-react'
 import ReactPlaceholder from 'react-placeholder'
 import { CSVLink } from 'react-csv'
 
-import { campaigns } from '../../services'
+import { campaigns, details } from '../../services'
+import { getQueryParamsFromURL } from '../../utils/forms'
 import {
-  parseQuery,
-  formatDateDMYHHmm,
-  getQueryParamsFromURL,
-  setFiltersToURL,
-} from '../../utils/forms'
+  handleFilter,
+  toggleFilter,
+  handleCheckAll,
+  parseDataCVS,
+  setBackgroundForbidden,
+  handleOnClick,
+  setSubRowVisible,
+  setRowColor,
+  getInformationAboveName,
+  thisDateAlreadyReachedMaxAllowed,
+  getStyleForFieldDays,
+  uncheckCheckboxSelectAll,
+} from '../../utils/contactsHelper'
+import { RECORDS_PER_PAGE } from '../../constants/application'
 import {
-  RECORDS_PER_PAGE,
-  MAX_DAYS_ALLOWED_WITH_NUMBERS,
-} from '../../constants/application'
-import {
-  ID_STATUS_AVAILABLE,
-  ID_STATUS_BIBLE_STUDY,
-  ID_STATUS_RETURN_VISIT,
   ID_STATUS_NO_VISIT,
   ID_STATUS_SEND_TO_OTHER_CONG,
 } from '../../constants/status'
 import { ApplicationContext } from '../../contexts/application'
 import { showError } from '../../utils/generic'
-import './styles.css'
 
+import AskDelete from '../common/AskDelete/AskDelete'
 import NoRecords from '../common/NoRecords/NoRecords'
 import Pagination from '../common/Pagination/Pagination'
 import Search from '../common/Search/Search'
@@ -55,6 +46,7 @@ import FilterData from '../common/FilterData/FilterData'
 import OurToolTip from '../common/OurToolTip/OurToolTip'
 import EditContact from '../Contacts/EditContact'
 import ListDetailsContact from '../DetailsContact/Modal/ListDetailsContact'
+import './styles.css'
 
 class CampaignListAllContacts extends React.Component {
   constructor(props) {
@@ -91,30 +83,12 @@ class CampaignListAllContacts extends React.Component {
     }
     this.handleGetAll = this.handleGetAll.bind(this)
     this.handleDelete = this.handleDelete.bind(this)
-    this.handleCheckAll = this.handleCheckAll.bind(this)
     this.afterSentPhones = this.afterSentPhones.bind(this)
-    this.handleOnClick = this.handleOnClick.bind(this)
-    this.toggleFilter = this.toggleFilter.bind(this)
-    this.parseDataCVS = this.parseDataCVS.bind(this)
-    this.setRowColor = this.setRowColor.bind(this)
-    this.setSubRowVisible = this.setSubRowVisible.bind(this)
-    this.getInformationAboveName = this.getInformationAboveName.bind(this)
-    this.setBackgroundForbidden = this.setBackgroundForbidden.bind(this)
-    this.handleFilter = this.handleFilter.bind(this)
-  }
-
-  uncheckCheckboxSelectAll() {
-    document.getElementById('checkall').checked = false
-  }
-
-  handleFilter(objQuery) {
-    const queryParams = parseQuery(objQuery, this.state)
-    setFiltersToURL(queryParams, this.props)
   }
 
   async handleGetAll() {
     this.setState({ submitting: true, checksContactsPhones: [] })
-    this.uncheckCheckboxSelectAll()
+    uncheckCheckboxSelectAll()
     const { t } = this.props
     try {
       const queryParams = getQueryParamsFromURL(this.props)
@@ -152,42 +126,15 @@ class CampaignListAllContacts extends React.Component {
   async handleDelete(id) {
     const { t } = this.props
     this.setState({ submitting: true })
-    await campaigns
+    await details
       .dellOne(id)
       .then(() => {
         this.handleGetAll()
       })
       .catch((error) => {
         this.setState({ submitting: false })
-        showError(error, t, 'campaigns')
+        showError(error, t, 'contacts')
       })
-  }
-
-  handleOnClick(event) {
-    const {
-      target: { value, checked },
-    } = event
-    const newValues = checked
-      ? pipe(uniq, compact)([...this.state.checksContactsPhones, value])
-      : remove(
-          (valueSaved) => valueSaved === value,
-          this.state.checksContactsPhones
-        )
-
-    this.setState({
-      checksContactsPhones: newValues,
-    })
-  }
-
-  handleCheckAll(event) {
-    const {
-      target: { checked },
-    } = event
-
-    const newValues = checked
-      ? map((contact) => contact.phone, this.state.data)
-      : []
-    this.setState({ checksContactsPhones: newValues })
   }
 
   afterSentPhones() {
@@ -195,11 +142,11 @@ class CampaignListAllContacts extends React.Component {
   }
 
   componentDidMount() {
-    const { isPublisher, campaignActive } = this.context
+    const { isPublisher } = this.context
     if (isPublisher) {
       const { history } = this.props
       history.push('/')
-    } else if (campaignActive) {
+    } else {
       this.handleGetAll()
     }
   }
@@ -219,91 +166,6 @@ class CampaignListAllContacts extends React.Component {
     }
   }
 
-  toggleFilter() {
-    this.setState({ hiddenFilter: !getOr(false, 'hiddenFilter', this.state) })
-  }
-
-  parseDataCVS() {
-    const { t } = this.props
-    const { checksContactsPhones, data } = this.state
-    const dataCVS = map((phone) => {
-      const contact = find((item) => item.phone === phone, data)
-      return {
-        ...contact,
-        gender: t(contact.gender),
-        typeCompany: t(`${contact.typeCompany ? 'commercial' : 'residential'}`),
-        languageName: t(`languages:${contact.languageName}`),
-        statusDescription: t(`status:${contact.statusDescription}`),
-        locationName: isNil(contact.idLocation)
-          ? t('unknownLocation')
-          : `${contact.locationName} - ${contact.departmentName}`,
-        lastConversationInDays: t(`${contact.lastConversationInDays}`),
-        details: contact.information,
-      }
-    }, checksContactsPhones)
-    this.setState({
-      dataCVS,
-      headers: [
-        { label: t('phone'), key: 'phone' },
-        { label: t('name'), key: 'name' },
-        { label: t('owner'), key: 'owner' },
-        { label: t('gender'), key: 'gender' },
-        { label: t('typeCompany'), key: 'typeCompany' },
-        { label: t('language'), key: 'languageName' },
-        { label: t('status'), key: 'statusDescription' },
-        { label: t('location'), key: 'locationName' },
-        {
-          label: t('lastConversationsInDays'),
-          key: 'lastConversationInDays',
-        },
-        { label: t('details'), key: 'details' },
-      ],
-    })
-  }
-
-  setRowColor(idStatus) {
-    let color
-    switch (idStatus) {
-      case ID_STATUS_AVAILABLE:
-        color = 'text-success'
-        break
-      case ID_STATUS_BIBLE_STUDY:
-      case ID_STATUS_RETURN_VISIT:
-        color = 'bg-warning'
-        break
-      default:
-        color = ''
-    }
-    return color
-  }
-
-  setSubRowVisible(contact) {
-    if (
-      contact.idStatus === ID_STATUS_SEND_TO_OTHER_CONG ||
-      ((contact.idStatus === ID_STATUS_RETURN_VISIT ||
-        contact.idStatus === ID_STATUS_BIBLE_STUDY) &&
-        !isEmpty(getOr('', 'publisherName', contact)))
-    ) {
-      return {}
-    }
-    return { visibility: 'hidden' }
-  }
-
-  thisDateAlreadyReachedMaxAllowed = ({
-    waitingFeedback,
-    lastConversationInDays,
-  }) => {
-    return (
-      waitingFeedback &&
-      lastConversationInDays !== '99999999999' &&
-      lastConversationInDays > MAX_DAYS_ALLOWED_WITH_NUMBERS
-    )
-  }
-
-  getStyleForFieldDays(contact) {
-    return this.thisDateAlreadyReachedMaxAllowed(contact) ? ' text-danger' : ''
-  }
-
   getTitle(onlyText) {
     const { t } = this.props
     const { campaignData } = this.state
@@ -317,28 +179,8 @@ class CampaignListAllContacts extends React.Component {
     )
   }
 
-  setBackgroundForbidden(contact) {
-    return contains(contact.idStatus, this.state.statusForbidden)
-      ? 'bg-danger'
-      : ''
-  }
-
-  getInformationAboveName(contact) {
-    const { t } = this.props
-    return (
-      <span className="text-light ml-1">
-        {this.setBackgroundForbidden(contact) === 'bg-danger'
-          ? t('common:updatedByAt', {
-              name: contact.publisherNameUpdatedBy,
-              date: formatDateDMYHHmm(contact.updatedAt),
-            })
-          : `${t('lastSpokeToPublisherName')}: ${contact.publisherName}`}
-      </span>
-    )
-  }
-
   render() {
-    const { t, modeAllContacts, history } = this.props
+    const { t, history } = this.props
     const {
       data,
       pagination,
@@ -357,7 +199,7 @@ class CampaignListAllContacts extends React.Component {
     const filtersParsed = JSON.parse(filters)
     return (
       <ContainerCRUD
-        color={modeAllContacts ? 'gray-dark' : 'success'}
+        color={'success'}
         title={this.getTitle()}
         titleOnlyText={this.getTitle(true)}
         {...this.props}
@@ -366,7 +208,9 @@ class CampaignListAllContacts extends React.Component {
           <Col xs={12} lg={3} xl={2} className={hiddenFilter ? 'd-none' : ''}>
             <FilterData
               filters={filtersParsed}
-              handleFilters={this.handleFilter}
+              handleFilters={(objQuery) =>
+                handleFilter({ objQuery, componentReact: this })
+              }
               refresh={submitting}
               error={error}
               showTypeCompany={true}
@@ -378,10 +222,15 @@ class CampaignListAllContacts extends React.Component {
               <thead>
                 <Search
                   filters={filtersParsed}
-                  onFilter={this.handleFilter}
+                  onFilter={(objQuery) =>
+                    handleFilter({
+                      objQuery,
+                      componentReact: this,
+                    })
+                  }
                   fields={['name', 'phone', 'note', 'owner']}
                   colspan={colSpan}
-                  toggleFilter={this.toggleFilter}
+                  toggleFilter={() => toggleFilter(this)}
                   history={history}
                 />
                 <tr>
@@ -390,7 +239,12 @@ class CampaignListAllContacts extends React.Component {
                       id="checkall"
                       name="all"
                       value="all"
-                      onClick={this.handleCheckAll}
+                      onClick={(event) =>
+                        handleCheckAll({
+                          event,
+                          componentReact: this,
+                        })
+                      }
                       color="success"
                       className="marginLeftCheckbox"
                       bigger
@@ -408,24 +262,20 @@ class CampaignListAllContacts extends React.Component {
                   >
                     {t('lastConversationsInDays')}
                   </th>
-                  {modeAllContacts && (
-                    <th className="d-none d-lg-table-cell">
-                      {t('waitingFeedback')}
-                    </th>
-                  )}
+                  <th className="d-none d-lg-table-cell">
+                    {t('waitingFeedback')}
+                  </th>
                   <th style={{ minWidth: '116px' }}>{t('details')}</th>
                   <th style={{ minWidth: '189px' }}>
                     <CSVLink
                       data={dataCVS}
                       headers={headers}
-                      filename={`${t(
-                        modeAllContacts ? 'listAllTitle' : 'listTitle'
-                      )}.csv`}
+                      filename={`${t('listTitle')}.csv`}
                       title={t('titleExportToCVS')}
                       className={`btn btn-primary ${
                         checksContactsPhones.length > 0 ? '' : 'disabled'
                       }`}
-                      onClick={this.parseDataCVS}
+                      onClick={() => parseDataCVS(this)}
                     >
                       <FontAwesomeIcon icon={faFileExcel} />
                     </CSVLink>
@@ -449,7 +299,10 @@ class CampaignListAllContacts extends React.Component {
                     (contact) => (
                       <tr
                         key={contact.phone}
-                        className={this.setBackgroundForbidden(contact)}
+                        className={setBackgroundForbidden({
+                          contact,
+                          componentReact: this,
+                        })}
                       >
                         <td style={{ minWidth: '60px' }}>
                           <Checkbox
@@ -462,19 +315,27 @@ class CampaignListAllContacts extends React.Component {
                             color="success"
                             className="marginLeftCheckbox"
                             bigger
-                            onChange={this.handleOnClick}
+                            onChange={(event) =>
+                              handleOnClick({
+                                event,
+                                componentReact: this,
+                              })
+                            }
                           />
                         </td>
                         <td>{contact.phone}</td>
                         <td className="d-none d-sm-table-cell verticalBottom">
                           <span>{contact.name}</span>
-                          <div style={this.setSubRowVisible(contact)}>
+                          <div style={setSubRowVisible(contact)}>
                             <Form.Text
-                              className={`text-muted ${this.setRowColor(
+                              className={`text-muted ${setRowColor(
                                 contact.idStatus
                               )}`}
                             >
-                              {this.getInformationAboveName(contact)}
+                              {getInformationAboveName({
+                                contact,
+                                componentReact: this,
+                              })}
                             </Form.Text>
                           </div>
                         </td>
@@ -489,7 +350,7 @@ class CampaignListAllContacts extends React.Component {
                           {t(`languages:${contact.languageName}`)}
                         </td>
                         <td
-                          className={`d-none d-lg-table-cell ${this.setRowColor(
+                          className={`d-none d-lg-table-cell ${setRowColor(
                             contact.idStatus
                           )}`}
                         >
@@ -499,25 +360,23 @@ class CampaignListAllContacts extends React.Component {
                           <OurToolTip
                             info={t(contact.lastConversationInDays)}
                             toolTipContent="toolTipWaitingFeedback"
-                            showTooltip={this.thisDateAlreadyReachedMaxAllowed(
+                            showTooltip={thisDateAlreadyReachedMaxAllowed(
                               contact
                             )}
                             getStyleForFieldDays={() =>
-                              this.getStyleForFieldDays(contact)
+                              getStyleForFieldDays(contact)
                             }
                           />
                         </td>
-                        {modeAllContacts && (
-                          <td
-                            className={`d-none d-lg-table-cell text-${
-                              contact.waitingFeedback ? 'danger' : 'success'
-                            }`}
-                          >
-                            {t(
-                              `common:${contact.waitingFeedback ? 'yes' : 'no'}`
-                            )}
-                          </td>
-                        )}
+                        <td
+                          className={`d-none d-lg-table-cell text-${
+                            contact.waitingFeedback ? 'danger' : 'success'
+                          }`}
+                        >
+                          {t(
+                            `common:${contact.waitingFeedback ? 'yes' : 'no'}`
+                          )}
+                        </td>
                         <td>
                           <ListDetailsContact
                             contact={contact}
@@ -534,12 +393,15 @@ class CampaignListAllContacts extends React.Component {
                           </Button>
                         </td>
                         <td>
-                          {!modeAllContacts && (
-                            <EditContact
-                              id={contact.phone}
-                              afterClose={() => this.handleGetAll()}
-                            />
-                          )}
+                          <AskDelete
+                            id={contact.idDetailContact}
+                            title={t('deleteRecordWaitingFeedback')}
+                            funcToCallAfterConfirmation={this.handleDelete}
+                          />{' '}
+                          <EditContact
+                            id={contact.phone}
+                            afterClose={this.handleGetAll}
+                          />
                         </td>
                       </tr>
                     ),
@@ -554,7 +416,12 @@ class CampaignListAllContacts extends React.Component {
                   <td colSpan={colSpan} style={{ border: 0 }}>
                     <Pagination
                       pagination={pagination}
-                      onClick={this.handleFilter}
+                      onClick={(objQuery) =>
+                        handleFilter({
+                          objQuery,
+                          componentReact: this,
+                        })
+                      }
                       submitting={submitting}
                     />
                   </td>

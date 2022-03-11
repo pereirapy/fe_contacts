@@ -6,34 +6,35 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFileExcel, faHourglass } from '@fortawesome/free-solid-svg-icons'
 import { Checkbox } from 'pretty-checkbox-react'
 import ReactPlaceholder from 'react-placeholder'
+
 import {
   map,
   getOr,
   isEmpty,
-  pipe,
-  uniq,
-  compact,
-  remove,
   contains,
-  find,
   isEqual,
 } from 'lodash/fp'
 import {
-  parseQuery,
   formatDateDMY,
-  diffDate,
-  setFiltersToURL,
   getQueryParamsFromURL,
 } from '../../utils/forms'
 import {
+  handleFilter,
+  toggleFilter,
+  handleCheckAll,
+  parseDataCVS,
+  handleOnClick,
+  thisDateAlreadyReachedMaxAllowed,
+  getStyleForFieldDays,
+  uncheckCheckboxSelectAll,
+} from '../../utils/contactsHelper'
+import { showInformationAboutCampaign } from '../../utils/contactsHelper'
+import { showError } from '../../utils/generic'
+import {
   RECORDS_PER_PAGE,
-  MAX_DAYS_ALLOWED_WITH_NUMBERS,
 } from '../../constants/application'
-
 import { details } from '../../services'
 import { ApplicationContext } from '../../contexts/application'
-import { showError } from '../../utils/generic'
-import './styles.css'
 
 import Search from '../common/Search/Search'
 import AskDelete from '../common/AskDelete/AskDelete'
@@ -45,6 +46,7 @@ import SendPhones from './SendPhones/SendPhones'
 import EditDetailsContact from '../DetailsContact/Modal/EditDetailsContact'
 import AssignNewPublisher from './AssignNewPublisher/AssignNewPublisher'
 import ContainerCRUD from '../../components/common/ContainerCRUD/ContainerCRUD'
+import './styles.css'
 
 class ContactsWaitingFeedbackList extends React.Component {
   constructor(props) {
@@ -79,25 +81,11 @@ class ContactsWaitingFeedbackList extends React.Component {
     }
     this.handleGetAll = this.handleGetAll.bind(this)
     this.handleDelete = this.handleDelete.bind(this)
-    this.handleCheckAll = this.handleCheckAll.bind(this)
-    this.handleOnClick = this.handleOnClick.bind(this)
-    this.toggleFilter = this.toggleFilter.bind(this)
-    this.parseDataCVS = this.parseDataCVS.bind(this)
-    this.handleFilter = this.handleFilter.bind(this)
-  }
-
-  uncheckCheckboxSelectAll() {
-    document.getElementById('checkall').checked = false
-  }
-
-  handleFilter(objQuery) {
-    const queryParams = parseQuery(objQuery, this.state)
-    setFiltersToURL(queryParams, this.props)
   }
 
   async handleGetAll() {
     this.setState({ submitting: true, checksContactsPhones: [] })
-    this.uncheckCheckboxSelectAll()
+    uncheckCheckboxSelectAll()
     const { t } = this.props
     try {
       const queryParams = getQueryParamsFromURL(this.props)
@@ -134,32 +122,6 @@ class ContactsWaitingFeedbackList extends React.Component {
       })
   }
 
-  handleOnClick(event) {
-    const {
-      target: { value, checked },
-    } = event
-    const newValues = checked
-      ? pipe(uniq, compact)([...this.state.checksContactsPhones, value])
-      : remove(
-          (valueSaved) => valueSaved === value,
-          this.state.checksContactsPhones
-        )
-
-    this.setState({
-      checksContactsPhones: newValues,
-    })
-  }
-
-  handleCheckAll(event) {
-    const {
-      target: { checked },
-    } = event
-
-    const newValues = checked
-      ? map((contact) => contact.phone, this.state.data)
-      : []
-    this.setState({ checksContactsPhones: newValues })
-  }
 
   componentDidMount() {
     this.handleGetAll()
@@ -184,60 +146,7 @@ class ContactsWaitingFeedbackList extends React.Component {
     this.handleGetAll()
   }
 
-  toggleFilter() {
-    this.setState({ hiddenFilter: !getOr(false, 'hiddenFilter', this.state) })
-  }
 
-  parseDataCVS() {
-    const { t } = this.props
-    const { checksContactsPhones, data } = this.state
-    const dataCVS = map((phone) => {
-      const contact = find((item) => item.phone === phone, data)
-      return {
-        ...contact,
-        gender: t(contact.gender),
-        typeCompany: t(`${contact.typeCompany ? 'commercial' : 'residential'}`),
-        languageName: t(`languages:${contact.languageName}`),
-        statusDescription: t(`status:${contact.statusDescription}`),
-      }
-    }, checksContactsPhones)
-    this.setState({
-      dataCVS,
-      headers: [
-        { label: t('phone'), key: 'phone' },
-        { label: t('name'), key: 'contactName' },
-        { label: t('owner'), key: 'owner' },
-        { label: t('gender'), key: 'gender' },
-        { label: t('typeCompany'), key: 'typeCompany' },
-        { label: t('language'), key: 'languageName' },
-        { label: t('status'), key: 'statusDescription' },
-        {
-          label: t('publisherCreatedBy'),
-          key: 'publisherNameCreatedBy',
-        },
-        { label: t('publisherResponsible'), key: 'publisherName' },
-      ],
-    })
-  }
-
-  getDateWithDays(date) {
-    const { t } = this.props
-
-    return `${formatDateDMY(date)} (${t('diffDate', {
-      days: diffDate(date),
-    })})`
-  }
-
-  thisDateAlreadyReachedMaxAllowed = (date) => {
-    const days = diffDate(date)
-    return days > MAX_DAYS_ALLOWED_WITH_NUMBERS
-  }
-
-  getStyleForFieldDays(date) {
-    return this.thisDateAlreadyReachedMaxAllowed(date)
-      ? 'link text-danger'
-      : 'link'
-  }
 
   getTitle(onlyText) {
     const { t } = this.props
@@ -280,7 +189,9 @@ class ContactsWaitingFeedbackList extends React.Component {
           <Col xs={12} lg={3} xl={2} className={hiddenFilter ? 'd-none' : ''}>
             <FilterData
               filters={filtersParsed}
-              handleFilters={this.handleFilter}
+              handleFilters={(objQuery) =>
+                handleFilter({ objQuery, componentReact: this })
+              }
               refresh={submitting}
               error={error}
               showTypeCompany={true}
@@ -292,7 +203,12 @@ class ContactsWaitingFeedbackList extends React.Component {
               <thead>
                 <Search
                   filters={filtersParsed}
-                  onFilter={this.handleFilter}
+                  onFilter={(objQuery) =>
+                    handleFilter({
+                      objQuery,
+                      componentReact: this,
+                    })
+                  }
                   fields={[
                     'name',
                     'phone',
@@ -302,7 +218,7 @@ class ContactsWaitingFeedbackList extends React.Component {
                     'owner',
                   ]}
                   colspan={colSpan}
-                  toggleFilter={this.toggleFilter}
+                  toggleFilter={() => toggleFilter(this)}
                 />
                 <tr>
                   <th style={{ minWidth: '60px' }}>
@@ -315,7 +231,12 @@ class ContactsWaitingFeedbackList extends React.Component {
                       bigger
                       animation="pulse"
                       value="all"
-                      onClick={this.handleCheckAll}
+                      onClick={(event) =>
+                        handleCheckAll({
+                          event,
+                          componentReact: this,
+                        })
+                      }
                     />
                   </th>
                   <th>{t('phone')}</th>
@@ -348,7 +269,7 @@ class ContactsWaitingFeedbackList extends React.Component {
                       className={`btn btn-primary ${
                         checksContactsPhones.length > 0 ? '' : 'disabled'
                       }`}
-                      onClick={this.parseDataCVS}
+                      onClick={() => parseDataCVS(this)}
                     >
                       <FontAwesomeIcon icon={faFileExcel} />
                     </CSVLink>
@@ -383,12 +304,21 @@ class ContactsWaitingFeedbackList extends React.Component {
                             color="success"
                             className="marginLeftCheckbox"
                             bigger
-                            onChange={this.handleOnClick}
+                            onChange={(event) =>
+                              handleOnClick({
+                                event,
+                                componentReact: this,
+                              })
+                            }
                           />
                         </td>
                         <td>{detailContact.phone}</td>
                         <td className="d-none d-sm-table-cell">
                           {detailContact.contactName}
+                          {showInformationAboutCampaign({
+                            detailContact,
+                            componentReact: this,
+                          })}
                         </td>
                         <td className="d-none d-lg-table-cell">
                           {t(`languages:${detailContact.languageName}`)}
@@ -403,11 +333,11 @@ class ContactsWaitingFeedbackList extends React.Component {
                           <OurToolTip
                             info={formatDateDMY(detailContact.createdAt)}
                             toolTipContent="toolTipWaitingFeedback"
-                            showTooltip={this.thisDateAlreadyReachedMaxAllowed(
+                            showTooltip={thisDateAlreadyReachedMaxAllowed(
                               detailContact.createdAt
                             )}
                             getStyleForFieldDays={() =>
-                              this.getStyleForFieldDays(detailContact.createdAt)
+                              getStyleForFieldDays(detailContact.createdAt)
                             }
                           />
                         </td>
@@ -441,7 +371,12 @@ class ContactsWaitingFeedbackList extends React.Component {
                     <Pagination
                       pagination={pagination}
                       submitting={submitting}
-                      onClick={this.handleFilter}
+                      onClick={(objQuery) =>
+                        handleFilter({
+                          objQuery,
+                          componentReact: this,
+                        })
+                      }
                     />
                   </td>
                 </tr>
