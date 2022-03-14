@@ -40,7 +40,8 @@
   "deleteRecordWaitingFeedback": "Tem certeza que deseja remover este número da lista de aguardando resposta?",
   "diffDate": "{{days}} dias",
   "toolTipWaitingFeedback": "Este contato já está com esse publicador mais do que o permitido. Favor se comunicar com o publicador para colher as informações.",
-  "numberStartsWithInvalidCharacter": "Este número começa com o caracter inválido {{character}}"
+  "numberStartsWithInvalidCharacter": "Este número começa com o caracter inválido {{character}}",
+  "giveBack": "Devolver"
 
 
 

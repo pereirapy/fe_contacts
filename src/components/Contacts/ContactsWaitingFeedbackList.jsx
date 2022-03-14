@@ -6,7 +6,7 @@ import { Checkbox } from 'pretty-checkbox-react'
 import { Table, Row, Col } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { map, getOr, isEmpty, contains, isEqual } from 'lodash/fp'
-import { faFileExcel, faHourglass } from '@fortawesome/free-solid-svg-icons'
+import { faFileExcel, faHourglass, faUndo } from '@fortawesome/free-solid-svg-icons'
 
 import {
   handleFilter,
@@ -331,6 +331,8 @@ class ContactsWaitingFeedbackList extends React.Component {
                           <EditDetailsContact
                             data={detailContact}
                             contact={detailContact}
+                            icon={faUndo}
+                            buttonTitleTranslated={t('giveBack')}
                             id={detailContact.id}
                             afterClose={this.handleGetAll}
                           />{' '}

@@ -154,10 +154,13 @@ class EditDetailsContact extends React.Component {
   render() {
     const { form, validated, publishersOptions, loading, locationsOptions } =
       this.state
-    const { t, afterClose, contact } = this.props
+    const { t, afterClose, contact, icon, buttonTitleTranslated } = this.props
+    const iconButton = icon ? icon : faEdit
+    const buttonTitle = buttonTitleTranslated
+      ? buttonTitleTranslated
+      : t('common:edit')
     const title = (
       <React.Fragment>
-        {' '}
         <FontAwesomeIcon icon={faAddressCard} />{' '}
         {`${t('common:edit')} ${t('titleCrud')} #${get('phone', contact)}`}
       </React.Fragment>
@@ -177,8 +180,8 @@ class EditDetailsContact extends React.Component {
         locationsOptions={locationsOptions}
         publishersOptions={publishersOptions}
         title={title}
-        buttonTitle={t('common:edit')}
-        buttonText={<FontAwesomeIcon variant="success" icon={faEdit} />}
+        buttonTitle={buttonTitle}
+        buttonText={<FontAwesomeIcon variant="success" icon={iconButton} />}
         buttonVariant="success"
       />
     )

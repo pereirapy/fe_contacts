@@ -40,6 +40,8 @@
   "deleteRecordWaitingFeedback": "Are you sure that you wants remove this number from list of waiting feedback?",
   "diffDate": "{{days}} days",
   "toolTipWaitingFeedback": "This contact is already with this publisher more than is allow. Please, communicate with this publisher to get the feedback",
-  "numberStartsWithInvalidCharacter": "This number starts with the invalid character {{character}}"
+  "numberStartsWithInvalidCharacter": "This number starts with the invalid character {{character}}",
+  "giveBack": "Give Back"
+
 
 }
