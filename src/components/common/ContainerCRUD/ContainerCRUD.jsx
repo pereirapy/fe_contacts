@@ -7,10 +7,10 @@ import ContainerWithNavBar from '../ContainerWithNavBar/ContainerWithNavBar'
 import './styles.css'
 
 const ContainerCRUD = (props) => {
-  const { t } = useTranslation('common')
+  const { t, i18n } = useTranslation('common')
   return (
     <ContainerWithNavBar {...props}>
-      <Helmet>
+      <Helmet  htmlAttributes={{ lang : i18n.language }}>
         <title>
           {props.titleOnlyText ? `${props.titleOnlyText} - ` : ''}
           {t('appName')}

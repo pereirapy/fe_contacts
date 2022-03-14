@@ -7,10 +7,10 @@ import NavBarMenu from '../NavBar/NavBar'
 import Footer from '../Footer/Footer'
 
 const ContainerWithNavBar = (props) => {
-  const { t } = useTranslation('common')
+  const { t, i18n } = useTranslation('common')
   return (
     <React.Fragment>
-      <Helmet>
+      <Helmet  htmlAttributes={{ lang : i18n.language }}>
         <title>
           {`${props.titleOnlyText || t('home')} - ${t('appName')}`}
         </title>
