@@ -64,7 +64,7 @@ class CampaignListAllContacts extends React.Component {
       campaignData: null,
       statusForbidden: [ID_STATUS_NO_VISIT, ID_STATUS_SEND_TO_OTHER_CONG],
       queryParams: {
-        sort: '"idStatus":ASC,"lastConversationInDays":DESC,name:IS NULL DESC,name:ASC',
+        sort: '"idStatus":ASC,name:IS NULL DESC,name:ASC',
         perPage: RECORDS_PER_PAGE,
         currentPage: 1,
         filters: JSON.stringify({
