@@ -2,6 +2,7 @@ import {
   parseQuery,
   setFiltersToURL,
   formatDateDMYHHmm,
+  diffDate,
 } from './forms'
 import {
   map,
@@ -14,7 +15,7 @@ import {
   find,
   isNil,
   contains,
-  some
+  some,
 } from 'lodash/fp'
 import {
   ID_STATUS_AVAILABLE,
@@ -56,12 +57,45 @@ export function toggleFilter(componentReact) {
   })
 }
 
-export function parseDataCVS(componentReact) {
+function getHeaders(t, isWaitingFeedback) {
+  const headersGeneric = [
+    { label: t('phone'), key: 'phone' },
+    { label: t('name'), key: 'name' },
+    { label: t('owner'), key: 'owner' },
+    { label: t('gender'), key: 'gender' },
+    { label: t('typeCompany'), key: 'typeCompany' },
+    { label: t('language'), key: 'languageName' },
+    { label: t('status'), key: 'statusDescription' },
+    { label: t('location'), key: 'locationName' },
+  ]
+
+  return isWaitingFeedback
+    ? [
+        ...headersGeneric,
+        {
+          label: t('publisherCreatedBy'),
+          key: 'publisherNameCreatedBy',
+        },
+        { label: t('publisherResponsible'), key: 'publisherName' },
+      ]
+    : [
+        ...headersGeneric,
+        {
+          label: t('lastConversationsInDays'),
+          key: 'lastConversationInDays',
+        },
+        { label: t('details'), key: 'details' },
+      ]
+}
+
+export function parseDataCVS(componentReact, isWaitingFeedback) {
   const { t } = componentReact.props
   const { checksContactsPhones, data } = componentReact.state
+  const headers = getHeaders(t, isWaitingFeedback)
+
   const dataCVS = map((phone) => {
     const contact = find((item) => item.phone === phone, data)
-    return {
+    const basicData = {
       ...contact,
       gender: t(contact.gender),
       typeCompany: t(`${contact.typeCompany ? 'commercial' : 'residential'}`),
@@ -70,27 +104,21 @@ export function parseDataCVS(componentReact) {
       locationName: isNil(contact.idLocation)
         ? t('unknownLocation')
         : `${contact.locationName} - ${contact.departmentName}`,
-      lastConversationInDays: t(`${contact.lastConversationInDays}`),
-      details: contact.information,
+    }
+    if (isWaitingFeedback) {
+      return basicData
+    } else {
+      return {
+        ...basicData,
+        lastConversationInDays: t(`${contact.lastConversationInDays}`),
+        details: t(`detailsContacts:${contact.information}`),
+      }
     }
   }, checksContactsPhones)
+
   componentReact.setState({
     dataCVS,
-    headers: [
-      { label: t('phone'), key: 'phone' },
-      { label: t('name'), key: 'name' },
-      { label: t('owner'), key: 'owner' },
-      { label: t('gender'), key: 'gender' },
-      { label: t('typeCompany'), key: 'typeCompany' },
-      { label: t('language'), key: 'languageName' },
-      { label: t('status'), key: 'statusDescription' },
-      { label: t('location'), key: 'locationName' },
-      {
-        label: t('lastConversationsInDays'),
-        key: 'lastConversationInDays',
-      },
-      { label: t('details'), key: 'details' },
-    ],
+    headers,
   })
 }
 
@@ -122,19 +150,20 @@ export function setSubRowVisible(contact) {
   return { visibility: 'hidden' }
 }
 
-export function thisDateAlreadyReachedMaxAllowed({
-  waitingFeedback,
-  lastConversationInDays,
-}) {
-  return (
-    waitingFeedback &&
-    lastConversationInDays !== '99999999999' &&
-    lastConversationInDays > MAX_DAYS_ALLOWED_WITH_NUMBERS
-  )
+export function thisDateAlreadyReachedMaxAllowed(contact) {
+  if (contact.waitingFeedback) {
+    const days = diffDate(contact.createdAt)
+    return days > MAX_DAYS_ALLOWED_WITH_NUMBERS
+  } else {
+    return (
+      contact.lastConversationInDays !== '99999999999' &&
+      contact.lastConversationInDays > MAX_DAYS_ALLOWED_WITH_NUMBERS
+    )
+  }
 }
 
 export function getStyleForFieldDays(contact) {
-  return thisDateAlreadyReachedMaxAllowed(contact) ? ' text-danger' : ''
+  return thisDateAlreadyReachedMaxAllowed(contact) ? 'link text-danger' : 'link'
 }
 
 export function setBackgroundForbidden({ contact, componentReact }) {

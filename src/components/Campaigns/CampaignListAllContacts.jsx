@@ -270,7 +270,7 @@ class CampaignListAllContacts extends React.Component {
                       className={`btn btn-primary ${
                         checksContactsPhones.length > 0 ? '' : 'disabled'
                       }`}
-                      onClick={() => parseDataCVS(this)}
+                      onClick={() => parseDataCVS(this, false)}
                     >
                       <FontAwesomeIcon icon={faFileExcel} />
                     </CSVLink>

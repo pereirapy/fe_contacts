@@ -19,8 +19,6 @@ import {
   handleCheckAll,
   parseDataCVS,
   handleOnClick,
-  thisDateAlreadyReachedMaxAllowed,
-  getStyleForFieldDays,
   uncheckCheckboxSelectAll,
   setBackgroundForbidden,
   getInformationAboveName,
@@ -45,7 +43,6 @@ import SendPhones from './SendPhones/SendPhones'
 import AskDelete from '../common/AskDelete/AskDelete'
 import NoRecords from '../common/NoRecords/NoRecords'
 import BatchChanges from './BatchChanges/BatchChanges'
-import OurToolTip from '../common/OurToolTip/OurToolTip'
 import Pagination from '../common/Pagination/Pagination'
 import FilterData from '../common/FilterData/FilterData'
 import ContainerCRUD from '../common/ContainerCRUD/ContainerCRUD'
@@ -290,7 +287,7 @@ class Contacts extends React.Component {
                       className={`btn btn-primary ${
                         checksContactsPhones.length > 0 ? '' : 'disabled'
                       }`}
-                      onClick={() => parseDataCVS(this)}
+                      onClick={() => parseDataCVS(this, false)}
                     >
                       <FontAwesomeIcon icon={faFileExcel} />
                     </CSVLink>
@@ -376,16 +373,7 @@ class Contacts extends React.Component {
                           {t(`status:${contact.statusDescription}`)}
                         </td>
                         <td className="d-none d-lg-table-cell">
-                          <OurToolTip
-                            info={t(contact.lastConversationInDays)}
-                            toolTipContent="toolTipWaitingFeedback"
-                            showTooltip={thisDateAlreadyReachedMaxAllowed(
-                              contact
-                            )}
-                            getStyleForFieldDays={() =>
-                              getStyleForFieldDays(contact)
-                            }
-                          />
+                          {t(contact.lastConversationInDays)}
                         </td>
                         {modeAllContacts && (
                           <td

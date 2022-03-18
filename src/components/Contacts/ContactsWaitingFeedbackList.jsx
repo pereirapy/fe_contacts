@@ -6,7 +6,11 @@ import { Checkbox } from 'pretty-checkbox-react'
 import { Table, Row, Col } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { map, getOr, isEmpty, contains, isEqual } from 'lodash/fp'
-import { faFileExcel, faHourglass, faUndo } from '@fortawesome/free-solid-svg-icons'
+import {
+  faFileExcel,
+  faHourglass,
+  faUndo,
+} from '@fortawesome/free-solid-svg-icons'
 
 import {
   handleFilter,
@@ -252,7 +256,7 @@ class ContactsWaitingFeedbackList extends React.Component {
                       className={`btn btn-primary ${
                         checksContactsPhones.length > 0 ? '' : 'disabled'
                       }`}
-                      onClick={() => parseDataCVS(this)}
+                      onClick={() => parseDataCVS(this, true)}
                     >
                       <FontAwesomeIcon icon={faFileExcel} />
                     </CSVLink>
@@ -317,10 +321,10 @@ class ContactsWaitingFeedbackList extends React.Component {
                             info={formatDateDMY(detailContact.createdAt)}
                             toolTipContent="toolTipWaitingFeedback"
                             showTooltip={thisDateAlreadyReachedMaxAllowed(
-                              detailContact.createdAt
+                              detailContact
                             )}
                             getStyleForFieldDays={() =>
-                              getStyleForFieldDays(detailContact.createdAt)
+                              getStyleForFieldDays(detailContact)
                             }
                           />
                         </td>
