@@ -47,8 +47,11 @@ const getAll = (filter) => {
   return api.get(`/contacts${query}`)
 }
 const getAllFilters = () => api.get(`/contacts/filters`)
-const getSummary = (id) => api.get(`/contacts/summary`)
+const getSummary = () => api.get(`/contacts/summary`)
 const getSummaryOneCampaign = (id) => api.get(`/contacts/${id}/summary`)
+const getWhichSummary = (id) => {
+  return id ? getSummaryOneCampaign(id) : getSummary()
+}
 const getOne = (id) => api.get(`/contacts/${id}`)
 
 const create = (data) => api.post('/contacts', data)
@@ -70,6 +73,7 @@ const allExport = {
   updateSome,
   getSummary,
   getSummaryOneCampaign,
+  getWhichSummary,
 }
 
 export default allExport

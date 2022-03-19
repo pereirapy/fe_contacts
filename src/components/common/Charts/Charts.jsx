@@ -150,12 +150,8 @@ class Charts extends React.Component {
   async handleGetSummary() {
     this.setState({ loading: true })
     const { campaign } = this.props
-    const getData = campaign?.id
-      ? contacts.getSummaryOneCampaign
-      : contacts.getSummary
-
     try {
-      const response = await getData(campaign?.id)
+      const response = await contacts.getWhichSummary(campaign?.id)
       const data = get('data', response)
 
       this.setState({
