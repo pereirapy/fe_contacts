@@ -12,6 +12,7 @@ i18n
   .init({
     lng,
     debug: false,
+    compatibilityJSON: 'v3',
     load: 'currentOnly',
     fallbackLng: 'en-GB',
     defaultNS: 'common',

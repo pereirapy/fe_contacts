@@ -71,6 +71,8 @@
   "campaigns_name_unique": "Este nome de campanha já existe",
   "ERROR_ID_CAMPAIGN_IS_MISSING": "Campanha não encontrada",
   "appName": "Contatos",
-  "appDescription": "Este é um App para ajudar as TJ com o trabalho de pregação por telefone"
+  "appDescription": "Este é um App para ajudar as TJ com o trabalho de pregação por telefone",
+  "UNAUTHORIZED" : "Você não está autorizado"
+
 
 }

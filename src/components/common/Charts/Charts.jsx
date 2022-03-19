@@ -1,12 +1,12 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { get } from 'lodash/fp'
-import { withTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import { Row, Col, Container, Card } from 'react-bootstrap'
 
-import { ApplicationContext } from '../../../contexts/application'
+import useApplicationContext from '../../../hooks/useApplicationContext'
 import { showError, parseErrorMessage } from '../../../utils/generic'
 import { diffDate } from '../../../utils/forms'
-import { contacts } from '../../../services'
+import { contacts, campaigns } from '../../../services'
 import './charts.styles.css'
 
 import ChartByContacted from './ByContacted'
@@ -46,11 +46,11 @@ function CardHeaderCampaignActiveNext({
   )
 }
 
-function CardHeaderCampaign({ campaign, campaignNext, t }) {
-  return campaign ? (
+function CardHeaderCampaign({ campaignActive, campaignNext, t }) {
+  return campaignActive ? (
     <CardHeaderCampaignActiveNext
-      name={campaign.name}
-      date={campaign.dateFinal}
+      name={campaignActive.name}
+      date={campaignActive.dateFinal}
       color="success"
       translationKey="daysToFinishActiveCampaign"
       t={t}
@@ -70,14 +70,14 @@ function RenderChartsWithCampaign({
   data,
   loading,
   isAtLeastElder,
-  campaign,
+  campaignActive,
   campaignNext,
   t,
 }) {
   return (
     <Card>
       <CardHeaderCampaign
-        campaign={campaign}
+        campaignActive={campaignActive}
         campaignNext={campaignNext}
         t={t}
       />
@@ -114,16 +114,16 @@ function RenderCharts({
   data,
   loading,
   isAtLeastElder,
-  campaign,
-  t,
+  campaignActive,
   campaignNext,
+  t,
 }) {
-  return campaign || campaignNext ? (
+  return campaignActive || campaignNext ? (
     <RenderChartsWithCampaign
       data={data}
       loading={loading}
       isAtLeastElder={isAtLeastElder}
-      campaign={campaign}
+      campaignActive={campaignActive}
       campaignNext={campaignNext}
       t={t}
     />
@@ -136,73 +136,67 @@ function RenderCharts({
   )
 }
 
-class Charts extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      data: [],
-      loading: true,
-      error: false,
+const Charts = () => {
+  const [data, setData] = useState([])
+  const [campaignActiveData, setCampaignActiveData] = useState({})
+  const [campaignNextData, setCampaignNextData] = useState({})
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(false)
+  const { isAtLeastElder, updateContext, hasToken } = useApplicationContext()
+  const { t } = useTranslation(['dashboard', 'common'])
+
+  useEffect(() => {
+    async function handleGetSummary() {
+      setLoading(true)
+      try {
+        const responseActive = await campaigns.getDetailsActive()
+        const campaignActive = responseActive.data.data || null
+        const responseNext = await campaigns.getDetailsNext()
+        const campaignNext = responseNext.data.data || null
+
+        const response = await contacts.getWhichSummary(campaignActive?.id)
+        const dataSummary = get('data', response)
+
+        updateContext((previous) => ({
+          ...previous,
+          campaignActive,
+          campaignNext,
+        }))
+        setData(dataSummary)
+        setCampaignActiveData(campaignActive)
+        setCampaignNextData(campaignNext)
+
+        setLoading(false)
+      } catch (error) {
+        setLoading(false)
+        setError(t(`common:${parseErrorMessage(error)}`))
+        showError(error, t, 'dashboard')
+      }
     }
-    this.handleGetSummary = this.handleGetSummary.bind(this)
-  }
 
-  async handleGetSummary() {
-    this.setState({ loading: true })
-    const { campaign } = this.props
-    try {
-      const response = await contacts.getWhichSummary(campaign?.id)
-      const data = get('data', response)
+    if (hasToken) handleGetSummary()
+  }, [hasToken, updateContext, t])
 
-      this.setState({
-        data,
-        loading: false,
-      })
-    } catch (error) {
-      const { t } = this.props
-
-      this.setState({
-        error: t(`common:${parseErrorMessage(error)}`),
-        loading: false,
-      })
-      showError(error, t, 'dashboard')
-    }
-  }
-
-  buildSubTitleMessage = () =>
-    `${this.props.t('welcome')}, ${get('name', this.context.user)}`
-
-  componentDidMount() {
-    this.handleGetSummary()
-  }
-
-  render() {
-    const { data, loading, error } = this.state
-    const { isAtLeastElder, campaignNext } = this.context
-    const { t, campaign } = this.props
-    return (
-      <Container>
-        {error ? (
-          <Row className="text-center">
-            <Col>
-              <ShowErrorComponent error={error} />
-            </Col>
-          </Row>
-        ) : (
-          <RenderCharts
-            data={data}
-            loading={loading}
-            isAtLeastElder={isAtLeastElder}
-            campaign={campaign}
-            campaignNext={campaignNext}
-            t={t}
-          />
-        )}
-      </Container>
-    )
-  }
+  return (
+    <Container>
+      {error ? (
+        <Row className="text-center">
+          <Col>
+            <ShowErrorComponent error={error} />
+          </Col>
+        </Row>
+      ) : (
+        <RenderCharts
+          data={data}
+          loading={loading}
+          isAtLeastElder={isAtLeastElder}
+          campaignActive={campaignActiveData}
+          campaignNext={campaignNextData}
+          t={t}
+        />
+      )}
+    </Container>
+  )
 }
 
-Charts.contextType = ApplicationContext
-
-export default withTranslation(['dashboard', 'common'])(Charts)
+export default Charts

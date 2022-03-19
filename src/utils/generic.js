@@ -1,4 +1,4 @@
-import { get, getOr, isEmpty, isNumber } from 'lodash/fp'
+import { get, getOr, isEmpty, isNumber, camelCase } from 'lodash/fp'
 import Swal from 'sweetalert2'
 
 const randomColor = () =>
@@ -12,8 +12,11 @@ const parseErrorMessage = (error) => {
     error
   )
 
-  const errorCode = get('response.data.error.code', error)
-
+  const errorCode = getOr(
+    get('response.data.cod', error),
+    'response.data.error.code',
+    error
+  )
   const errorMessage = isEmpty(get('response.data.error', error))
     ? null
     : get('response.data.error', error)
@@ -36,20 +39,31 @@ const parseErrorMessageTranslated = (error, t, fileTranslationName, extra) => {
     extra
   )
   const paramsExtraForTranslation = get('paramsExtraForTranslation', extra)
-
+  const translationAlternativeTwo = t(`common:errorTextUndefined`)
+  const translationAlternativeOne = t(
+    `common:${keyOfTranslationWhenNotFoundForTitleAlert}`,
+    translationAlternativeTwo
+  )
   const title = t(
     `${fileTranslationName}:${keyOfTranslationWhenNotFoundForTitleAlert}`,
-    t(
-      `common:${keyOfTranslationWhenNotFoundForTitleAlert}`,
-      t(`common:errorTextUndefined`)
-    )
+    translationAlternativeOne
   )
-  const preText = t(
-    `${fileTranslationName}:${parseErrorMessage(error)}`,
-    paramsExtraForTranslation
-      ? paramsExtraForTranslation
-      : t(`common:${parseErrorMessage(error)}`)
+  const errorParsed = parseErrorMessage(error)
+  const hasErrorFileTranslationName = errorParsed.indexOf(':') !== -1
+  const errorFirstOption = hasErrorFileTranslationName
+    ? errorParsed
+    : `${fileTranslationName}:${errorParsed}`
+  const errorParsedTranslated = t(`${errorParsed}`)
+
+  const secondMessageError = paramsExtraForTranslation
+    ? paramsExtraForTranslation
+    : errorParsedTranslated
+  const appendNameSpace =
+    secondMessageError === 'Network Error' ? '' : 'common:'
+  const secondMessageErrorTranslated = t(
+    `${appendNameSpace}${secondMessageError}`
   )
+  const preText = t(errorFirstOption, secondMessageErrorTranslated)
 
   const text = title !== preText ? preText : null
 

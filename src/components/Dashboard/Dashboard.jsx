@@ -19,8 +19,6 @@ class Dashboard extends React.Component {
 
   render() {
     const { t } = this.props
-    const { campaignActive } = this.context
-
     return (
       <ContainerWithNavBar {...this.props} titleOnlyText={t('titleOnlyText')}>
         <Row className="mt-4">
@@ -49,7 +47,7 @@ class Dashboard extends React.Component {
             <Image src={logo} fluid />
           </Col>
         </Row>
-        <Charts campaign={campaignActive} />
+        <Charts />
       </ContainerWithNavBar>
     )
   }
