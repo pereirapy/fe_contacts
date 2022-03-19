@@ -76,11 +76,13 @@ function RenderChartsWithCampaign({
 }) {
   return (
     <Card>
-      <CardHeaderCampaign
-        campaignActive={campaignActive}
-        campaignNext={campaignNext}
-        t={t}
-      />
+      {!loading && (
+        <CardHeaderCampaign
+          campaignActive={campaignActive}
+          campaignNext={campaignNext}
+          t={t}
+        />
+      )}
       <Card.Body>
         <RenderOnlyCharts
           data={data}
