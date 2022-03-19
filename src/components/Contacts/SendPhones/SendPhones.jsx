@@ -1,7 +1,9 @@
 import React from 'react'
+import Swal from 'sweetalert2'
 import { withTranslation } from 'react-i18next'
-import OurModal from '../../common/OurModal/OurModal'
-import ElementError from '../../common/ElementError/ElementError'
+import SimpleReactValidator from 'simple-react-validator'
+import { faWhatsapp } from '@fortawesome/free-brands-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   getOr,
   map,
@@ -13,21 +15,22 @@ import {
   isEmpty,
   isNil,
 } from 'lodash/fp'
-import SimpleReactValidator from 'simple-react-validator'
+
 import {
   getLocale,
   handleInputChangeGeneric,
   formatDateDMYHHmm,
 } from '../../../utils/forms'
 import { contacts, publishers } from '../../../services'
-import FormSendPhones from './FormSendPhones'
-import { faWhatsapp } from '@fortawesome/free-brands-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { URL_SEND_MESSAGE } from '../../../constants/settings'
+import { WAITING_FEEDBACK } from '../../../constants/contacts'
 import { showError, showSuccessful } from '../../../utils/generic'
-import { reducePublishers } from '../../../stateReducers/publishers'
-import Swal from 'sweetalert2'
 import { ApplicationContext } from '../../../contexts/application'
+import { reducePublishers } from '../../../stateReducers/publishers'
+
+import FormSendPhones from './FormSendPhones'
+import OurModal from '../../common/OurModal/OurModal'
+import ElementError from '../../common/ElementError/ElementError'
 
 const fields = {
   idPublisher: '',
@@ -123,6 +126,14 @@ class SendPhones extends React.Component {
     )(publishersOptions)
   }
 
+  getDetailsLastConversation({ information }) {
+    const { t } = this.props
+
+    return information === WAITING_FEEDBACK
+      ? t(`contacts:${information}`)
+      : information
+  }
+
   getInformation(contact) {
     const { t } = this.props
     const contactName = !isEmpty(contact.name)
@@ -136,9 +147,8 @@ class SendPhones extends React.Component {
     const contactGender = !isEmpty(contact.gender)
       ? ` ${t('contacts:gender') + ':'} ${t(`contacts:${contact.gender}`)} - `
       : ''
-
     const lastInformation = !isEmpty(contact.information)
-      ? `${t(`contacts:${contact.information}`)} - ${formatDateDMYHHmm(
+      ? `${this.getDetailsLastConversation(contact)} - ${formatDateDMYHHmm(
           contact.createdAtDetailsContacts
         )}`
       : t('withoutDetails')
