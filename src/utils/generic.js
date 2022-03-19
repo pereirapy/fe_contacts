@@ -1,4 +1,4 @@
-import { get, getOr, isEmpty, isNumber, camelCase } from 'lodash/fp'
+import { get, getOr, isEmpty, isNumber } from 'lodash/fp'
 import Swal from 'sweetalert2'
 
 const randomColor = () =>
