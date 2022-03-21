@@ -1,6 +1,6 @@
 {
   "name": "fe_contacts",
-  "version": "3.0.4",
+  "version": "3.1.0",
   "private": true,
   "resolutions": {
     "react-error-overlay": "6.0.9"
