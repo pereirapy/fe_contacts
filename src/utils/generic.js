@@ -1,45 +1,42 @@
-import { get, getOr, isEmpty, isNumber } from 'lodash/fp'
+import { get, getOr, isEmpty, isNumber, camelCase } from 'lodash/fp'
 import Swal from 'sweetalert2'
 
 const randomColor = () =>
   `#${(Math.random() * 0xfffff * 1000000).toString(16).slice(0, 6)}`
 
 const parseErrorMessage = (error) => {
-  const message = get('message', error)
+  const message = camelCase(get('message', error))
   const errorConstraint = getOr(
     get('response.data.error.constraint', error),
     'response.data.constraint',
     error
   )
 
-  const errorCode = getOr(
-    get('response.data.cod', error),
-    'response.data.error.code',
-    error
-  )
+  const errorCode = get('response.data.error.code', error)
+
   const errorMessage = isEmpty(get('response.data.error', error))
     ? null
     : get('response.data.error', error)
-
-  return errorConstraint
-    ? errorConstraint
-    : errorCode
-    ? errorCode
-    : errorMessage
-    ? errorMessage
-    : message
-    ? message
-    : 'errorTextUndefined'
+  if (errorConstraint) return errorConstraint
+  if (errorCode) return errorCode
+  if (errorMessage) return errorMessage
+  if (message) return message
+  return 'errorTextUndefined'
 }
 
-const parseErrorMessageTranslated = (error, t, fileTranslationName, extra) => {
+const getTitleTranslatedMessageError = (
+  error,
+  t,
+  fileTranslationName,
+  extra
+) => {
   const keyOfTranslationWhenNotFoundForTitleAlert = getOr(
     get('response.data.cod', error),
     'keyOfTranslationWhenNotFoundForTitleAlert',
     extra
   )
-  const paramsExtraForTranslation = get('paramsExtraForTranslation', extra)
   const translationAlternativeTwo = t(`common:errorTextUndefined`)
+
   const translationAlternativeOne = t(
     `common:${keyOfTranslationWhenNotFoundForTitleAlert}`,
     translationAlternativeTwo
@@ -48,24 +45,35 @@ const parseErrorMessageTranslated = (error, t, fileTranslationName, extra) => {
     `${fileTranslationName}:${keyOfTranslationWhenNotFoundForTitleAlert}`,
     translationAlternativeOne
   )
-  const errorParsed = parseErrorMessage(error)
-  const hasErrorFileTranslationName = errorParsed.indexOf(':') !== -1
-  const errorFirstOption = hasErrorFileTranslationName
-    ? errorParsed
-    : `${fileTranslationName}:${errorParsed}`
-  const errorParsedTranslated = t(`${errorParsed}`)
+  return title
+}
 
-  const secondMessageError = paramsExtraForTranslation
+const parseErrorMessageTranslated = (error, t, fileTranslationName, extra) => {
+  const title = getTitleTranslatedMessageError(
+    error,
+    t,
+    fileTranslationName,
+    extra
+  )
+
+  const paramsExtraForTranslation = get('paramsExtraForTranslation', extra)
+  const errorParsed = parseErrorMessage(error)
+  const errorText = `${fileTranslationName}:${errorParsed}`
+
+  const errorParsedTranslated = t(`${errorParsed}`, paramsExtraForTranslation)
+
+  const defaultMessageError = paramsExtraForTranslation
     ? paramsExtraForTranslation
     : errorParsedTranslated
-  const appendNameSpace =
-    secondMessageError === 'Network Error' ? '' : 'common:'
-  const secondMessageErrorTranslated = t(
-    `${appendNameSpace}${secondMessageError}`
-  )
-  const preText = t(errorFirstOption, secondMessageErrorTranslated)
 
-  const text = title !== preText ? preText : null
+  const defaultMessageErrorTranslated = t(`common:${defaultMessageError}`)
+
+  const detailsMessage = t(errorText, {
+    ...paramsExtraForTranslation,
+    defaultValue: defaultMessageErrorTranslated,
+  })
+
+  const text = title !== detailsMessage ? detailsMessage : null
 
   return { title, text }
 }

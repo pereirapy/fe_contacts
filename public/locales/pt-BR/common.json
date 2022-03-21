@@ -47,7 +47,7 @@
   "errorTextUndefined": "Erro indefinido",
   "new": "Novo",
   "errorWithoutDetails": "Sem detalhes",
-  "Network Error": "Erro de conexão",
+  "networkError": "Erro de conexão",
   "NO_PERMISSION_ENOUGH": "Você não tem as permissões suficientes",
   "loading": "Carregando",
   "ops": "Ops!!",
@@ -57,7 +57,7 @@
   "sendOverWhatsApp": "Enviar via WhatsApp",
   "total": "Total",
   "list": "Listagem",
-  "timeout of 10000ms exceeded": "Esgotou o tempo máximo para esperar uma resposta do servidor",
+  "timeoutOf1MsExceeded": "Esgotou o tempo máximo para esperar uma resposta do servidor",
   "NO_TOKEN": "O token não foi encontrado",
   "HAVE_TO_REAUTHENTICATE": "É necessário que inicie a sessão novamente",
   "placeHolderSelect": "Selecione...",
@@ -72,7 +72,5 @@
   "ERROR_ID_CAMPAIGN_IS_MISSING": "Campanha não encontrada",
   "appName": "Contatos",
   "appDescription": "Este é um App para ajudar as TJ com o trabalho de pregação por telefone",
-  "UNAUTHORIZED" : "Você não está autorizado"
-
-
+  "UNAUTHORIZED": "Você não está autorizado"
 }

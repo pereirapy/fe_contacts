@@ -25,8 +25,9 @@ class StatusSelect extends React.Component {
       )(await status.getAll())
       this.setState({ statusOptions, loading: false })
     } catch (error) {
+      const messageParsed = parseErrorMessage(error) 
       this.setState({
-        error: t(`common:${parseErrorMessage(error)}`),
+        error: t(`common:${messageParsed}`, messageParsed),
         loading: false,
       })
     }

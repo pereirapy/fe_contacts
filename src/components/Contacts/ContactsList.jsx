@@ -49,9 +49,16 @@ import ContainerCRUD from '../common/ContainerCRUD/ContainerCRUD'
 import ListDetailsContact from '../DetailsContact/Modal/ListDetailsContact'
 import './styles.css'
 
+const defaultSort =
+  '"waitingFeedback":DESC,"idStatus":ASC,name:IS NULL DESC,name:ASC'
+const sortNoCampaign =
+  '"idStatus":ASC,"lastConversationInDays":DESC,name:IS NULL DESC,name:ASC'
+
 class Contacts extends React.Component {
   constructor(props) {
     super(props)
+
+    const modeAllContacts = props.modeAllContacts ? '-1' : '0'
 
     this.state = {
       data: [],
@@ -64,7 +71,7 @@ class Contacts extends React.Component {
       pagination: {},
       statusForbidden: [ID_STATUS_NO_VISIT, ID_STATUS_SEND_TO_OTHER_CONG],
       queryParams: {
-        sort: '"waitingFeedback":DESC,"idStatus":ASC,name:IS NULL DESC,name:ASC',
+        sort: defaultSort,
         perPage: RECORDS_PER_PAGE,
         currentPage: 1,
         filters: JSON.stringify({
@@ -73,10 +80,11 @@ class Contacts extends React.Component {
           phone: '',
           note: '',
           typeCompany: '-1',
-          modeAllContacts: props.modeAllContacts ? '-1' : '0',
+          modeAllContacts,
           genders: [],
           languages: [],
           status: [],
+          campaigns: [],
         }),
       },
     }
@@ -84,7 +92,7 @@ class Contacts extends React.Component {
     this.handleDelete = this.handleDelete.bind(this)
   }
 
-  async handleGetAll() {
+  async handleGetAll(newQueyParams) {
     this.setState({ submitting: true, checksContactsPhones: [] })
     uncheckCheckboxSelectAll()
     const { t } = this.props
@@ -92,7 +100,8 @@ class Contacts extends React.Component {
       const queryParams = getQueryParamsFromURL(this.props)
         ? getQueryParamsFromURL(this.props)
         : this.state.queryParams
-      const response = await contacts.getAll(queryParams)
+      const lastQueryParams = newQueyParams ? newQueyParams : queryParams
+      const response = await contacts.getAll(lastQueryParams)
       const error = getOr([], 'data.errors[0]', response)
       if (isEmpty(error)) {
         this.setState({
@@ -100,7 +109,7 @@ class Contacts extends React.Component {
           pagination: getOr({}, 'data.data.data.data.pagination', response),
           submitting: false,
           error: false,
-          queryParams,
+          queryParams: lastQueryParams,
         })
       } else {
         this.setState({
@@ -132,13 +141,33 @@ class Contacts extends React.Component {
       })
   }
 
+  updateSort() {
+    const { campaignActive } = this.context
+    const { modeAllContacts } = this.props
+    const { queryParams } = this.state
+
+    const sort =
+      !campaignActive && !modeAllContacts ? sortNoCampaign : defaultSort
+    const newQueyParams = {
+      ...queryParams,
+      sort,
+    }
+
+    this.setState({
+      queryParams: newQueyParams,
+    })
+    return newQueyParams
+  }
+
   componentDidMount() {
     const { isPublisher } = this.context
+    const { history } = this.props
+
     if (isPublisher) {
-      const { history } = this.props
       history.push('/')
     } else {
-      this.handleGetAll()
+      const newQueyParams = this.updateSort()
+      this.handleGetAll(newQueyParams)
     }
   }
 
@@ -162,7 +191,8 @@ class Contacts extends React.Component {
     const title = modeAllContacts ? 'listAllTitle' : 'listTitle'
 
     const { campaignActive } = this.context
-    const campaignName = campaignActive ? ` - ${campaignActive.name}` : ''
+    const campaignName =
+      campaignActive && !modeAllContacts ? ` - ${campaignActive.name}` : ''
     const fullTitle = `${t(title)}${campaignName}`
 
     return onlyText ? (
@@ -172,6 +202,16 @@ class Contacts extends React.Component {
         <FontAwesomeIcon icon={faGlobeAmericas} /> {fullTitle}
       </React.Fragment>
     )
+  }
+
+  getFilterQueryParams() {
+    const { campaignActive } = this.context
+    const { modeAllContacts } = this.props
+    return campaignActive && !modeAllContacts
+      ? {
+          toOmit: JSON.stringify(['campaigns']),
+        }
+      : {}
   }
 
   render() {
@@ -191,7 +231,7 @@ class Contacts extends React.Component {
     const colSpan = '10'
     const title = this.getTitle()
     const titleOnlyText = this.getTitle(true)
-
+    const filtersParams = this.getFilterQueryParams()
     const filtersParsed = JSON.parse(filters)
     return (
       <ContainerCRUD
@@ -210,7 +250,7 @@ class Contacts extends React.Component {
               refresh={submitting}
               error={error}
               showTypeCompany={true}
-              getFilters={contacts.getAllFilters}
+              getFilters={() => contacts.getAllFilters(filtersParams)}
             />
           </Col>
           <Col xs={12} lg={hiddenFilter ? 12 : 9} xl={hiddenFilter ? 12 : 10}>

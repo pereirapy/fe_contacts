@@ -1,13 +1,12 @@
 import React from 'react'
-import Swal from 'sweetalert2'
 import { Table } from 'react-bootstrap'
-import { getOr, map, isEmpty } from 'lodash/fp'
+import { map, isEmpty } from 'lodash/fp'
 import { withTranslation } from 'react-i18next'
 import { faLanguage } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import { languages } from '../../services'
-import { parseErrorMessage } from '../../utils/generic'
+import { showError } from '../../utils/generic'
 
 import LanguagesNew from './LanguagesNew'
 import LanguagesEdit from './LanguagesEdit'
@@ -29,10 +28,7 @@ class LanguagesList extends React.Component {
       this.setState({ data: response.data.data })
     } catch (error) {
       const { t } = this.props
-      Swal.fire({
-        icon: 'error',
-        title: t(`common:${parseErrorMessage(error)}`),
-      })
+      showError(error, t, 'languages')
     }
   }
 
@@ -47,15 +43,7 @@ class LanguagesList extends React.Component {
       })
       .catch((error) => {
         this.setState({ submitting: false })
-        Swal.fire({
-          icon: 'error',
-          title: t(
-            `common:${getOr('errorTextUndefined', 'response.data.cod', error)}`
-          ),
-          text: t(
-            `${getOr('errorTextUndefined', 'response.data.error', error)}`
-          ),
-        })
+        showError(error, t, 'languages')
       })
   }
 

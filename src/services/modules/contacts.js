@@ -1,5 +1,5 @@
 import api from '../api'
-import { buildGql } from '../../utils/forms'
+import { buildGql, toQueryString } from '../../utils/forms'
 
 const CONTACTS = [
   'name',
@@ -46,7 +46,8 @@ const getAll = (filter) => {
 
   return api.get(`/contacts${query}`)
 }
-const getAllFilters = () => api.get(`/contacts/filters`)
+const getAllFilters = (params) =>
+  api.get(`/contacts/filters${toQueryString(params)}`)
 const getSummary = () => api.get(`/contacts/summary`)
 const getSummaryOneCampaign = (id) => api.get(`/contacts/${id}/summary`)
 const getWhichSummary = (id) => {

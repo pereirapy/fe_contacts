@@ -132,9 +132,12 @@ class NewContact extends React.Component {
       const contact = getOr(0, 'response.data.extra.contact', error)
       const name = get('name', contact)
       const phone = get('phone', contact)
-      showError(error, t, 'contacts', {
-        paramsExtraForTranslation: { name, phone },
-      })
+      if (name || phone) {
+        const paramsExtraForTranslation = { name, phone }
+        showError(error, t, 'contacts', {
+          paramsExtraForTranslation,
+        })
+      } else showError(error, t, 'contacts')
       this.setState({ submitting: false })
     }
   }

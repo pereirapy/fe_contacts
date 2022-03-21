@@ -47,7 +47,7 @@
   "errorTextUndefined": "Error undefined",
   "new": "New",
   "errorWithoutDetails": "Without details",
-  "Network Error": "Error Network",
+  "networkError": "Error Network",
   "NO_PERMISSION_ENOUGH": "You don't have enough permissions",
   "loading": "Loading",
   "ops": "Ops!!",
@@ -57,7 +57,7 @@
   "sendOverWhatsApp": "Send over WhatsApp",
   "total": "Total",
   "list": "List",
-  "timeout of 10000ms exceeded": "Timeout exceeded while waiting for the server to respond",
+  "timeoutOf1MsExceeded": "Timeout exceeded while waiting for the server to respond",
   "NO_TOKEN": "No token found",
   "HAVE_TO_REAUTHENTICATE": "It is necessary to authenticate again",
   "placeHolderSelect": "Select...",
@@ -72,12 +72,5 @@
   "ERROR_ID_CAMPAIGN_IS_MISSING": "Campaign not found",
   "appName": "Contacts",
   "appDescription": "It is a App to help JW in the telephone preaching work",
-  "UNAUTHORIZED" : "You are not authorized"
-
-
-
-
-
-  
-
+  "UNAUTHORIZED": "You are not authorized"
 }

@@ -19,7 +19,7 @@ import {
 import {
   getLocale,
   handleInputChangeGeneric,
-  formatDateDMYHHmm,
+  formatDateDMY,
 } from '../../../utils/forms'
 import { contacts, publishers } from '../../../services'
 import { URL_SEND_MESSAGE } from '../../../constants/settings'
@@ -148,7 +148,7 @@ class SendPhones extends React.Component {
       ? ` ${t('contacts:gender') + ':'} ${t(`contacts:${contact.gender}`)} - `
       : ''
     const lastInformation = !isEmpty(contact.information)
-      ? `${this.getDetailsLastConversation(contact)} - ${formatDateDMYHHmm(
+      ? `${this.getDetailsLastConversation(contact)} - ${formatDateDMY(
           contact.createdAtDetailsContacts
         )}`
       : t('withoutDetails')
@@ -238,9 +238,11 @@ class SendPhones extends React.Component {
     } catch (error) {
       const phone = getOr(0, 'response.data.extra.phone', error)
       this.setState({ submitting: false })
-      showError(error, t, 'sendPhones', {
-        paramsExtraForTranslation: { phone },
-      })
+      if (phone)
+        showError(error, t, 'sendPhones', {
+          paramsExtraForTranslation: { phone },
+        })
+      else showError(error, t, 'sendPhones')
     }
   }
 

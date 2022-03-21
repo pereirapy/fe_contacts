@@ -6,7 +6,7 @@ import { Row, Col, Container, Card } from 'react-bootstrap'
 import useApplicationContext from '../../../hooks/useApplicationContext'
 import { showError, parseErrorMessage } from '../../../utils/generic'
 import { diffDate } from '../../../utils/forms'
-import { contacts, campaigns } from '../../../services'
+import { contacts } from '../../../services'
 import './charts.styles.css'
 
 import ChartByContacted from './ByContacted'
@@ -140,34 +140,24 @@ function RenderCharts({
 
 const Charts = () => {
   const [data, setData] = useState([])
-  const [campaignActiveData, setCampaignActiveData] = useState({})
-  const [campaignNextData, setCampaignNextData] = useState({})
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
-  const { isAtLeastElder, updateContext, hasToken } = useApplicationContext()
+  const {
+    isAtLeastElder,
+    updateContext,
+    hasToken,
+    campaignActive,
+    campaignNext,
+  } = useApplicationContext()
   const { t } = useTranslation(['dashboard', 'common'])
 
   useEffect(() => {
     async function handleGetSummary() {
       setLoading(true)
       try {
-        const responseActive = await campaigns.getDetailsActive()
-        const campaignActive = responseActive.data.data || null
-        const responseNext = await campaigns.getDetailsNext()
-        const campaignNext = responseNext.data.data || null
-
         const response = await contacts.getWhichSummary(campaignActive?.id)
         const dataSummary = get('data', response)
-
-        updateContext((previous) => ({
-          ...previous,
-          campaignActive,
-          campaignNext,
-        }))
         setData(dataSummary)
-        setCampaignActiveData(campaignActive)
-        setCampaignNextData(campaignNext)
-
         setLoading(false)
       } catch (error) {
         setLoading(false)
@@ -177,7 +167,7 @@ const Charts = () => {
     }
 
     if (hasToken) handleGetSummary()
-  }, [hasToken, updateContext, t])
+  }, [hasToken, campaignActive, updateContext, t])
 
   return (
     <Container>
@@ -192,8 +182,8 @@ const Charts = () => {
           data={data}
           loading={loading}
           isAtLeastElder={isAtLeastElder}
-          campaignActive={campaignActiveData}
-          campaignNext={campaignNextData}
+          campaignActive={campaignActive}
+          campaignNext={campaignNext}
           t={t}
         />
       )}

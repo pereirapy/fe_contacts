@@ -126,8 +126,9 @@ class FilterData extends React.Component {
         },
       })
     } catch (error) {
+      const messageParsed = parseErrorMessage(error) 
       this.setState({
-        error: t(`common:${parseErrorMessage(error)}`),
+        error: t(`common:${messageParsed}`, messageParsed),
         loading: false,
       })
     }
