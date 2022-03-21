@@ -149,6 +149,16 @@ class ContactsWaitingFeedbackList extends React.Component {
     )
   }
 
+  getFilterQueryParams() {
+    const { campaignActive } = this.context
+    return campaignActive
+      ? {
+          toOmit: JSON.stringify(['campaigns']),
+        }
+      : {}
+  }
+
+
   render() {
     const { t } = this.props
     const {
@@ -164,6 +174,7 @@ class ContactsWaitingFeedbackList extends React.Component {
     } = this.state
     const colSpan = '9'
     const filtersParsed = JSON.parse(filters)
+    const filtersParams = this.getFilterQueryParams()
 
     return (
       <ContainerCRUD
@@ -182,7 +193,7 @@ class ContactsWaitingFeedbackList extends React.Component {
               refresh={submitting}
               error={error}
               showTypeCompany={true}
-              getFilters={details.getAllWaitingFeedbackFilters}
+              getFilters={() => details.getAllWaitingFeedbackFilters(filtersParams)}
             />
           </Col>
           <Col xs={12} lg={hiddenFilter ? 12 : 9} xl={hiddenFilter ? 12 : 10}>

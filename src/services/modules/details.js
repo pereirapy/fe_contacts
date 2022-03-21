@@ -9,8 +9,8 @@ const getOne = (id) => api.get(`/detailsContacts/${id}`)
 const getAllWaitingFeedback = (params) =>
   api.get(`/detailsContacts/waitingFeedback${toQueryString(params)}`)
 
-const getAllWaitingFeedbackFilters = () =>
-  api.get(`/detailsContacts/filtersWaitingFeedback`)
+const getAllWaitingFeedbackFilters = (params) =>
+  api.get(`/detailsContacts/filtersWaitingFeedback${toQueryString(params)}`)
 
 const create = (data) => api.post(`/detailsContacts`, data)
 
