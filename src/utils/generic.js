@@ -1,11 +1,31 @@
 import { get, getOr, isEmpty, isNumber, camelCase } from 'lodash/fp'
+import { some } from 'lodash'
 import Swal from 'sweetalert2'
+
+const errorsCamelCase = [
+  { name: 'timeoutOf1MsExceeded' },
+  { name: 'networkError' },
+]
 
 const randomColor = () =>
   `#${(Math.random() * 0xfffff * 1000000).toString(16).slice(0, 6)}`
 
+const parseMessageKey = (error) => {
+  const message = get('message', error)
+  const messageCamelCase = camelCase(message)
+  const applyCamelCase = some(errorsCamelCase, { name: messageCamelCase })
+
+  if (message.indexOf('select') !== -1) {
+    const iniPos = message.indexOf(' - ')
+    return message.slice(iniPos)
+  }
+  if (applyCamelCase) {
+    return messageCamelCase
+  }
+  return message
+}
 const parseErrorMessage = (error) => {
-  const message = camelCase(get('message', error))
+  const message = parseMessageKey(error)
   const errorConstraint = getOr(
     get('response.data.error.constraint', error),
     'response.data.constraint',
@@ -30,20 +50,26 @@ const getTitleTranslatedMessageError = (
   fileTranslationName,
   extra
 ) => {
-  const keyOfTranslationWhenNotFoundForTitleAlert = getOr(
-    get('response.data.cod', error),
+  const keyOfTranslationWhenNotFoundForTitleAlert = get(
     'keyOfTranslationWhenNotFoundForTitleAlert',
     extra
   )
-  const translationAlternativeTwo = t(`common:errorTextUndefined`)
+  const errorTextUndefinedTranslated = t(`common:errorTextUndefined`)
 
-  const translationAlternativeOne = t(
-    `common:${keyOfTranslationWhenNotFoundForTitleAlert}`,
-    translationAlternativeTwo
+  const codText = getOr(get('response.data.cod', error), 'cod', error)
+
+  const firstOptionForDefaultTranslation =
+    keyOfTranslationWhenNotFoundForTitleAlert
+      ? keyOfTranslationWhenNotFoundForTitleAlert
+      : codText
+
+  const defaultTranslation = t(
+    `common:${firstOptionForDefaultTranslation}`,
+    errorTextUndefinedTranslated
   )
   const title = t(
     `${fileTranslationName}:${keyOfTranslationWhenNotFoundForTitleAlert}`,
-    translationAlternativeOne
+    defaultTranslation
   )
   return title
 }
@@ -66,7 +92,10 @@ const parseErrorMessageTranslated = (error, t, fileTranslationName, extra) => {
     ? paramsExtraForTranslation
     : errorParsedTranslated
 
-  const defaultMessageErrorTranslated = t(`common:${defaultMessageError}`)
+  const defaultMessageErrorTranslated = t(
+    `common:${defaultMessageError}`,
+    defaultMessageError
+  )
 
   const detailsMessage = t(errorText, {
     ...paramsExtraForTranslation,

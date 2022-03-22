@@ -15,12 +15,20 @@ const App = () => {
 
   useEffect(() => {
     async function fetchCampaignActive() {
-      const responseActive = await campaigns.getDetailsActive()
-      const campaignActive = responseActive.data.data || null
-      const responseNext = await campaigns.getDetailsNext()
-      const campaignNext = responseNext.data.data || null
-      setContext((previous) => ({ ...previous, campaignActive, campaignNext }))
-      setLoading(false)
+      try {
+        const responseActive = await campaigns.getDetailsActive()
+        const campaignActive = responseActive.data.data || null
+        const responseNext = await campaigns.getDetailsNext()
+        const campaignNext = responseNext.data.data || null
+        setContext((previous) => ({
+          ...previous,
+          campaignActive,
+          campaignNext,
+        }))
+        setLoading(false)
+      } catch (error) {
+        setLoading(false)
+      }
     }
     if (hasToken) fetchCampaignActive()
     else setLoading(false)

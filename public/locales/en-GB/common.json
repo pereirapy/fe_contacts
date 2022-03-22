@@ -72,5 +72,7 @@
   "ERROR_ID_CAMPAIGN_IS_MISSING": "Campaign not found",
   "appName": "Contacts",
   "appDescription": "It is a App to help JW in the telephone preaching work",
-  "UNAUTHORIZED": "You are not authorized"
+  "UNAUTHORIZED": "You are not authorized",
+  "ErrorGraphQL": "Error in the GraphQL"
+
 }
