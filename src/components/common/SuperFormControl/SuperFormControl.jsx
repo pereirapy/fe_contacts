@@ -26,7 +26,6 @@ const SuperFormControl = (props) => {
   const [classField, setClassField] = useState('')
 
   const onBlurLocal = (e) => {
-    if (!value) setTouched(false)
     if (value && validated && !validator.fieldValid(name)) {
       validator.showMessageFor(name)
     }
