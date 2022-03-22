@@ -15,9 +15,14 @@ class OurModal extends Component {
   }
 
   onHide = () => {
-    this.setModalShow(false)
     const { onClose } = this.props
-    if (onClose) onClose()
+    this.setModalShow(false)
+    if (onClose) {
+      setTimeout(() => {
+        onClose()
+      }, 100)
+
+    }
   }
 
   onShow = () => this.setModalShow(true)
@@ -27,7 +32,7 @@ class OurModal extends Component {
     if (onExit) {
       setTimeout(() => {
         onExit()
-      }, 100)
+      }, 10)
     }
   }
 
@@ -36,7 +41,7 @@ class OurModal extends Component {
     if (onEnter) {
       setTimeout(() => {
         onEnter()
-      }, 100)
+      }, 10)
     }
   }
 

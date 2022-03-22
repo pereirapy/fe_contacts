@@ -3,16 +3,16 @@ import moment from 'moment'
 import { getOr } from 'lodash/fp'
 import { withTranslation } from 'react-i18next'
 import SimpleReactValidator from 'simple-react-validator'
-import { faPlusSquare, faBullhorn } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPlusSquare, faBullhorn } from '@fortawesome/free-solid-svg-icons'
 
 import { campaigns } from '../../services'
-import { getLocale, handleInputChangeGeneric } from '../../utils/forms'
 import { showError, showSuccessful } from '../../utils/generic'
+import { getLocale, handleInputChangeGeneric } from '../../utils/forms'
 
+import CampaignForm from './CampaignForm.jsx'
 import OurModal from '../common/OurModal/OurModal'
 import ElementError from '../common/ElementError/ElementError'
-import CampaignForm from './CampaignForm.jsx'
 
 const fields = {
   name: '',
@@ -59,7 +59,6 @@ class CampaignNew extends React.Component {
       await campaigns.create(form)
       showSuccessful(t)
       onHide()
-      this.resetForm()
     } catch (error) {
       this.setState({ submitting: false })
       const campaign = getOr(0, 'response.data.extra.name', error)
@@ -96,6 +95,7 @@ class CampaignNew extends React.Component {
         handleSubmit={this.handleSubmit}
         handleInputChange={this.handleInputChange}
         form={form}
+        onEnter={this.resetForm}
         onExit={afterClose}
         onClose={this.resetForm}
         title={title}

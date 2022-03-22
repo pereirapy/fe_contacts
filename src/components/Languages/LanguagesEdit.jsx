@@ -70,7 +70,6 @@ class StatusEdit extends React.Component {
       await languages.updateOne(get('id', form), data)
       showSuccessful(t)
       onHide()
-      this.resetForm()
     } catch (error) {
       this.setState({ loading: false })
       showError(error, t, 'languages')

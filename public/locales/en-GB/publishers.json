@@ -18,7 +18,7 @@
   "ERROR_PASSWORD_NUMBER": "The password must have at least one number",
   "ERROR_PASSWORD_SPECIAL_CHARACTER": "The password must have at least one special character",
   "ERROR_PASSWORD_SPACE": "The password cannot have spaces either at the beginning or at the end",
-  "publishers_phone_unique": "This phone is already exists",
+  "publishers_phone_unique": "This phone is already exists in another publisher",
   "NOT_ALLOWED_EDIT_DATA_MORE_RESPONSIBILITY": "You need more privileges to edit this record",
   "notAllowedDeleteCurrentUser": "You can't delete current user logged in",
   "publishers_email_unique": "There is other publisher with the same email address",

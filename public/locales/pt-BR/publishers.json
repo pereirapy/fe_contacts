@@ -18,7 +18,7 @@
   "ERROR_PASSWORD_NUMBER": "A senha precisa ter ao menos um número",
   "ERROR_PASSWORD_SPECIAL_CHARACTER": "A senha precisa ter ao menos um caracter especial",
   "ERROR_PASSWORD_SPACE": "A senha não pode ter espaço no inicio nem no fim",
-  "publishers_phone_unique": "Este telefone já existe",
+  "publishers_phone_unique": "Este telefone já existe em outro publicador",
   "NOT_ALLOWED_EDIT_DATA_MORE_RESPONSIBILITY": "Você precisa ter mais privilegios para editar este registro",
   "notAllowedDeleteCurrentUser": "Você não pode deletar o atual usuário logado",
   "publishers_email_unique": "Ja existe outro publicador com esse email",

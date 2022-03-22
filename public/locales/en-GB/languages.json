@@ -18,5 +18,7 @@
   "descriptionTraducedLabel": "Description Traduced",
   "descriptionPlaceHolder": "Please write a short description",
   "namePlaceHolder": "Please write a short name",
-  "colorPlaceHolder": "Please write the hexadecimal color"
+  "colorPlaceHolder": "Please write the hexadecimal color",
+  "languages_color_unique" : "Already exists a language with this color"
+
 }

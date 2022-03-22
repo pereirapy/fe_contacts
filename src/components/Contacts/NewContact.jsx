@@ -126,7 +126,6 @@ class NewContact extends React.Component {
       this.setState({ submitting: false })
       showSuccessful(t)
       onHide()
-      this.resetForm()
     } catch (error) {
       this.setState({ submitting: false })
       const contact = getOr(0, 'response.data.extra.contact', error)
@@ -143,7 +142,7 @@ class NewContact extends React.Component {
   }
 
   resetForm() {
-    this.setState({ form: fields, submitting: false, validated: false })
+    this.setState({ form: fields, validated: false })
     this.validator.hideMessages()
   }
 

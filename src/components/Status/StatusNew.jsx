@@ -54,7 +54,6 @@ class StatusNew extends React.Component {
       await status.create(form)
       showSuccessful(t)
       onHide()
-      this.resetForm()
     } catch (error) {
       this.setState({ submitting: false })
       showError(error, t, 'status')

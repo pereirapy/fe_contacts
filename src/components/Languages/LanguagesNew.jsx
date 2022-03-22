@@ -69,7 +69,6 @@ class StatusNew extends React.Component {
       await languages.create(form)
       showSuccessful(t)
       onHide()
-      this.resetForm()
     } catch (error) {
       this.setState({ loading: false })
       showError(error, t, 'languages')

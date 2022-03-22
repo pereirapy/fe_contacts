@@ -74,7 +74,6 @@ class NewPublisher extends React.Component {
       await publishers.create(data)
       showSuccessful(t)
       onHide()
-      this.resetForm()
     } catch (error) {
       this.setState({ loading: false })
       showError(error, t, 'publishers')

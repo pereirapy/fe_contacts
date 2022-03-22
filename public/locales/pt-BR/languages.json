@@ -18,5 +18,6 @@
   "descriptionTraducedLabel": "Descrição Traduzida",
   "descriptionPlaceHolder": "Por favor escreva uma breve descrição",
   "namePlaceHolder": "Por favor escreva um breve nome",
-  "colorPlaceHolder": "Por favor escreva cor em hexadecimal"
+  "colorPlaceHolder": "Por favor escreva cor em hexadecimal",
+  "languages_color_unique" : "Já existe um idioma com essa cor"
 }
