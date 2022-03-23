@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { Form } from 'react-bootstrap'
 import Select from 'react-select'
 import { find, map, includes } from 'lodash/fp'
@@ -25,11 +25,14 @@ const SuperSelect = (props) => {
     placeHolderSelect = 'placeHolderSelect',
   } = props
 
-  const [touched, setTouched] = React.useState(false)
+  const [touched, setTouched] = useState(false)
+  const [classField, setClassField] = useState('')
 
-  const onBlurLocal = () => {
-    setTouched(true)
-    //validator.showMessageFor(name);
+  const onBlurLocal = (e) => {
+    if (value && validated && !validator.fieldValid(name)) {
+      validator.showMessageFor(name)
+    }
+    setClassField(getClass())
   }
 
   const setValue = () => {
@@ -51,26 +54,45 @@ const SuperSelect = (props) => {
     }
   }
   const setOnChange = (paramValues) => {
+    setTouched(true)
+
     if (isMulti) {
       const arrayOnlyValues = map((option) => option.value, paramValues)
-      return onChange({
+      onChange({
         target: { name, value: paramValues ? arrayOnlyValues : [] },
       })
     } else {
-      return onChange({
+      onChange({
         target: { name, value: paramValues ? paramValues.value : '' },
       })
     }
+    setTimeout(() => {
+      if (!validator.fieldValid(name)) validator.showMessageFor(name)
+      setClassField(getClass())
+    }, 100)
   }
 
-  const setClassName = () => {
+  const getClass = useCallback(() => {
     return (validated || touched) && rules && !validator.fieldValid(name)
       ? 'is-invalid'
       : (validated || touched) &&
         ((rules && validator.fieldValid(name)) || !rules)
       ? 'is-valid'
       : ''
-  }
+  }, [name, rules, touched, validated, validator])
+
+  useEffect(() => {
+    if (!loading && validator) {
+      validator.hideMessageFor(name)
+    }
+  }, [name, validator, loading])
+
+  useEffect(() => {
+    if (!loading) {
+      setClassField(getClass())
+    }
+  }, [getClass, loading])
+
   return (
     <ReactPlaceholder
       showLoadingAnimation={true}
@@ -78,7 +100,7 @@ const SuperSelect = (props) => {
       ready={!loading}
       rows={rows}
     >
-      <Form.Group controlId={name} className={setClassName()}>
+      <Form.Group controlId={name} className={classField}>
         <Form.Label>{label}</Form.Label>
         <Select
           name={name}
