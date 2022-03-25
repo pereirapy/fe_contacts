@@ -12,11 +12,11 @@ const CampaignForm = (props) => {
     handleInputChange,
     form,
     submitting,
+    loading,
     validated,
     onHide,
     handleSubmit,
   } = props
-
   return (
     <Form>
       <Row className="mb-2">
@@ -40,12 +40,14 @@ const CampaignForm = (props) => {
             type="date"
             name="dateStart"
             label={t('dateStart')}
+            loading={loading}
             validator={validator}
             validated={validated}
             placeholder={t('dateStartPlaceHolder')}
             value={form.dateStart}
             onChange={handleInputChange}
             rules="required"
+            disabled={form.disableDateFields}
           />
         </Col>
         <Col xs={12} lg={6}>
@@ -53,6 +55,7 @@ const CampaignForm = (props) => {
             type="date"
             name="dateFinal"
             label={t('dateFinal')}
+            loading={loading}
             validator={validator}
             validated={validated}
             placeholder={t('dateFinalPlaceHolder')}
@@ -67,6 +70,8 @@ const CampaignForm = (props) => {
                 ),
               },
             ]}
+            disabled={form.disableDateFields}
+
           />
         </Col>
       </Row>

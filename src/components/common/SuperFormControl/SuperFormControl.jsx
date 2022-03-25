@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { Form } from 'react-bootstrap'
 import moment from 'moment'
+import { Form } from 'react-bootstrap'
+import ReactPlaceholder from 'react-placeholder'
+
 
 const SuperFormControl = (props) => {
   const {
@@ -13,13 +15,14 @@ const SuperFormControl = (props) => {
     label,
     endLabel,
     as,
-    rows,
+    rows = 2,
     placeholder,
     onBlur,
     type,
     rules,
     autocomplete,
     disabled = false,
+    loading = false,
   } = props
 
   const [touched, setTouched] = useState(false)
@@ -56,7 +59,7 @@ const SuperFormControl = (props) => {
         ((rules && validator.fieldValid(name)) || !rules)
       ? 'is-valid'
       : ''
-  },[name, rules, touched, validated, validator])
+  }, [name, rules, touched, validated, validator])
 
   useEffect(() => {
     validator.hideMessageFor(name)
@@ -67,26 +70,33 @@ const SuperFormControl = (props) => {
   }, [getClass])
 
   return (
-    <Form.Group controlId={name}>
-      <Form.Label>
-        {label} {endLabel ? endLabel : null}
-      </Form.Label>
-      <Form.Control
-        as={as}
-        rows={rows}
-        name={name}
-        type={type || 'text'}
-        placeholder={placeholder}
-        autoComplete={autocomplete}
-        onChange={onChange}
-        onKeyUp={onKeyUpLocal}
-        onBlur={onBlurLocal}
-        defaultValue={value}
-        disabled={disabled}
-        className={classField}
-      />
-      {rules && validator.message(name, parsedValue, rules)}
-    </Form.Group>
+    <ReactPlaceholder
+      showLoadingAnimation={true}
+      type="text"
+      ready={!loading}
+      rows={rows}
+    >
+      <Form.Group controlId={name}>
+        <Form.Label>
+          {label} {endLabel ? endLabel : null}
+        </Form.Label>
+        <Form.Control
+          as={as}
+          rows={rows}
+          name={name}
+          type={type || 'text'}
+          placeholder={placeholder}
+          autoComplete={autocomplete}
+          onChange={onChange}
+          onKeyUp={onKeyUpLocal}
+          onBlur={onBlurLocal}
+          defaultValue={value}
+          disabled={disabled}
+          className={classField}
+        />
+        {rules && validator.message(name, parsedValue, rules)}
+      </Form.Group>
+    </ReactPlaceholder>
   )
 }
 

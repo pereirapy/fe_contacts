@@ -14,7 +14,6 @@
   "detailscontacts_idcampaign_foreign": "Esta campanha esta vinculada a algum contato",
   "seeCampaignDetails": "Ver os números contatados durante a campanha",
   "chartsTitle": "Gráficos do andamento da campanha",
-  "seeCampaignCharts": "Ver os gráficos da campanha"
-
-
+  "seeCampaignCharts": "Ver os gráficos da campanha",
+  "ERROR_CAMPAIGN_ALREADY_HAS_DETAILS_CONTACTS": "Não é permitido atualizar as datas porque esta campanha tem alguns contatos que já foram contatados ou estão aguardando uma resposta"
 }

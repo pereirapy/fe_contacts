@@ -1,19 +1,21 @@
 import React from 'react'
-import { withTranslation } from 'react-i18next'
-import OurModal from '../common/OurModal/OurModal'
-import ElementError from '../common/ElementError/ElementError'
 import { getOr, omit } from 'lodash/fp'
+import { withTranslation } from 'react-i18next'
 import SimpleReactValidator from 'simple-react-validator'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEdit, faUserEdit } from '@fortawesome/free-solid-svg-icons'
+
 import {
   getLocale,
   handleInputChangeGeneric,
   mustBeEqualFieldPassword,
 } from '../../utils/forms'
 import { publishers } from '../../services'
-import FormPublisher from './FormPublisher'
-import { faEdit, faUserEdit } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { showError, showSuccessful, ifEmptySetNull } from '../../utils/generic'
+
+import FormPublisher from './FormPublisher'
+import OurModal from '../common/OurModal/OurModal'
+import ElementError from '../common/ElementError/ElementError'
 
 const fields = {
   name: '',
@@ -66,10 +68,6 @@ class EditContact extends React.Component {
 
       showError(error, t, 'publishers')
     }
-  }
-
-  onEnter() {
-    this.handleGetOne()
   }
 
   handleInputChange(event) {

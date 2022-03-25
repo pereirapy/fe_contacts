@@ -2,21 +2,22 @@ import React from 'react'
 import { get, getOr } from 'lodash/fp'
 import { withTranslation } from 'react-i18next'
 import SimpleReactValidator from 'simple-react-validator'
-import { faEdit, faBullhorn } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEdit, faBullhorn } from '@fortawesome/free-solid-svg-icons'
 
-import { getLocale, handleInputChangeGeneric } from '../../utils/forms'
+import { campaigns, details } from '../../services'
 import { showError, showSuccessful } from '../../utils/generic'
-import { campaigns } from '../../services'
+import { getLocale, handleInputChangeGeneric } from '../../utils/forms'
 
+import CampaignForm from './CampaignForm.jsx'
 import OurModal from '../common/OurModal/OurModal'
 import ElementError from '../common/ElementError/ElementError'
-import CampaignForm from './CampaignForm.jsx'
 
 const fields = {
   name: '',
   dateStart: '',
   dateFinal: '',
+  disableDateFields: false,
 }
 
 class CampaignEdit extends React.Component {
@@ -25,9 +26,12 @@ class CampaignEdit extends React.Component {
     this.state = {
       form: fields,
       submitting: false,
+      loading: false,
       validated: false,
     }
     this.handleInputChange = this.handleInputChange.bind(this)
+    this.handleThatCampaignHasDetailsContacts =
+      this.handleThatCampaignHasDetailsContacts.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.validator = new SimpleReactValidator({
       autoForceUpdate: this,
@@ -76,8 +80,30 @@ class CampaignEdit extends React.Component {
     this.setState({ form })
   }
 
+  async handleThatCampaignHasDetailsContacts() {
+    const { t } = this.props
+    const { form } = this.state
+
+    this.setState({ loading: true })
+    try {
+      const response = await details.thatCampaignHasDetailsContacts(form.id)
+      const disableDateFields = getOr(false, 'data.data.res', response)
+
+      const newForm = {
+        ...form,
+        disableDateFields,
+      }
+
+      this.setState({ form: newForm, loading: false })
+    } catch (error) {
+      this.setState({ loading: false })
+      showError(error, t, 'common')
+    }
+  }
+
   render() {
-    const { form, validated, submitting } = this.state
+    const { form, validated, submitting, disableDateFields, loading } =
+      this.state
     const { t, afterClose } = this.props
     const title = (
       <React.Fragment>
@@ -91,10 +117,13 @@ class CampaignEdit extends React.Component {
         body={CampaignForm}
         validator={this.validator}
         submitting={submitting}
+        loading={loading}
         validated={validated}
+        disableDateFields={disableDateFields}
         handleSubmit={this.handleSubmit}
         handleInputChange={this.handleInputChange}
         form={form}
+        onEnter={this.handleThatCampaignHasDetailsContacts}
         onExit={afterClose}
         title={title}
         buttonText={<FontAwesomeIcon icon={faEdit} />}
