@@ -17,7 +17,6 @@ const fields = {
   name: '',
   dateStart: '',
   dateFinal: '',
-  disableDateFields: false,
 }
 
 class CampaignEdit extends React.Component {
@@ -26,6 +25,7 @@ class CampaignEdit extends React.Component {
     this.state = {
       form: fields,
       submitting: false,
+      disableDateFields: false,
       loading: false,
       validated: false,
     }
@@ -89,12 +89,7 @@ class CampaignEdit extends React.Component {
       const response = await details.thatCampaignHasDetailsContacts(form.id)
       const disableDateFields = getOr(false, 'data.data.res', response)
 
-      const newForm = {
-        ...form,
-        disableDateFields,
-      }
-
-      this.setState({ form: newForm, loading: false })
+      this.setState({ loading: false, disableDateFields })
     } catch (error) {
       this.setState({ loading: false })
       showError(error, t, 'common')

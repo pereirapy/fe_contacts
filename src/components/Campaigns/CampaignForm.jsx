@@ -16,6 +16,7 @@ const CampaignForm = (props) => {
     validated,
     onHide,
     handleSubmit,
+    disableDateFields,
   } = props
   return (
     <Form>
@@ -47,7 +48,7 @@ const CampaignForm = (props) => {
             value={form.dateStart}
             onChange={handleInputChange}
             rules="required"
-            disabled={form.disableDateFields}
+            disabled={disableDateFields}
           />
         </Col>
         <Col xs={12} lg={6}>
@@ -70,8 +71,7 @@ const CampaignForm = (props) => {
                 ),
               },
             ]}
-            disabled={form.disableDateFields}
-
+            disabled={disableDateFields}
           />
         </Col>
       </Row>
