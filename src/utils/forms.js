@@ -103,19 +103,19 @@ export const buildGql = (type, { name, find, filter, variables = null }) => {
     `.trim()
 }
 
-const notHasSomeNotAllowedStartNumber = (val) => {
-  let notHas = true
+const hasSomeNotAllowedStartNumber = (val) => {
+  let has = false
   forEach((each) => {
-    if (!startsWith(each, val)) notHas = false
+    if (startsWith(val, each)) has = true
   }, START_NUMBER_NOT_ALLOWED)
-  return notHas
+  return has
 }
 
 export const numberStartsWithInvalidCharacter = (componentReact) => ({
   message: componentReact.props?.t('numberStartsWithInvalidCharacter', {
-    character: START_NUMBER_NOT_ALLOWED.join(','),
+    character: START_NUMBER_NOT_ALLOWED.join(` ${componentReact.props?.t('common:or')} `),
   }),
-  rule: notHasSomeNotAllowedStartNumber,
+  rule: (val) => !hasSomeNotAllowedStartNumber(val),
   required: true,
 })
 

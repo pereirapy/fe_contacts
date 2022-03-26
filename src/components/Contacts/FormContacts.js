@@ -65,7 +65,7 @@ const FormContacts = (props) => {
         <Row>
           <Col xs={6} lg={6}>
             <SuperFormControl
-              type="number"
+              type="text"
               name="phone"
               label={t('phone')}
               validator={validator}
@@ -73,19 +73,21 @@ const FormContacts = (props) => {
               value={form.phone}
               disabled={disablePhone}
               onChange={handleInputChange}
-              rules="required|min:10|numberStartsWithInvalidCharacter"
+              autocomplete="off"
+              rules="required|min:10|numeric|numberStartsWithInvalidCharacter"
             />
           </Col>
           <Col xs={6} lg={6}>
             <SuperFormControl
-              type="number"
+              type="text"
               name="phone2"
               label={t('phone2')}
               validator={validator}
               validated={validated}
               value={form.phone2}
               onChange={handleInputChange}
-              rules="min:10|numberStartsWithInvalidCharacter"
+              autocomplete="off"
+              rules="min:10|numeric|numberStartsWithInvalidCharacter"
             />
           </Col>
         </Row>
