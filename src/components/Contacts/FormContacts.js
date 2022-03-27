@@ -87,7 +87,7 @@ const FormContacts = (props) => {
               value={form.phone2}
               onChange={handleInputChange}
               autocomplete="off"
-              rules="min:10|numberStartsWithInvalidCharacter|numeric"
+              rules="numberStartsWithInvalidCharacter|numeric|min:10"
             />
           </Col>
         </Row>

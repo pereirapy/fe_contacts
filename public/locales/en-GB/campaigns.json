@@ -3,6 +3,7 @@
   "titleList": "List of Campaigns",
   "new": "New",
   "name": "Name",
+  "namePlaceHolder": "Write a name for this campaign",
   "dateStart": "Start Date",
   "dateStartPlaceHolder": "Choose a start date",
   "dateFinalPlaceHolder": "Choose a final date",
