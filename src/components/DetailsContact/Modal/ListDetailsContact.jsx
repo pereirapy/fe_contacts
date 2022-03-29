@@ -18,7 +18,6 @@ class ListDetailsContact extends React.Component {
       modalShow: false,
       waitingFeedback: false,
       loading: false,
-      submitting: false,
     }
     this.handleGetAllOneContact = this.handleGetAllOneContact.bind(this)
     this.handleDelete = this.handleDelete.bind(this)
@@ -71,7 +70,7 @@ class ListDetailsContact extends React.Component {
 
   render() {
     const { t, contact, afterClose } = this.props
-    const { data, waitingFeedback, submitting, loading } = this.state
+    const { data, waitingFeedback, loading } = this.state
     const title = (
       <React.Fragment>
         <Icon name={EIcons.addressCardIcon} />
@@ -83,7 +82,6 @@ class ListDetailsContact extends React.Component {
       <OurModal
         body={ListDataDetailsContact}
         contact={contact}
-        submitting={submitting}
         loading={loading}
         waitingFeedback={waitingFeedback}
         data={data}

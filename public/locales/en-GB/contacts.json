@@ -41,7 +41,8 @@
   "diffDate": "{{days}} days",
   "toolTipWaitingFeedback": "This contact is already with this publisher more than is allow. Please, communicate with this publisher to get the feedback",
   "numberStartsWithInvalidCharacter": "This number starts with the invalid character {{character}}",
-  "giveBack": "Give Back"
+  "giveBack": "Give Back",
+  "numberAlreadyContactedDuringCampaign": "This number already was contacted during the current campaign"
 
 
 }

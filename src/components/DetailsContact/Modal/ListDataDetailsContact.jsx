@@ -41,7 +41,7 @@ class ListDataDetailsContact extends React.Component {
       afterClose,
       funcToCallAfterConfirmation,
       waitingFeedback,
-      submitting,
+      loading,
     } = this.props
     const colSpan = 4
 
@@ -63,13 +63,13 @@ class ListDataDetailsContact extends React.Component {
           </tr>
         </thead>
         <tbody>
-          {submitting ? (
+          {loading ? (
             <tr>
               <td colSpan={colSpan}>
                 <ReactPlaceholder
                   showLoadingAnimation={true}
                   type="text"
-                  ready={!submitting}
+                  ready={!loading}
                   rows={5}
                 />
               </td>

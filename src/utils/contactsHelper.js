@@ -200,12 +200,14 @@ export function handleCheckAll({ event, componentReact }) {
 export function showInformationAboutCampaign({
   detailContact,
   componentReact,
+  modeAllContacts,
 }) {
   const { t } = componentReact.props
   const { campaignActive } = componentReact.context
 
   return (
-    !campaignActive &&
+    (!campaignActive || modeAllContacts) &&
+    !detailContact.waitingFeedback &&
     detailContact.campaignName && (
       <p className="contactedDuringCampaign ml-1">
         <small>
@@ -234,4 +236,25 @@ export function getLastPublisherThatTouched({ detail, componentReact }) {
 
 export function isWaitingFeedback(response) {
   return some({ waitingFeedback: true }, getOr([], 'data.data.list', response))
+}
+
+export function setTitleWhenNumberWasContactedDuringCampaign({
+  contact,
+  componentReact,
+}) {
+  const { t } = componentReact.props
+
+  return verifyIfWasContactedDuringCurrentCampaign({ contact, componentReact })
+    ? t('numberAlreadyContactedDuringCampaign')
+    : ''
+}
+
+export function verifyIfWasContactedDuringCurrentCampaign({
+  contact,
+  componentReact,
+}) {
+  const { campaignActive } = componentReact.context
+  return (
+    !contact.waitingFeedback && contact.campaignName === campaignActive.name
+  )
 }

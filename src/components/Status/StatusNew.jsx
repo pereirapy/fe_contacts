@@ -89,7 +89,7 @@ class StatusNew extends React.Component {
         onExit={afterClose}
         onClose={this.resetForm}
         title={title}
-        buttonIcon={EIcons.editIcon}
+        buttonIcon={EIcons.plusSquareIcon}
       />
     )
   }

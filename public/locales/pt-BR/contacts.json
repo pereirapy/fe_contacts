@@ -41,7 +41,9 @@
   "diffDate": "{{days}} dias",
   "toolTipWaitingFeedback": "Este contato já está com esse publicador mais do que o permitido. Favor se comunicar com o publicador para colher as informações.",
   "numberStartsWithInvalidCharacter": "Este número começa com o caracter inválido {{character}}",
-  "giveBack": "Devolver"
+  "giveBack": "Devolver",
+  "numberAlreadyContactedDuringCampaign": "Este número já foi contatado durante a campanha atual"
+
 
 
 

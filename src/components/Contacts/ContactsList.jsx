@@ -19,6 +19,8 @@ import {
   setSubRowVisible,
   setRowColor,
   showInformationAboutCampaign,
+  setTitleWhenNumberWasContactedDuringCampaign,
+  verifyIfWasContactedDuringCurrentCampaign,
 } from '../../utils/contactsHelper'
 import {
   ID_STATUS_NO_VISIT,
@@ -358,6 +360,10 @@ class Contacts extends React.Component {
                           contact,
                           componentReact: this,
                         })}
+                        title={setTitleWhenNumberWasContactedDuringCampaign({
+                          contact,
+                          componentReact: this,
+                        })}
                       >
                         <td style={{ minWidth: '60px' }}>
                           <Checkbox
@@ -366,6 +372,7 @@ class Contacts extends React.Component {
                               checksContactsPhones
                             )}
                             name="checksContactsPhones"
+                            disabled={verifyIfWasContactedDuringCurrentCampaign({contact, componentReact: this})}
                             value={contact.phone}
                             color="success"
                             className="marginLeftCheckbox"
@@ -396,6 +403,7 @@ class Contacts extends React.Component {
                           {showInformationAboutCampaign({
                             detailContact: contact,
                             componentReact: this,
+                            modeAllContacts,
                           })}
                         </td>
                         <td className="d-none d-lg-table-cell">

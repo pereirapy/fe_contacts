@@ -58,6 +58,8 @@ class SendPhones extends React.Component {
     this.getPhonesWaitingOrNotFeedback =
       this.getPhonesWaitingOrNotFeedback.bind(this)
     this.getTitle = this.getTitle.bind(this)
+    this.resetForm = this.resetForm.bind(this)
+
 
     this.validator = new SimpleReactValidator({
       autoForceUpdate: this,
@@ -229,7 +231,6 @@ class SendPhones extends React.Component {
       if (getOr([], 'phones', dataAssign).length > 0)
         await contacts.assign(dataAssign)
       this.sendMessage()
-      this.setState({ submitting: false })
       showSuccessful(t)
       onHide()
       this.setState({ form: fields, submitting: false, validated: false })
@@ -254,6 +255,12 @@ class SendPhones extends React.Component {
     return titleWithCampaignName
   }
 
+  resetForm() {
+    this.setState({ form: fields, validated: false })
+    this.validator.hideMessages()
+  }
+
+
   render() {
     const { form, validated, publishersOptions, submitting, loading } =
       this.state
@@ -271,6 +278,7 @@ class SendPhones extends React.Component {
         phones={join(', ', checksContactsPhones)}
         publishersOptions={publishersOptions}
         onExit={afterClose}
+        onClose={this.resetForm}
         onEnter={this.onEnter}
         title={this.getTitle()}
         buttonTitle={t('common:sendOverWhatsApp')}
