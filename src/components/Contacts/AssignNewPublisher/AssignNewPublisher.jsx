@@ -1,17 +1,18 @@
 import React from 'react'
-import { withTranslation } from 'react-i18next'
-import OurModal from '../../common/OurModal/OurModal'
-import ElementError from '../../common/ElementError/ElementError'
-import { join, get, pipe, values, every } from 'lodash/fp'
-import SimpleReactValidator from 'simple-react-validator'
-import { getLocale, handleInputChangeGeneric } from '../../../utils/forms'
-import { publishers, contacts } from '../../../services'
-import FormAssignNewPublisher from './FormAssignNewPublisher'
-import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { reducePublishers } from '../../../stateReducers/publishers'
-import { showError, showSuccessful } from '../../../utils/generic'
 import Swal from 'sweetalert2'
+import { withTranslation } from 'react-i18next'
+import SimpleReactValidator from 'simple-react-validator'
+import { join, get, pipe, values, every } from 'lodash/fp'
+
+import { EIcons } from '../../../enums/icons'
+import { publishers, contacts } from '../../../services'
+import { showError, showSuccessful } from '../../../utils/generic'
+import { reducePublishers } from '../../../stateReducers/publishers'
+import { getLocale, handleInputChangeGeneric } from '../../../utils/forms'
+
+import OurModal from '../../common/OurModal/OurModal'
+import FormAssignNewPublisher from './FormAssignNewPublisher'
+import ElementError from '../../common/ElementError/ElementError'
 
 const fields = {
   idPublisher: '-1',
@@ -23,6 +24,7 @@ class AssignNewPublisher extends React.Component {
     this.state = {
       form: fields,
       loading: false,
+      submitting: false,
       validated: false,
       publishersOptions: [],
     }
@@ -70,7 +72,7 @@ class AssignNewPublisher extends React.Component {
       })
       return true
     }
-    this.setState({ loading: true })
+    this.setState({ submitting: true })
 
     const { form } = this.state
 
@@ -85,16 +87,17 @@ class AssignNewPublisher extends React.Component {
       await contacts.updateSome(data)
       showSuccessful(t)
       onHide()
-      this.setState({ form: fields, loading: false, validated: false })
+      this.setState({ form: fields, submitting: false, validated: false })
       this.validator.hideMessages()
     } catch (error) {
-      this.setState({ loading: false })
+      this.setState({ submitting: false })
       showError(error, t, 'assignNewPublisher')
     }
   }
 
   render() {
-    const { form, validated, publishersOptions, loading } = this.state
+    const { form, validated, publishersOptions, loading, submitting } =
+      this.state
     const { t, afterClose, checksContactsPhones } = this.props
 
     return (
@@ -102,6 +105,7 @@ class AssignNewPublisher extends React.Component {
         body={FormAssignNewPublisher}
         validator={this.validator}
         loading={loading}
+        submitting={submitting}
         validated={validated}
         buttonVariant="warning"
         handleSubmit={this.handleSubmit}
@@ -114,7 +118,7 @@ class AssignNewPublisher extends React.Component {
         buttonTitle={t('btnTitle')}
         buttonDisabled={checksContactsPhones.length === 0}
         phones={join(', ', checksContactsPhones)}
-        buttonText={<FontAwesomeIcon icon={faExchangeAlt} />}
+        buttonIcon={EIcons.exchangeAltIcon}
       />
     )
   }

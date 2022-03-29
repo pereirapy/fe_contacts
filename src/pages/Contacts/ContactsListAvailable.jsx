@@ -1,4 +1,5 @@
 import React from 'react'
+
 import ContactsList from '../../components/Contacts/ContactsList'
 
 const ContactsListAvailablePage = (props) => (

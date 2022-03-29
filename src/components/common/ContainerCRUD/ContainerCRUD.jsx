@@ -10,7 +10,7 @@ const ContainerCRUD = (props) => {
   const { t, i18n } = useTranslation('common')
   return (
     <ContainerWithNavBar {...props}>
-      <Helmet  htmlAttributes={{ lang : i18n.language }}>
+      <Helmet htmlAttributes={{ lang: i18n.language }}>
         <title>
           {props.titleOnlyText ? `${props.titleOnlyText} - ` : ''}
           {t('appName')}

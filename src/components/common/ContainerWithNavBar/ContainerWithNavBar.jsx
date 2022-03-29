@@ -1,19 +1,17 @@
 import React from 'react'
-import { Container } from 'react-bootstrap'
 import { Helmet } from 'react-helmet'
+import { Container } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 
-import NavBarMenu from '../NavBar/NavBar'
 import Footer from '../Footer/Footer'
+import NavBarMenu from '../NavBar/NavBar'
 
 const ContainerWithNavBar = (props) => {
   const { t, i18n } = useTranslation('common')
   return (
     <React.Fragment>
-      <Helmet  htmlAttributes={{ lang : i18n.language }}>
-        <title>
-          {`${props.titleOnlyText || t('home')} - ${t('appName')}`}
-        </title>
+      <Helmet htmlAttributes={{ lang: i18n.language }}>
+        <title>{`${props.titleOnlyText || t('home')} - ${t('appName')}`}</title>
         <meta name="description" content={t('appDescription')} />
       </Helmet>
 

@@ -1,13 +1,15 @@
 import React from 'react'
-import { withTranslation } from 'react-i18next'
 import { Table } from 'react-bootstrap'
+import { withTranslation } from 'react-i18next'
+import ReactPlaceholder from 'react-placeholder'
 import { map, isEmpty, truncate } from 'lodash/fp'
+
 import { formatDateDMYHHmm } from '../../../utils/forms'
+
 import NewDetailsContact from './NewDetailsContact'
 import EditDetailsContact from './EditDetailsContact'
 import AskDelete from '../../common/AskDelete/AskDelete'
 import NoRecords from '../../common/NoRecords/NoRecords'
-import ReactPlaceholder from 'react-placeholder'
 import './styles.css'
 
 class ListDataDetailsContact extends React.Component {
@@ -101,7 +103,7 @@ class ListDataDetailsContact extends React.Component {
                       contact={contact}
                       id={detail.id}
                       afterClose={afterClose}
-                    />{' '}
+                    />
                     <AskDelete
                       id={detail.id}
                       funcToCallAfterConfirmation={funcToCallAfterConfirmation}

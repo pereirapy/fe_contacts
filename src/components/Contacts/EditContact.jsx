@@ -1,23 +1,25 @@
 import React from 'react'
-import { withTranslation } from 'react-i18next'
-import OurModal from '../common/OurModal/OurModal'
-import ElementError from '../common/ElementError/ElementError'
 import { getOr, omit, get } from 'lodash/fp'
+import { withTranslation } from 'react-i18next'
 import SimpleReactValidator from 'simple-react-validator'
+
 import {
   getLocale,
   handleInputChangeGeneric,
   numberStartsWithInvalidCharacter,
+  formatDateDMYHHmm,
 } from '../../utils/forms'
-import { contacts, publishers, locations } from '../../services'
-import FormContacts from './FormContacts'
-import { faEdit, faUserEdit } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { EIcons } from '../../enums/icons'
 import { GENDER_UNKNOWN } from '../../constants/contacts'
-import { showError, showSuccessful, ifEmptySetNull } from '../../utils/generic'
-import { reducePublishers } from '../../stateReducers/publishers'
 import { reduceLocations } from '../../stateReducers/locations'
-import { formatDateDMYHHmm } from '../../utils/forms'
+import { contacts, publishers, locations } from '../../services'
+import { reducePublishers } from '../../stateReducers/publishers'
+import { showError, showSuccessful, ifEmptySetNull } from '../../utils/generic'
+
+import Icon from '../common/Icon/Icon'
+import FormContacts from './FormContacts'
+import OurModal from '../common/OurModal/OurModal'
+import ElementError from '../common/ElementError/ElementError'
 
 const fields = {
   phone: '',
@@ -39,6 +41,7 @@ class EditContact extends React.Component {
     this.state = {
       form: fields,
       loading: false,
+      submitting: false,
       validated: false,
       publishersOptions: [],
       statusOptions: [],
@@ -119,7 +122,7 @@ class EditContact extends React.Component {
       this.validator.showMessages()
       return true
     }
-    this.setState({ loading: true })
+    this.setState({ submitting: true })
 
     const { form } = this.state
     const { t } = this.props
@@ -153,7 +156,7 @@ class EditContact extends React.Component {
       await contacts.updateContact(id, data)
       showSuccessful(t)
       onHide()
-      this.setState({ form: fields, loading: false, validated: false })
+      this.setState({ form: fields, submitting: false, validated: false })
       this.validator.hideMessages()
     } catch (error) {
       const contact = getOr(0, 'response.data.extra.contact', error)
@@ -167,7 +170,7 @@ class EditContact extends React.Component {
         showError(error, t, 'common')
       }
 
-      this.setState({ loading: false })
+      this.setState({ submitting: false })
     }
   }
 
@@ -178,14 +181,14 @@ class EditContact extends React.Component {
       publishersOptions,
       statusOptions,
       loading,
+      submitting,
       locationsOptions,
     } = this.state
     const { t, afterClose } = this.props
     const title = (
       <React.Fragment>
-        {' '}
-        <FontAwesomeIcon icon={faUserEdit} />{' '}
-        {`${t('common:edit')} ${t('titleCrud')}`}{' '}
+        <Icon name={EIcons.userEditIcon} />
+        {`${t('common:edit')} ${t('titleCrud')}`}
       </React.Fragment>
     )
 
@@ -194,6 +197,7 @@ class EditContact extends React.Component {
         body={FormContacts}
         validator={this.validator}
         loading={loading}
+        submitting={submitting}
         validated={validated}
         handleSubmit={this.handleSubmit}
         handleInputChange={this.handleInputChange}
@@ -206,7 +210,7 @@ class EditContact extends React.Component {
         statusOptions={statusOptions}
         buttonTitle={t('common:edit')}
         title={title}
-        buttonText={<FontAwesomeIcon icon={faEdit} />}
+        buttonIcon={EIcons.editIcon}
         buttonVariant="success"
       />
     )

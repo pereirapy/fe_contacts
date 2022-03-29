@@ -4,13 +4,7 @@ import { withTranslation } from 'react-i18next'
 import ReactPlaceholder from 'react-placeholder'
 import { Checkbox } from 'pretty-checkbox-react'
 import { Table, Row, Col } from 'react-bootstrap'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { map, getOr, isEmpty, contains, isEqual } from 'lodash/fp'
-import {
-  faFileExcel,
-  faHourglass,
-  faUndo,
-} from '@fortawesome/free-solid-svg-icons'
 
 import {
   handleFilter,
@@ -23,12 +17,15 @@ import {
   uncheckCheckboxSelectAll,
 } from '../../utils/contactsHelper'
 import { details } from '../../services'
+import { EIcons } from '../../enums/icons'
 import { showError } from '../../utils/generic'
 import { RECORDS_PER_PAGE } from '../../constants/application'
 import { ApplicationContext } from '../../contexts/application'
-import { showInformationAboutCampaign } from '../../utils/contactsHelper'
 import { formatDateDMY, getQueryParamsFromURL } from '../../utils/forms'
+import { showInformationAboutCampaign } from '../../utils/contactsHelper'
 
+import Icon from '../common/Icon/Icon'
+import Button from '../common/Button/Button'
 import Search from '../common/Search/Search'
 import SendPhones from './SendPhones/SendPhones'
 import AskDelete from '../common/AskDelete/AskDelete'
@@ -37,8 +34,8 @@ import Pagination from '../common/Pagination/Pagination'
 import FilterData from '../common/FilterData/FilterData'
 import OurToolTip from '../common/OurToolTip/OurToolTip'
 import ContainerCRUD from '../common/ContainerCRUD/ContainerCRUD'
-import EditDetailsContact from '../DetailsContact/Modal/EditDetailsContact'
 import AssignNewPublisher from './AssignNewPublisher/AssignNewPublisher'
+import EditDetailsContact from '../DetailsContact/Modal/EditDetailsContact'
 import './styles.css'
 
 class ContactsWaitingFeedbackList extends React.Component {
@@ -52,7 +49,7 @@ class ContactsWaitingFeedbackList extends React.Component {
       checksContactsPhones: [],
       headers: [],
       dataCVS: [],
-      submitting: false,
+      loading: false,
       pagination: {},
       queryParams: {
         sort: `"createdAt":ASC,"publisherName":ASC`,
@@ -78,7 +75,7 @@ class ContactsWaitingFeedbackList extends React.Component {
   }
 
   async handleGetAll() {
-    this.setState({ submitting: true, checksContactsPhones: [] })
+    this.setState({ loading: true, checksContactsPhones: [] })
     uncheckCheckboxSelectAll()
     const { t } = this.props
     try {
@@ -89,14 +86,14 @@ class ContactsWaitingFeedbackList extends React.Component {
       this.setState({
         data: getOr([], 'data.data.list', response),
         pagination: getOr({}, 'data.data.pagination', response),
-        submitting: false,
+        loading: false,
         error: false,
         queryParams,
       })
     } catch (error) {
       this.setState({
         error,
-        submitting: false,
+        loading: false,
       })
       showError(error, t, 'contacts')
     }
@@ -104,14 +101,14 @@ class ContactsWaitingFeedbackList extends React.Component {
 
   async handleDelete(id) {
     const { t } = this.props
-    this.setState({ submitting: true })
+    this.setState({ loading: true })
     await details
       .dellOne(id)
       .then(() => {
         this.handleGetAll()
       })
       .catch((error) => {
-        this.setState({ submitting: false })
+        this.setState({ loading: false })
         showError(error, t, 'contacts')
       })
   }
@@ -121,13 +118,13 @@ class ContactsWaitingFeedbackList extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { submitting } = this.state
-    const prevSubmitting = prevState.submitting
+    const { loading } = this.state
+    const prevLoading = prevState.loading
     const prevQueryParams = prevState.queryParams
     const queryParams = getQueryParamsFromURL(this.props)
     if (
-      !submitting &&
-      !prevSubmitting &&
+      !loading &&
+      !prevLoading &&
       queryParams &&
       !isEqual(queryParams, prevQueryParams)
     ) {
@@ -144,7 +141,8 @@ class ContactsWaitingFeedbackList extends React.Component {
       title
     ) : (
       <React.Fragment>
-        <FontAwesomeIcon icon={faHourglass} /> {title}
+        <Icon name={EIcons.hourglassIcon} />
+        {title}
       </React.Fragment>
     )
   }
@@ -158,13 +156,12 @@ class ContactsWaitingFeedbackList extends React.Component {
       : {}
   }
 
-
   render() {
     const { t } = this.props
     const {
       data,
       pagination,
-      submitting,
+      loading,
       checksContactsPhones,
       error,
       hiddenFilter,
@@ -190,10 +187,12 @@ class ContactsWaitingFeedbackList extends React.Component {
               handleFilters={(objQuery) =>
                 handleFilter({ objQuery, componentReact: this })
               }
-              refresh={submitting}
+              refresh={loading}
               error={error}
               showTypeCompany={true}
-              getFilters={() => details.getAllWaitingFeedbackFilters(filtersParams)}
+              getFilters={() =>
+                details.getAllWaitingFeedbackFilters(filtersParams)
+              }
             />
           </Col>
           <Col xs={12} lg={hiddenFilter ? 12 : 9} xl={hiddenFilter ? 12 : 10}>
@@ -253,35 +252,37 @@ class ContactsWaitingFeedbackList extends React.Component {
                       checksContactsPhones={checksContactsPhones}
                       contactsData={data}
                       afterClose={this.handleGetAll}
-                    />{' '}
+                    />
                     <AssignNewPublisher
                       checksContactsPhones={checksContactsPhones}
                       contactsData={data}
                       afterClose={this.handleGetAll}
-                    />{' '}
+                    />
                     <CSVLink
                       data={dataCVS}
                       headers={headers}
                       filename={`${t('titleWaitingFeedback')}.csv`}
                       title={t('titleExportToCVSWaitingFeedback')}
-                      className={`btn btn-primary ${
-                        checksContactsPhones.length > 0 ? '' : 'disabled'
-                      }`}
                       onClick={() => parseDataCVS(this, true)}
                     >
-                      <FontAwesomeIcon icon={faFileExcel} />
+                      <Button
+                        iconName={EIcons.fileExcelIcon}
+                        className={`${
+                          checksContactsPhones.length > 0 ? '' : 'disabled'
+                        }`}
+                      />
                     </CSVLink>
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {submitting ? (
+                {loading ? (
                   <tr>
                     <td colSpan={colSpan}>
                       <ReactPlaceholder
                         showLoadingAnimation={true}
                         type="text"
-                        ready={!submitting}
+                        ready={!loading}
                         rows={RECORDS_PER_PAGE}
                       />
                     </td>
@@ -346,11 +347,11 @@ class ContactsWaitingFeedbackList extends React.Component {
                           <EditDetailsContact
                             data={detailContact}
                             contact={detailContact}
-                            icon={faUndo}
+                            icon={EIcons.undoIcon}
                             buttonTitleTranslated={t('giveBack')}
                             id={detailContact.id}
                             afterClose={this.handleGetAll}
-                          />{' '}
+                          />
                           <AskDelete
                             id={detailContact.id}
                             title={t('deleteRecordWaitingFeedback')}
@@ -370,7 +371,7 @@ class ContactsWaitingFeedbackList extends React.Component {
                   <td colSpan={colSpan} style={{ border: 0 }}>
                     <Pagination
                       pagination={pagination}
-                      submitting={submitting}
+                      loading={loading}
                       onClick={(objQuery) =>
                         handleFilter({
                           objQuery,

@@ -1,6 +1,6 @@
-import { get, getOr, isEmpty, isNumber, camelCase } from 'lodash/fp'
 import { some } from 'lodash'
 import Swal from 'sweetalert2'
+import { get, getOr, isEmpty, isNumber, camelCase } from 'lodash/fp'
 
 const errorsCamelCase = [
   { name: 'timeoutOf1MsExceeded' },

@@ -1,9 +1,9 @@
 import React, { Suspense, useState, useEffect } from 'react'
 
 import Routes from './routes/routes'
+import { campaigns } from './services/'
 import { ApplicationContext } from './contexts/application'
 import { buildContextData } from './utils/loginDataManager'
-import { campaigns } from './services/'
 
 import Loading from './components/common/Loading/Loading'
 

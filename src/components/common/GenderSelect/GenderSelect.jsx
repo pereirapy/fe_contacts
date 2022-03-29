@@ -1,7 +1,8 @@
 import React from 'react'
-import SuperSelect from '../SuperSelect/SuperSelect'
-import { useTranslation } from 'react-i18next'
 import { orderBy } from 'lodash/fp'
+import { useTranslation } from 'react-i18next'
+
+import SuperSelect from '../SuperSelect/SuperSelect'
 
 const GenderSelect = (props) => {
   const { t } = useTranslation(['contacts', 'common'])

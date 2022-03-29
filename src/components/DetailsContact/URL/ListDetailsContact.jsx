@@ -4,24 +4,21 @@ import { Link } from 'react-router-dom'
 import { withTranslation } from 'react-i18next'
 import ReactPlaceholder from 'react-placeholder'
 import { getOr, map, first, isEmpty, isEqual } from 'lodash/fp'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Button, Table, Row, Col, Container } from 'react-bootstrap'
-import {
-  faPlusSquare,
-  faEdit,
-  faAddressCard,
-} from '@fortawesome/free-solid-svg-icons'
+import { Table, Row, Col, Container } from 'react-bootstrap'
 
 import {
   handleFilter,
   getLastPublisherThatTouched,
   isWaitingFeedback,
 } from '../../../utils/contactsHelper'
+import { EIcons } from '../../../enums/icons'
 import { details } from '../../../services'
 import { showError } from '../../../utils/generic'
 import { getQueryParamsFromURL } from '../../../utils/forms'
 import { RECORDS_PER_PAGE } from '../../../constants/application'
 
+import Icon from '../../common/Icon/Icon'
+import Button from '../../common/Button/Button'
 import Search from '../../common/Search/Search'
 import AskDelete from '../../common/AskDelete/AskDelete'
 import NoRecords from '../../common/NoRecords/NoRecords'
@@ -108,12 +105,12 @@ class ListDetailsContact extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     const { loading } = this.state
-    const prevSubmiting = prevState.loading
+    const prevLoading = prevState.loading
     const prevQueryParams = prevState.queryParams
     const queryParams = getQueryParamsFromURL(this.props)
     if (
       !loading &&
-      !prevSubmiting &&
+      !prevLoading &&
       queryParams &&
       !isEqual(queryParams, prevQueryParams)
     ) {
@@ -140,7 +137,7 @@ class ListDetailsContact extends React.Component {
       title
     ) : (
       <React.Fragment>
-        <FontAwesomeIcon icon={faAddressCard} /> {title}
+        <Icon iconName={EIcons.addressCardIcon} /> {title}
       </React.Fragment>
     )
   }
@@ -191,18 +188,16 @@ class ListDetailsContact extends React.Component {
                         <Button
                           variant="primary"
                           onClick={this.notificationNotAllowedNewDetails}
-                        >
-                          <FontAwesomeIcon icon={faPlusSquare} />
-                        </Button>
+                          iconName={EIcons.plusSquareIcon}
+                        />
                       ) : (
                         <Button
                           title={t('common:new')}
                           variant="primary"
                           as={Link}
                           to={`/contacts/${encodeURI(phone)}/details/new`}
-                        >
-                          <FontAwesomeIcon icon={faPlusSquare} />
-                        </Button>
+                          iconName={EIcons.plusSquareIcon}
+                        />
                       )}
                     </th>
                   </tr>
@@ -241,9 +236,8 @@ class ListDetailsContact extends React.Component {
                               to={`/contacts/${encodeURI(phone)}/details/edit/${
                                 detail.id
                               }`}
-                            >
-                              <FontAwesomeIcon icon={faEdit} />
-                            </Button>{' '}
+                              iconName={EIcons.editIcon}
+                            />
                             <AskDelete
                               id={detail.id}
                               funcToCallAfterConfirmation={this.handleDelete}

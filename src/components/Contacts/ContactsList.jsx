@@ -4,14 +4,8 @@ import { Link } from 'react-router-dom'
 import { withTranslation } from 'react-i18next'
 import ReactPlaceholder from 'react-placeholder'
 import { Checkbox } from 'pretty-checkbox-react'
-import { Button, Table, Row, Col, Form } from 'react-bootstrap'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Table, Row, Col, Form } from 'react-bootstrap'
 import { map, getOr, isEmpty, contains, isEqual } from 'lodash/fp'
-import {
-  faList,
-  faFileExcel,
-  faGlobeAmericas,
-} from '@fortawesome/free-solid-svg-icons'
 
 import {
   handleFilter,
@@ -31,6 +25,7 @@ import {
   ID_STATUS_SEND_TO_OTHER_CONG,
 } from '../../constants/status'
 import { contacts } from '../../services'
+import { EIcons } from '../../enums/icons'
 import { showError } from '../../utils/generic'
 import { getQueryParamsFromURL } from '../../utils/forms'
 import { RECORDS_PER_PAGE } from '../../constants/application'
@@ -38,6 +33,8 @@ import { ApplicationContext } from '../../contexts/application'
 
 import NewContact from './NewContact'
 import EditContact from './EditContact'
+import Icon from '../common/Icon/Icon'
+import Button from '../common/Button/Button'
 import Search from '../common/Search/Search'
 import SendPhones from './SendPhones/SendPhones'
 import AskDelete from '../common/AskDelete/AskDelete'
@@ -67,7 +64,7 @@ class Contacts extends React.Component {
       error: false,
       hiddenFilter: false,
       checksContactsPhones: [],
-      submitting: false,
+      loading: false,
       pagination: {},
       statusForbidden: [ID_STATUS_NO_VISIT, ID_STATUS_SEND_TO_OTHER_CONG],
       queryParams: {
@@ -93,7 +90,7 @@ class Contacts extends React.Component {
   }
 
   async handleGetAll(newQueyParams) {
-    this.setState({ submitting: true, checksContactsPhones: [] })
+    this.setState({ loading: true, checksContactsPhones: [] })
     uncheckCheckboxSelectAll()
     const { t } = this.props
     try {
@@ -107,21 +104,21 @@ class Contacts extends React.Component {
         this.setState({
           data: getOr([], 'data.data.data.data.list', response),
           pagination: getOr({}, 'data.data.data.data.pagination', response),
-          submitting: false,
+          loading: false,
           error: false,
           queryParams: lastQueryParams,
         })
       } else {
         this.setState({
           error,
-          submitting: false,
+          loading: false,
         })
         showError(error, t, 'contacts')
       }
     } catch (error) {
       this.setState({
         error,
-        submitting: false,
+        loading: false,
       })
       showError(error, t, 'contacts')
     }
@@ -129,14 +126,14 @@ class Contacts extends React.Component {
 
   async handleDelete(id) {
     const { t } = this.props
-    this.setState({ submitting: true })
+    this.setState({ loading: true })
     await contacts
       .dellOne(id)
       .then(() => {
         this.handleGetAll()
       })
       .catch((error) => {
-        this.setState({ submitting: false })
+        this.setState({ loading: false })
         showError(error, t, 'contacts')
       })
   }
@@ -172,13 +169,13 @@ class Contacts extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { submitting } = this.state
-    const prevSubmiting = prevState.submitting
+    const { loading } = this.state
+    const prevLoading = prevState.loading
     const prevQueryParams = prevState.queryParams
     const queryParams = getQueryParamsFromURL(this.props)
     if (
-      !submitting &&
-      !prevSubmiting &&
+      !loading &&
+      !prevLoading &&
       queryParams &&
       !isEqual(queryParams, prevQueryParams)
     ) {
@@ -189,6 +186,9 @@ class Contacts extends React.Component {
   getTitle(onlyText) {
     const { t, modeAllContacts } = this.props
     const title = modeAllContacts ? 'listAllTitle' : 'listTitle'
+    const iconName = modeAllContacts
+      ? EIcons.globeAmericasIcon
+      : EIcons.checkDoubleIcon
 
     const { campaignActive } = this.context
     const campaignName =
@@ -199,7 +199,8 @@ class Contacts extends React.Component {
       fullTitle
     ) : (
       <React.Fragment>
-        <FontAwesomeIcon icon={faGlobeAmericas} /> {fullTitle}
+        <Icon name={iconName} />
+        {fullTitle}
       </React.Fragment>
     )
   }
@@ -220,7 +221,7 @@ class Contacts extends React.Component {
     const {
       data,
       pagination,
-      submitting,
+      loading,
       checksContactsPhones,
       error,
       hiddenFilter,
@@ -247,7 +248,7 @@ class Contacts extends React.Component {
               handleFilters={(objQuery) =>
                 handleFilter({ objQuery, componentReact: this })
               }
-              refresh={submitting}
+              refresh={loading}
               error={error}
               showTypeCompany={true}
               getFilters={() => contacts.getAllFilters(filtersParams)}
@@ -304,19 +305,19 @@ class Contacts extends React.Component {
                   )}
                   <th style={{ minWidth: '116px' }}>{t('details')}</th>
                   <th style={{ minWidth: '189px' }}>
-                    <NewContact afterClose={this.handleGetAll} />{' '}
+                    <NewContact afterClose={this.handleGetAll} />
                     <SendPhones
                       checksContactsPhones={checksContactsPhones}
                       contactsData={data}
                       afterClose={this.handleGetAll}
-                    />{' '}
+                    />
                     {isAtLeastElder && (
                       <BatchChanges
                         checksContactsPhones={checksContactsPhones}
                         contactsData={data}
                         afterClose={this.handleGetAll}
                       />
-                    )}{' '}
+                    )}
                     <CSVLink
                       data={dataCVS}
                       headers={headers}
@@ -324,24 +325,26 @@ class Contacts extends React.Component {
                         modeAllContacts ? 'listAllTitle' : 'listTitle'
                       )}.csv`}
                       title={t('titleExportToCVS')}
-                      className={`btn btn-primary ${
-                        checksContactsPhones.length > 0 ? '' : 'disabled'
-                      }`}
                       onClick={() => parseDataCVS(this, false)}
                     >
-                      <FontAwesomeIcon icon={faFileExcel} />
+                      <Button
+                        iconName={EIcons.fileExcelIcon}
+                        className={`${
+                          checksContactsPhones.length > 0 ? '' : 'disabled'
+                        }`}
+                      />
                     </CSVLink>
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {submitting ? (
+                {loading ? (
                   <tr>
                     <td colSpan={colSpan}>
                       <ReactPlaceholder
                         showLoadingAnimation={true}
                         type="text"
-                        ready={!submitting}
+                        ready={!loading}
                         rows={RECORDS_PER_PAGE}
                       />
                     </td>
@@ -431,15 +434,14 @@ class Contacts extends React.Component {
                             contact={contact}
                             id={contact.phone}
                             afterClose={() => this.handleGetAll()}
-                          />{' '}
+                          />
                           <Button
                             title={t('common:list')}
                             variant="secondary"
                             as={Link}
                             to={`/contacts/${encodeURI(contact.phone)}/details`}
-                          >
-                            <FontAwesomeIcon icon={faList} />
-                          </Button>
+                            iconName={EIcons.listIcon}
+                          />
                         </td>
                         <td>
                           {!modeAllContacts && (
@@ -447,7 +449,7 @@ class Contacts extends React.Component {
                               id={contact.phone}
                               afterClose={() => this.handleGetAll()}
                             />
-                          )}{' '}
+                          )}
                           <AskDelete
                             id={contact.phone}
                             funcToCallAfterConfirmation={this.handleDelete}
@@ -472,7 +474,7 @@ class Contacts extends React.Component {
                           componentReact: this,
                         })
                       }
-                      submitting={submitting}
+                      loading={loading}
                     />
                   </td>
                 </tr>

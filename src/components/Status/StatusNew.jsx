@@ -1,14 +1,16 @@
 import React from 'react'
 import { withTranslation } from 'react-i18next'
-import { status } from '../../services'
 import SimpleReactValidator from 'simple-react-validator'
+
+import { status } from '../../services'
+import { EIcons } from '../../enums/icons'
+import { showError, showSuccessful } from '../../utils/generic'
 import { getLocale, handleInputChangeGeneric } from '../../utils/forms'
+
+import Icon from '../common/Icon/Icon'
+import StatusForm from './StatusForm.jsx'
 import OurModal from '../common/OurModal/OurModal'
 import ElementError from '../common/ElementError/ElementError'
-import { faPlusSquare, faTags } from '@fortawesome/free-solid-svg-icons'
-import StatusForm from './StatusForm.jsx'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { showError, showSuccessful } from '../../utils/generic'
 
 const fields = {
   description: '',
@@ -70,8 +72,8 @@ class StatusNew extends React.Component {
     const { t, afterClose } = this.props
     const title = (
       <React.Fragment>
-        {' '}
-        <FontAwesomeIcon icon={faTags} /> {`${t('common:new')} ${t('title')}`}{' '}
+        <Icon name={EIcons.tagsIcon} />
+        {`${t('common:new')} ${t('title')}`}
       </React.Fragment>
     )
 
@@ -87,7 +89,7 @@ class StatusNew extends React.Component {
         onExit={afterClose}
         onClose={this.resetForm}
         title={title}
-        buttonText={<FontAwesomeIcon icon={faPlusSquare} />}
+        buttonIcon={EIcons.editIcon}
       />
     )
   }

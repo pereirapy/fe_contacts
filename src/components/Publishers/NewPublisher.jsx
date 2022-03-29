@@ -1,19 +1,21 @@
 import React from 'react'
-import { withTranslation } from 'react-i18next'
-import OurModal from '../common/OurModal/OurModal'
-import ElementError from '../common/ElementError/ElementError'
 import { omit, getOr } from 'lodash/fp'
+import { withTranslation } from 'react-i18next'
 import SimpleReactValidator from 'simple-react-validator'
+
 import {
   getLocale,
   handleInputChangeGeneric,
   mustBeEqualFieldPassword,
 } from '../../utils/forms'
+import { EIcons } from '../../enums/icons'
 import { publishers } from '../../services'
-import FormPublisher from './FormPublisher'
-import { faPlusSquare, faUserPlus } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { showError, showSuccessful, ifEmptySetNull } from '../../utils/generic'
+
+import Icon from '../common/Icon/Icon'
+import FormPublisher from './FormPublisher'
+import OurModal from '../common/OurModal/OurModal'
+import ElementError from '../common/ElementError/ElementError'
 
 const fields = {
   name: '',
@@ -31,7 +33,7 @@ class NewPublisher extends React.Component {
     super(props)
     this.state = {
       form: fields,
-      loading: false,
+      submitting: false,
       validated: false,
     }
 
@@ -60,7 +62,7 @@ class NewPublisher extends React.Component {
       this.validator.showMessages()
       return true
     }
-    this.setState({ loading: true })
+    this.setState({ submitting: true })
 
     const { form } = this.state
     const { t } = this.props
@@ -75,24 +77,23 @@ class NewPublisher extends React.Component {
       showSuccessful(t)
       onHide()
     } catch (error) {
-      this.setState({ loading: false })
+      this.setState({ submitting: false })
       showError(error, t, 'publishers')
     }
   }
 
   resetForm() {
-    this.setState({ form: fields, loading: false, validated: false })
+    this.setState({ form: fields, submitting: false, validated: false })
     this.validator.hideMessages()
   }
 
   render() {
-    const { form, validated, loading } = this.state
+    const { form, validated, submitting } = this.state
     const { t, afterClose } = this.props
     const title = (
       <React.Fragment>
-        {' '}
-        <FontAwesomeIcon icon={faUserPlus} />{' '}
-        {`${t('common:new')} ${t('titleCrud')}`}{' '}
+        <Icon name={EIcons.userPlusIcon} />
+        {`${t('common:new')} ${t('titleCrud')}`}
       </React.Fragment>
     )
 
@@ -100,7 +101,7 @@ class NewPublisher extends React.Component {
       <OurModal
         body={FormPublisher}
         validator={this.validator}
-        loading={loading}
+        submitting={submitting}
         validated={validated}
         handleSubmit={this.handleSubmit}
         handleInputChange={this.handleInputChange}
@@ -109,7 +110,7 @@ class NewPublisher extends React.Component {
         onClose={this.resetForm}
         buttonTitle={t('common:new')}
         title={title}
-        buttonText={<FontAwesomeIcon icon={faPlusSquare} />}
+        buttonIcon={EIcons.plusSquareIcon}
       />
     )
   }

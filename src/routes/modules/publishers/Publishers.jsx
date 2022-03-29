@@ -1,8 +1,9 @@
 import React from 'react'
-import PrivateRoute from '../../../utils/privateRoute'
-import Publishers from '../../../pages/Publishers/Publishers'
 
 import publishersPaths from './path'
+import PrivateRoute from '../../../utils/privateRoute'
+
+import Publishers from '../../../pages/Publishers/Publishers'
 
 const Routes = () => [
   <PrivateRoute

@@ -2,8 +2,6 @@ import React from 'react'
 import Swal from 'sweetalert2'
 import { withTranslation } from 'react-i18next'
 import SimpleReactValidator from 'simple-react-validator'
-import { faWhatsapp } from '@fortawesome/free-brands-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   getOr,
   map,
@@ -21,6 +19,7 @@ import {
   handleInputChangeGeneric,
   formatDateDMY,
 } from '../../../utils/forms'
+import { EIcons } from '../../../enums/icons'
 import { contacts, publishers } from '../../../services'
 import { URL_SEND_MESSAGE } from '../../../constants/settings'
 import { WAITING_FEEDBACK } from '../../../constants/contacts'
@@ -256,12 +255,15 @@ class SendPhones extends React.Component {
   }
 
   render() {
-    const { form, validated, publishersOptions } = this.state
+    const { form, validated, publishersOptions, submitting, loading } =
+      this.state
     const { t, checksContactsPhones, afterClose } = this.props
     return (
       <OurModal
         body={FormSendPhones}
         validator={this.validator}
+        loading={loading}
+        submitting={submitting}
         validated={validated}
         handleSubmit={this.handleSubmit}
         handleInputChange={this.handleInputChange}
@@ -272,7 +274,7 @@ class SendPhones extends React.Component {
         onEnter={this.onEnter}
         title={this.getTitle()}
         buttonTitle={t('common:sendOverWhatsApp')}
-        buttonText={<FontAwesomeIcon icon={faWhatsapp} />}
+        buttonIcon={EIcons.whatsappIcon}
         buttonDisabled={checksContactsPhones.length === 0}
         buttonVariant="success"
       />

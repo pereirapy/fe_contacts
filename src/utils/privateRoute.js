@@ -1,5 +1,6 @@
 import React from 'react'
 import { Route, Redirect } from 'react-router-dom'
+
 import useApplicationContext from '../hooks/useApplicationContext'
 
 function PrivateRoute({ component: Component, ...rest }) {

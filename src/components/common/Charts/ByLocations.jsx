@@ -1,12 +1,15 @@
 import React, { useState } from 'react'
-import { Col, Card, Row, ListGroup, Button } from 'react-bootstrap'
-import { useTranslation } from 'react-i18next'
-import { PieChart } from 'react-minimal-pie-chart'
-import { get, isEmpty, getOr, map, isNil, pipe, orderBy } from 'lodash/fp'
 import { round } from 'lodash'
-import { randomColor } from '../../../utils/generic'
+import { useTranslation } from 'react-i18next'
 import ReactPlaceholder from 'react-placeholder'
+import { PieChart } from 'react-minimal-pie-chart'
+import { Col, Card, Row, ListGroup } from 'react-bootstrap'
+import { get, isEmpty, getOr, map, isNil, pipe, orderBy } from 'lodash/fp'
+
+import { randomColor } from '../../../utils/generic'
 import useApplicationContext from '../../../hooks/useApplicationContext'
+
+import Button from '../Button/Button'
 
 const getByLocations = (t, data) =>
   pipe(orderBy(['percent'], 'desc'), (data) => parseLocationsData(t, data))(
@@ -60,9 +63,8 @@ const ByLocations = (props) => {
             variant="link"
             title={t('moreInformation')}
             onClick={() => toggleDetailsByPLocations((prevState) => !prevState)}
-          >
-            {t('titleChartByLocationsContacted')}
-          </Button>
+            text={t('titleChartByLocationsContacted')}
+          />
         </Card.Header>
         <Card.Body style={{ textAlign: '-webkit-center' }}>
           <ReactPlaceholder

@@ -1,9 +1,11 @@
 import React from 'react'
-import SuperSelect from '../SuperSelect/SuperSelect'
 import { withTranslation } from 'react-i18next'
+import SuperSelect from '../SuperSelect/SuperSelect'
+
 import { responsibility } from '../../../services'
-import { reduceResponsibility } from '../../../stateReducers/responsibility'
 import { parseErrorMessage } from '../../../utils/generic'
+import { reduceResponsibility } from '../../../stateReducers/responsibility'
+
 import ShowError from '../ShowError/ShowError'
 
 class ResponsibilitySelect extends React.Component {
@@ -26,7 +28,7 @@ class ResponsibilitySelect extends React.Component {
       )
       this.setState({ responsibilityOptions, loading: false })
     } catch (error) {
-      const messageParsed = parseErrorMessage(error) 
+      const messageParsed = parseErrorMessage(error)
       this.setState({
         error: t(`common:${messageParsed}`, messageParsed),
         loading: false,

@@ -1,8 +1,9 @@
 import i18n from 'i18next'
-import { initReactI18next } from 'react-i18next'
-import Backend from 'i18next-http-backend'
-import { getSettings } from './utils/loginDataManager'
 import { getOr } from 'lodash/fp'
+import Backend from 'i18next-http-backend'
+import { initReactI18next } from 'react-i18next'
+
+import { getSettings } from './utils/loginDataManager'
 
 const lng = getOr('en-GB', 'language', getSettings())
 

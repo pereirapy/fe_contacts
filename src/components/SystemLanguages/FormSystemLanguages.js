@@ -1,6 +1,7 @@
 import React from 'react'
-import { Jumbotron, Col, Row } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
+import { Jumbotron, Col, Row } from 'react-bootstrap'
+
 import SuperSelect from '../common/SuperSelect/SuperSelect'
 
 const FormSystemLanguages = (props) => {

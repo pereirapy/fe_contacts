@@ -1,10 +1,11 @@
 import React from 'react'
-import { Button } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faWhatsapp } from '@fortawesome/free-brands-svg-icons'
-import { URL_SEND_MESSAGE } from '../../../constants/settings'
+
 import { isEmpty } from 'lodash/fp'
+import { EIcons } from '../../../enums/icons'
+import { URL_SEND_MESSAGE } from '../../../constants/settings'
+
+import Button from '../Button/Button'
 
 const CheckNumber = (props) => {
   const { t } = useTranslation([
@@ -26,9 +27,8 @@ const CheckNumber = (props) => {
       variant="success"
       disabled={isEmpty(phone)}
       onClick={() => check()}
-    >
-      <FontAwesomeIcon icon={faWhatsapp} />
-    </Button>
+      iconName={EIcons.whatsappIcon}
+    />
   )
 }
 

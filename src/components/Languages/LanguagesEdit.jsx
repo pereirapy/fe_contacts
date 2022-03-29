@@ -1,15 +1,17 @@
 import React from 'react'
-import { withTranslation } from 'react-i18next'
-import { languages } from '../../services'
 import { get, omit } from 'lodash/fp'
+import { withTranslation } from 'react-i18next'
 import SimpleReactValidator from 'simple-react-validator'
+
+import { languages } from '../../services'
+import { EIcons } from '../../enums/icons'
+import { showError, showSuccessful } from '../../utils/generic'
 import { getLocale, handleInputChangeGeneric } from '../../utils/forms'
+
+import Icon from '../common/Icon/Icon'
+import LanguagesForm from './LanguagesForm.jsx'
 import OurModal from '../common/OurModal/OurModal'
 import ElementError from '../common/ElementError/ElementError'
-import { faEdit, faLanguage } from '@fortawesome/free-solid-svg-icons'
-import LanguagesForm from './LanguagesForm.jsx'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { showError, showSuccessful } from '../../utils/generic'
 
 const fields = {
   name: '',
@@ -21,7 +23,7 @@ class StatusEdit extends React.Component {
     super(props)
     this.state = {
       form: fields,
-      loading: false,
+      submitting: false,
       validated: false,
     }
     this.handleInputChange = this.handleInputChange.bind(this)
@@ -50,7 +52,7 @@ class StatusEdit extends React.Component {
   }
 
   resetForm() {
-    this.setState({ form: fields, loading: false, validated: false })
+    this.setState({ form: fields, submitting: false, validated: false })
     this.validator.hideMessages()
   }
 
@@ -60,7 +62,7 @@ class StatusEdit extends React.Component {
       return true
     }
 
-    this.setState({ loading: true })
+    this.setState({ submitting: true })
 
     const { form } = this.state
     const { t } = this.props
@@ -68,10 +70,11 @@ class StatusEdit extends React.Component {
     try {
       const data = omit(['id'], form)
       await languages.updateOne(get('id', form), data)
+      this.setState({ submitting: false })
       showSuccessful(t)
       onHide()
     } catch (error) {
-      this.setState({ loading: false })
+      this.setState({ submitting: false })
       showError(error, t, 'languages')
     }
   }
@@ -82,13 +85,12 @@ class StatusEdit extends React.Component {
   }
 
   render() {
-    const { form, validated } = this.state
+    const { form, validated, submitting } = this.state
     const { t, afterClose } = this.props
     const title = (
       <React.Fragment>
-        {' '}
-        <FontAwesomeIcon icon={faLanguage} />{' '}
-        {`${t('common:edit')} ${t('titleModal')}`}{' '}
+        <Icon name={EIcons.languageIcon} />
+        {`${t('common:edit')} ${t('titleModal')}`}
       </React.Fragment>
     )
 
@@ -97,6 +99,7 @@ class StatusEdit extends React.Component {
         body={LanguagesForm}
         validator={this.validator}
         validated={validated}
+        submitting={submitting}
         handleSubmit={this.handleSubmit}
         handleInputChange={this.handleInputChange}
         handleChangeColor={this.handleChangeColor}
@@ -105,7 +108,7 @@ class StatusEdit extends React.Component {
         onEnter={this.onEnter}
         onClose={this.resetForm}
         title={title}
-        buttonText={<FontAwesomeIcon icon={faEdit} />}
+        buttonIcon={EIcons.editIcon}
         buttonVariant="success"
       />
     )

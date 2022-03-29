@@ -1,17 +1,20 @@
 import React from 'react'
-import { Button, Form, Row, Col } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
+import ReactPlaceholder from 'react-placeholder'
+import { Form, Row, Col } from 'react-bootstrap'
+
+import Button from '../../common/Button/Button'
 import SuperSelect from '../../common/SuperSelect/SuperSelect'
 import GenderSelect from '../../common/GenderSelect/GenderSelect'
 import StatusSelect from '../../common/StatusSelect/StatusSelect'
 import LanguageSelect from '../../common/LanguageSelect/LanguageSelect'
-import ReactPlaceholder from 'react-placeholder'
 
 const FormBatchChanges = (props) => {
   const { t } = useTranslation(['batchChanges', 'common', 'contacts'])
   const {
     form,
     loading,
+    submitting,
     publishersOptions,
     handleSubmit,
     onHide,
@@ -129,12 +132,13 @@ const FormBatchChanges = (props) => {
         <Row>
           <Col>
             <Button
-              disabled={loading}
+              disabled={submitting}
+              submitting={submitting}
               variant="primary"
               onClick={() => handleSubmit(onHide)}
-            >
-              {t(loading ? 'common:btnSubmitting' : 'common:btnSubmit')}
-            </Button>
+              text={t('common:btnSubmit')}
+              textLoading={t('common:btnSubmitting')}
+            />
           </Col>
         </Row>
       </Form>

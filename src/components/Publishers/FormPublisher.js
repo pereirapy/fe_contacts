@@ -1,11 +1,14 @@
 import React from 'react'
-import { Button, Form, Row, Col } from 'react-bootstrap'
-import { useTranslation } from 'react-i18next'
-import CheckNumber from '../common/CheckNumbers/CheckNumbers'
-import ResponsibilitySelect from '../common/ResponsibilitySelect/ResponsibilitySelect'
-import SuperFormControl from '../common/SuperFormControl/SuperFormControl'
-import ReactPlaceholder from 'react-placeholder'
 import { Radio } from 'pretty-checkbox-react'
+import { useTranslation } from 'react-i18next'
+import { Form, Row, Col } from 'react-bootstrap'
+import ReactPlaceholder from 'react-placeholder'
+
+import Button from '../common/Button/Button'
+import CheckNumber from '../common/CheckNumbers/CheckNumbers'
+import SuperFormControl from '../common/SuperFormControl/SuperFormControl'
+import ResponsibilitySelect from '../common/ResponsibilitySelect/ResponsibilitySelect'
+
 
 const FormPublishers = (props) => {
   const { t } = useTranslation([
@@ -19,6 +22,7 @@ const FormPublishers = (props) => {
     form,
     validator,
     loading,
+    submitting,
     handleSubmit,
     onHide,
     handleInputChange,
@@ -154,12 +158,13 @@ const FormPublishers = (props) => {
           </Col>
         </Row>
         <Button
-          disabled={form.disabled || loading}
+          disabled={form.disabled || submitting}
+          submitting={submitting}
           variant="primary"
           onClick={() => handleSubmit(onHide)}
-        >
-          {t(loading ? 'common:btnSubmitting' : 'common:btnSubmit')}
-        </Button>{' '}
+          text={t('common:btnSubmit')}
+          textLoading={t('common:btnSubmitting')}
+        />
       </Form>
     </ReactPlaceholder>
   )

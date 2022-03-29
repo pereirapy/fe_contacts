@@ -1,16 +1,16 @@
 import React from 'react'
-import { withTranslation } from 'react-i18next'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBullhorn } from '@fortawesome/free-solid-svg-icons'
 import { getOr, isEmpty } from 'lodash/fp'
+import { withTranslation } from 'react-i18next'
 
+import { EIcons } from '../../enums/icons'
 import { campaigns } from '../../services'
 import { showError } from '../../utils/generic'
 import { ApplicationContext } from '../../contexts/application'
 
-import ContainerCRUD from '../common/ContainerCRUD/ContainerCRUD'
-import Loading from '../common/Loading/Loading'
+import Icon from '../common/Icon/Icon'
 import Charts from '../common/Charts/Charts'
+import Loading from '../common/Loading/Loading'
+import ContainerCRUD from '../common/ContainerCRUD/ContainerCRUD'
 
 class CampaignCharts extends React.Component {
   constructor(props) {
@@ -61,7 +61,8 @@ class CampaignCharts extends React.Component {
       title
     ) : (
       <React.Fragment>
-        <FontAwesomeIcon icon={faBullhorn} /> {title}
+        <Icon name={EIcons.bullhornIcon} />
+        {title}
       </React.Fragment>
     )
   }

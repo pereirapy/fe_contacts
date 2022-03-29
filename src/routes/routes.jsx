@@ -1,17 +1,17 @@
 import React from 'react'
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom'
 
+import PublicRoute from '../utils/publicRoute'
+import PrivateRoute from '../utils/privateRoute'
+import statusRoutes from './modules/status/Status'
+import contactsRoutes from './modules/contacts/Contacts'
+import languageRoutes from './modules/languages/Languages'
+import campaignsRoutes from './modules/campaigns/Campaigns'
+import publishersRoutes from './modules/publishers/Publishers'
+
 import Home from '../pages/Home/Home'
 import NotFound from '../pages/NotFound/NotFound'
 import Dashboard from '../pages/Dashboard/Dashboard'
-import contactsRoutes from './modules/contacts/Contacts'
-import publishersRoutes from './modules/publishers/Publishers'
-import statusRoutes from './modules/status/Status'
-import campaignsRoutes from './modules/campaigns/Campaigns'
-import languageRoutes from './modules/languages/Languages'
-
-import PrivateRoute from '../utils/privateRoute'
-import PublicRoute from '../utils/publicRoute'
 
 const Routes = () => (
   <BrowserRouter>

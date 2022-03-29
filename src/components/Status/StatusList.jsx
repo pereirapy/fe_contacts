@@ -3,14 +3,14 @@ import { map, isEmpty } from 'lodash/fp'
 import { withTranslation } from 'react-i18next'
 import ReactPlaceholder from 'react-placeholder'
 import { Table, Container } from 'react-bootstrap'
-import { faTags } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
+import { EIcons } from '../../enums/icons'
 import { status } from '../../services'
 import { showError } from '../../utils/generic'
 
 import StatusNew from './StatusNew'
 import StatusEdit from './StatusEdit'
+import Icon from '../common/Icon/Icon'
 import NoRecords from '../common/NoRecords/NoRecords'
 import AskDelete from '../common/AskDelete/AskDelete'
 import ContainerCRUD from '../common/ContainerCRUD/ContainerCRUD'
@@ -59,7 +59,7 @@ class StatusList extends React.Component {
       title
     ) : (
       <React.Fragment>
-        <FontAwesomeIcon icon={faTags} /> {title}
+        <Icon name={EIcons.tagsIcon} /> {title}
       </React.Fragment>
     )
   }
@@ -109,7 +109,7 @@ class StatusList extends React.Component {
                         <StatusEdit
                           data={status}
                           afterClose={this.handleGetAll}
-                        />{' '}
+                        />
                         <AskDelete
                           id={status.id}
                           funcToCallAfterConfirmation={this.handleDelete}

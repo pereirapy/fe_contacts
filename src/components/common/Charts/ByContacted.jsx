@@ -1,10 +1,10 @@
 import React from 'react'
+import { round } from 'lodash'
 import { Col, Card } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
-import { PieChart } from 'react-minimal-pie-chart'
-import { get, isEmpty, getOr, compact } from 'lodash/fp'
-import { round } from 'lodash'
 import ReactPlaceholder from 'react-placeholder'
+import { get, isEmpty, getOr, compact } from 'lodash/fp'
+import { PieChart } from 'react-minimal-pie-chart'
 
 const getByContacted = (t, data) => {
   if (

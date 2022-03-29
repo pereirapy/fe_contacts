@@ -1,14 +1,14 @@
 import React from 'react'
+
+import contactsPaths from './path'
 import PrivateRoute from '../../../utils/privateRoute'
 
 import ContactsListAll from '../../../pages/Contacts/ContactsListAll'
+import NewDetailsContact from '../../../pages/DetailsContact/NewDetailsContact'
 import ContactsListAvailable from '../../../pages/Contacts/ContactsListAvailable'
-import ContactsWaitingFeedbackList from '../../../pages/Contacts/ContactsWaitingFeedbackList'
 import ListDetailsContact from '../../../pages/DetailsContact/ListDetailsContact'
 import EditDetailsContact from '../../../pages/DetailsContact/EditDetailsContact'
-import NewDetailsContact from '../../../pages/DetailsContact/NewDetailsContact'
-
-import contactsPaths from './path'
+import ContactsWaitingFeedbackList from '../../../pages/Contacts/ContactsWaitingFeedbackList'
 
 const Routes = () => [
   <PrivateRoute

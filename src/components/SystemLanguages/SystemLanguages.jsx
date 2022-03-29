@@ -1,7 +1,9 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faLanguage } from '@fortawesome/free-solid-svg-icons'
+
+import { EIcons } from '../../enums/icons'
+
+import Icon from '../common/Icon/Icon'
 import OurModal from '../common/OurModal/OurModal'
 import FormSystemLanguages from './FormSystemLanguages'
 import useApplicationContext from '../../hooks/useApplicationContext'
@@ -24,8 +26,8 @@ const SystemLanguages = () => {
 
   const title = (
     <React.Fragment>
-      {' '}
-      <FontAwesomeIcon icon={faLanguage} /> {`${t('title')}`}{' '}
+      <Icon name={EIcons.languageIcon} />
+      {`${t('title')}`}
     </React.Fragment>
   )
 
@@ -37,7 +39,7 @@ const SystemLanguages = () => {
       valueSelected={i18n.language}
       optionsLanguages={languagesOptions()}
       handleInputChange={handleInputChange}
-      buttonText={<FontAwesomeIcon icon={faLanguage} />}
+      buttonIcon={EIcons.languageIcon}
       buttonVariant="primary"
     />
   )

@@ -4,9 +4,8 @@ import ReactPlaceholder from 'react-placeholder'
 import { withTranslation } from 'react-i18next'
 import { Table, Row, Col } from 'react-bootstrap'
 import { getOr, map, isEmpty, isEqual } from 'lodash/fp'
-import { faBriefcase } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
+import { EIcons } from '../../enums/icons'
 import { publishers } from '../../services'
 import { showError } from '../../utils/generic'
 import { getQueryParamsFromURL } from '../../utils/forms'
@@ -14,9 +13,10 @@ import { RECORDS_PER_PAGE } from '../../constants/application'
 import { ApplicationContext } from '../../contexts/application'
 import { handleFilter, toggleFilter } from '../../utils/contactsHelper'
 
+import Icon from '../common/Icon/Icon'
+import NewPublisher from './NewPublisher'
 import EditPublisher from './EditPublisher'
 import Search from '../common/Search/Search'
-import NewPublisher from './NewPublisher'
 import NoRecords from '../common/NoRecords/NoRecords'
 import AskDelete from '../common/AskDelete/AskDelete'
 import FilterData from '../common/FilterData/FilterData'
@@ -29,6 +29,7 @@ class Publishers extends React.Component {
     this.state = {
       data: [],
       submitting: false,
+      loading: false,
       hiddenFilter: false,
       pagination: {},
       queryParams: {
@@ -52,7 +53,7 @@ class Publishers extends React.Component {
   async handleGetAll() {
     const { t } = this.props
     this.setState({
-      submitting: true,
+      loading: true,
     })
     try {
       const queryParams = getQueryParamsFromURL(this.props)
@@ -62,14 +63,14 @@ class Publishers extends React.Component {
       this.setState({
         data: getOr([], 'data.data.list', response),
         pagination: getOr({}, 'data.data.pagination', response),
-        submitting: false,
+        loading: false,
         error: false,
         queryParams,
       })
     } catch (error) {
       this.setState({
         error,
-        submitting: false,
+        loading: false,
       })
       showError(error, t, 'publishers')
     }
@@ -91,15 +92,15 @@ class Publishers extends React.Component {
       this.showErrorNotAllowedDeleteCurrentUser()
       return
     }
-    this.setState({ submitting: true })
+    this.setState({ loading: true })
     await publishers
       .dellOne(id)
       .then(() => {
         this.handleGetAll()
-        this.setState({ submitting: false })
+        this.setState({ loading: false })
       })
       .catch((error) => {
-        this.setState({ submitting: false })
+        this.setState({ loading: false })
         showError(error, t, 'publishers')
       })
   }
@@ -109,13 +110,13 @@ class Publishers extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { submitting } = this.state
-    const prevSubmiting = prevState.submitting
+    const { loading } = this.state
+    const prevLoading = prevState.loading
     const prevQueryParams = prevState.queryParams
     const queryParams = getQueryParamsFromURL(this.props)
     if (
-      !submitting &&
-      !prevSubmiting &&
+      !loading &&
+      !prevLoading &&
       queryParams &&
       !isEqual(queryParams, prevQueryParams)
     ) {
@@ -131,7 +132,8 @@ class Publishers extends React.Component {
       title
     ) : (
       <React.Fragment>
-        <FontAwesomeIcon icon={faBriefcase} /> {title}
+        <Icon name={EIcons.briefcaseIcon} />
+        {title}
       </React.Fragment>
     )
   }
@@ -141,7 +143,7 @@ class Publishers extends React.Component {
     const {
       data,
       pagination,
-      submitting,
+      loading,
       error,
       hiddenFilter,
       queryParams: { filters },
@@ -163,7 +165,7 @@ class Publishers extends React.Component {
               handleFilters={(objQuery) =>
                 handleFilter({ objQuery, componentReact: this })
               }
-              refresh={submitting}
+              refresh={loading}
               error={error}
               getFilters={publishers.getAllFilters}
             />
@@ -195,13 +197,13 @@ class Publishers extends React.Component {
                 </tr>
               </thead>
               <tbody>
-                {submitting ? (
+                {loading ? (
                   <tr>
                     <td colSpan={colSpan}>
                       <ReactPlaceholder
                         showLoadingAnimation={true}
                         type="text"
-                        ready={!submitting}
+                        ready={!loading}
                         rows={RECORDS_PER_PAGE}
                       />
                     </td>
@@ -229,7 +231,7 @@ class Publishers extends React.Component {
                           <EditPublisher
                             id={publishers.id}
                             afterClose={this.handleGetAll}
-                          />{' '}
+                          />
                           <AskDelete
                             id={publishers.id}
                             funcToCallAfterConfirmation={this.handleDelete}
@@ -248,7 +250,7 @@ class Publishers extends React.Component {
                   <td colSpan={colSpan} style={{ border: 0 }}>
                     <Pagination
                       pagination={pagination}
-                      submitting={submitting}
+                      loading={loading}
                       onClick={(objQuery) =>
                         handleFilter({
                           objQuery,

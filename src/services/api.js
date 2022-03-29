@@ -1,7 +1,8 @@
 import axios from 'axios'
 import urlJoin from 'url-join'
-import { API_TIMEOUT_MILLISECONDS } from '../constants/application'
+
 import { getToken } from '../utils/loginDataManager'
+import { API_TIMEOUT_MILLISECONDS } from '../constants/application'
 
 function getAPIBaseURL() {
   const { REACT_APP_API_URL, REACT_APP_API_PATH } = process.env

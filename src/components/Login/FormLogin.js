@@ -1,6 +1,8 @@
 import React from 'react'
-import { Button, Form } from 'react-bootstrap'
+import { Form } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
+
+import Button from '../common/Button/Button'
 import SuperFormControl from '../common/SuperFormControl/SuperFormControl'
 
 const FormLogin = (props) => {
@@ -46,12 +48,13 @@ const FormLogin = (props) => {
 
       <Button
         disabled={submitting}
+        submitting={submitting}
         variant="primary"
         type="button"
         onClick={handleSubmit}
-      >
-        {t(submitting ? 'common:btnSubmitting' : 'common:btnSubmit')}
-      </Button>
+        text={t('common:btnSubmit')}
+        textLoading={t('common:btnSubmitting')}
+      />
     </Form>
   )
 }

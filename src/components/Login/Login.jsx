@@ -1,18 +1,17 @@
 import React from 'react'
 import { get } from 'lodash/fp'
-import FormLogin from './FormLogin'
-import { auth } from '../../services'
 import { withTranslation } from 'react-i18next'
 import SimpleReactValidator from 'simple-react-validator'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSignInAlt } from '@fortawesome/free-solid-svg-icons'
 
+import { EIcons } from '../../enums/icons'
+import { auth, campaigns } from '../../services'
 import { getLocale, handleInputChangeGeneric } from '../../utils/forms'
 import { showSuccessful, showError } from '../../utils/generic'
 import { buildContextData } from '../../utils/loginDataManager'
 import { ApplicationContext } from '../../contexts/application'
-import { campaigns } from '../../services'
 
+import FormLogin from './FormLogin'
+import Icon from '../common/Icon/Icon'
 import OurModal from '../common/OurModal/OurModal'
 import ElementError from '../common/ElementError/ElementError'
 
@@ -76,16 +75,12 @@ class LoginPopup extends React.Component {
   }
 
   render() {
-    const { t } = this.props
     const { submitting, validated, form } = this.state
-    const buttonText = (
-      <React.Fragment>
-        <FontAwesomeIcon icon={faSignInAlt} /> {t('btnOpenModal')}
-      </React.Fragment>
-    )
+    const { t } = this.props
     const title = (
       <React.Fragment>
-        <FontAwesomeIcon icon={faSignInAlt} /> {t('titleModal')}
+        <Icon name={EIcons.signInAltIcon} />
+        {t('titleModal')}
       </React.Fragment>
     )
 
@@ -100,7 +95,8 @@ class LoginPopup extends React.Component {
         validated={validated}
         handleSubmit={this.handleSubmit}
         handleInputChange={this.handleInputChange}
-        buttonText={buttonText}
+        buttonText={t('btnOpenModal')}
+        buttonIcon={EIcons.signInAltIcon}
         buttonVariant="primary"
       />
     )

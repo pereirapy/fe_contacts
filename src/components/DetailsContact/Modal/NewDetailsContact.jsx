@@ -1,30 +1,32 @@
 import React from 'react'
-import { withTranslation } from 'react-i18next'
-import OurModal from '../../common/OurModal/OurModal'
-import ElementError from '../../common/ElementError/ElementError'
 import Swal from 'sweetalert2'
 import { getOr, pick, get } from 'lodash/fp'
+import { withTranslation } from 'react-i18next'
+import OurModal from '../../common/OurModal/OurModal'
 import SimpleReactValidator from 'simple-react-validator'
-import { getLocale, handleInputChangeGeneric } from '../../../utils/forms'
-import { details, publishers, contacts, locations } from '../../../services'
-import FormDetails from '../FormDetails'
-import { faPlusSquare, faAddressCard } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Button } from 'react-bootstrap'
-import { reducePublishers } from '../../../stateReducers/publishers'
+
 import {
   showError,
   showSuccessful,
   ifEmptySetNull,
 } from '../../../utils/generic'
-import { GENDER_UNKNOWN } from '../../../constants/contacts'
-import { reduceLocations } from '../../../stateReducers/locations'
 import {
   ID_LANGUAGE_DEFAULT,
   ID_GENDER_DEFAULT,
   ID_STATUS_DEFAULT,
   ID_LOCATION_DEFAULT,
 } from '../../../constants/valuesPredefined'
+import { EIcons } from '../../../enums/icons'
+import { GENDER_UNKNOWN } from '../../../constants/contacts'
+import { reduceLocations } from '../../../stateReducers/locations'
+import { reducePublishers } from '../../../stateReducers/publishers'
+import { getLocale, handleInputChangeGeneric } from '../../../utils/forms'
+import { details, publishers, contacts, locations } from '../../../services'
+
+import FormDetails from '../FormDetails'
+import Icon from '../../common/Icon/Icon'
+import Button from '../../common/Button/Button'
+import ElementError from '../../common/ElementError/ElementError'
 
 const fields = {
   information: '',
@@ -44,6 +46,7 @@ class NewDetailsContact extends React.Component {
     this.state = {
       form: fields,
       loading: false,
+      submitting: false,
       validated: false,
       publishersOptions: [],
       locationsOptions: [],
@@ -92,7 +95,7 @@ class NewDetailsContact extends React.Component {
       this.validator.showMessages()
       return true
     }
-    this.setState({ loading: true })
+    this.setState({ submitting: true })
 
     const { form } = this.state
     const { contact, t } = this.props
@@ -124,10 +127,10 @@ class NewDetailsContact extends React.Component {
       await details.create(data)
       showSuccessful(t)
       onHide()
-      this.setState({ form: fields, loading: false, validated: false })
+      this.setState({ form: fields, submitting: false, validated: false })
       this.validator.hideMessages()
     } catch (error) {
-      this.setState({ loading: false })
+      this.setState({ submitting: false })
       showError(error, t, 'detailsContacts')
     }
   }
@@ -142,26 +145,34 @@ class NewDetailsContact extends React.Component {
   }
 
   render() {
-    const { form, validated, publishersOptions, loading, locationsOptions } =
-      this.state
+    const {
+      form,
+      validated,
+      publishersOptions,
+      loading,
+      locationsOptions,
+      submitting,
+    } = this.state
     const { t, afterClose, waitingFeedback, contact } = this.props
     const title = (
       <React.Fragment>
-        {' '}
-        <FontAwesomeIcon icon={faAddressCard} />{' '}
+        <Icon name={EIcons.addressCardIcon} />
         {`${t('common:new')} ${t('titleCrud')} #${get('phone', contact)}`}
       </React.Fragment>
     )
 
     return waitingFeedback ? (
-      <Button variant="primary" onClick={this.notificationNotAllowedNewDetails}>
-        <FontAwesomeIcon icon={faPlusSquare} />
-      </Button>
+      <Button
+        variant="primary"
+        onClick={this.notificationNotAllowedNewDetails}
+        iconName={EIcons.plusSquareIcon}
+      />
     ) : (
       <OurModal
         body={FormDetails}
         validator={this.validator}
         loading={loading}
+        submitting={submitting}
         validated={validated}
         handleSubmit={this.handleSubmit}
         handleInputChange={this.handleInputChange}
@@ -172,7 +183,7 @@ class NewDetailsContact extends React.Component {
         publishersOptions={publishersOptions}
         title={title}
         buttonTitle={t('common:new')}
-        buttonText={<FontAwesomeIcon icon={faPlusSquare} />}
+        buttonIcon={EIcons.plusSquareIcon}
       />
     )
   }

@@ -1,13 +1,12 @@
 import React from 'react'
-import { Form, InputGroup, Button } from 'react-bootstrap'
 import { getOr, reduce } from 'lodash/fp'
+import { Form, InputGroup } from 'react-bootstrap'
 import { withTranslation } from 'react-i18next'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faSearch,
-  faFilter,
-  faArrowLeft,
-} from '@fortawesome/free-solid-svg-icons'
+
+import { EIcons } from '../../../enums/icons'
+
+import Icon from '../../common/Icon/Icon'
+import Button from '../../common/Button/Button'
 
 const Search = (props) => {
   const { onFilter, t, name, colspan, fields, toggleFilter, filters, history } =
@@ -41,24 +40,21 @@ const Search = (props) => {
                   variant="outlined"
                   title={t('filter')}
                   onClick={toggleFilter}
-                >
-                  <FontAwesomeIcon icon={faFilter} />
-                </Button>
+                  margin={false}
+                  iconName={EIcons.filterIcon}
+                />
               )}
               {history && (
-                <>
-                  {' '}
-                  <Button
-                    title={t('common:back')}
-                    variant="secondary"
-                    onClick={() => history.goBack()}
-                  >
-                    <FontAwesomeIcon icon={faArrowLeft} />
-                  </Button>{' '}
-                </>
+                <Button
+                  title={t('common:back')}
+                  variant="secondary"
+                  margin={false}
+                  onClick={() => history.goBack()}
+                  iconName={EIcons.arrowLeftIcon}
+                />
               )}
               <InputGroup.Text>
-                <FontAwesomeIcon icon={faSearch} />
+                <Icon noMarginRight name={EIcons.searchIcon} />
               </InputGroup.Text>
             </InputGroup.Prepend>
             <Form.Control
@@ -67,7 +63,6 @@ const Search = (props) => {
               type="text"
               placeholder={t('placeHolder')}
               onKeyPress={sendSearch}
-              // {onBlur={toSearch}}
             />
           </InputGroup>
         </th>

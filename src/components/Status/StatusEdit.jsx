@@ -1,15 +1,17 @@
 import React from 'react'
-import { withTranslation } from 'react-i18next'
-import { status } from '../../services'
 import { get, pick } from 'lodash/fp'
+import { withTranslation } from 'react-i18next'
 import SimpleReactValidator from 'simple-react-validator'
+
+import { status } from '../../services'
+import { EIcons } from '../../enums/icons'
+import { showError, showSuccessful } from '../../utils/generic'
 import { getLocale, handleInputChangeGeneric } from '../../utils/forms'
+
+import Icon from '../common/Icon/Icon'
+import StatusForm from './StatusForm.jsx'
 import OurModal from '../common/OurModal/OurModal'
 import ElementError from '../common/ElementError/ElementError'
-import { faEdit, faTags } from '@fortawesome/free-solid-svg-icons'
-import StatusForm from './StatusForm.jsx'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { showError, showSuccessful } from '../../utils/generic'
 
 const fields = {
   description: '',
@@ -72,8 +74,8 @@ class StatusEdit extends React.Component {
     const { t, afterClose } = this.props
     const title = (
       <React.Fragment>
-        {' '}
-        <FontAwesomeIcon icon={faTags} /> {`${t('common:edit')} ${t('title')}`}{' '}
+        <Icon name={EIcons.tagsIcon} />
+        {`${t('common:edit')} ${t('title')}`}
       </React.Fragment>
     )
 
@@ -88,7 +90,7 @@ class StatusEdit extends React.Component {
         form={form}
         onExit={afterClose}
         title={title}
-        buttonText={<FontAwesomeIcon icon={faEdit} />}
+        buttonIcon={EIcons.editIcon}
         buttonVariant="success"
       />
     )

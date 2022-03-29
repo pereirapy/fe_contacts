@@ -1,20 +1,23 @@
 import React from 'react'
-import { Button, Form, Row, Col } from 'react-bootstrap'
+import { Radio } from 'pretty-checkbox-react'
 import { useTranslation } from 'react-i18next'
-import SuperFormControl from '../common/SuperFormControl/SuperFormControl'
+import { Form, Row, Col } from 'react-bootstrap'
+import ReactPlaceholder from 'react-placeholder'
+
+import Button from '../common/Button/Button'
+import SuperSelect from '../common/SuperSelect/SuperSelect'
 import GenderSelect from '../common/GenderSelect/GenderSelect'
 import StatusSelect from '../common/StatusSelect/StatusSelect'
 import LanguageSelect from '../common/LanguageSelect/LanguageSelect'
-import ReactPlaceholder from 'react-placeholder'
-import SuperSelect from '../common/SuperSelect/SuperSelect'
-import { Radio } from 'pretty-checkbox-react'
+import SuperFormControl from '../common/SuperFormControl/SuperFormControl'
 
 const FormContacts = (props) => {
   const { t } = useTranslation(['contacts', 'common'])
   const {
     form,
-    loading,
+    submitting,
     handleSubmit,
+    loading,
     onHide,
     handleInputChange,
     validated,
@@ -209,12 +212,13 @@ const FormContacts = (props) => {
         <Row>
           <Col xs={12} md={{ order: 'first', span: 2 }}>
             <Button
-              disabled={loading}
+              disabled={submitting}
               variant="primary"
               onClick={() => handleSubmit(onHide)}
-            >
-              {t(loading ? 'common:btnSubmitting' : 'common:btnSubmit')}
-            </Button>
+              submitting={submitting}
+              text={t('common:btnSubmit')}
+              textLoading={t('common:btnSubmitting')}
+            />
           </Col>
           <Col xs={{ order: 'first', span: 12 }} md={10} className="text-right">
             <Form.Text muted>{form.lastPublisherThatTouched}</Form.Text>

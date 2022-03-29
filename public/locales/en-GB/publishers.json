@@ -23,5 +23,7 @@
   "notAllowedDeleteCurrentUser": "You can't delete current user logged in",
   "publishers_email_unique": "There is other publisher with the same email address",
   "active": "Active",
-  "inactive": "Inactive"
+  "inactive": "Inactive",
+  "detailscontacts_idpublisher_foreign": "This publisher has conversations with some contact, so, will be not possible delete it"
+
 }

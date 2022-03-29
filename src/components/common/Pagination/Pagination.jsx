@@ -1,17 +1,18 @@
 import React from 'react'
-import { Pagination } from 'react-bootstrap'
 import { toNumber, isNil } from 'lodash/fp'
+import { Pagination } from 'react-bootstrap'
 import { withTranslation } from 'react-i18next'
-import { ITEMS_PAGINATION } from '../../../constants/application'
 import ReactPlaceholder from 'react-placeholder'
+
+import { ITEMS_PAGINATION } from '../../../constants/application'
 import './styles.css'
 
 const PaginationComponent = (props) => {
   const { lastPage, to, from, currentPage, totalRows } = props.pagination
-  const { submitting, t } = props
+  const { loading, t } = props
   let items = []
 
-  if (!submitting && !isNil(currentPage)) {
+  if (!loading && !isNil(currentPage)) {
     const maxItems = ITEMS_PAGINATION
     const goBackStart = currentPage - 1 > 0 ? currentPage - 1 : 1
     const goBackEnd = currentPage - maxItems > 0 ? currentPage - maxItems : 1
@@ -59,7 +60,7 @@ const PaginationComponent = (props) => {
     <ReactPlaceholder
       showLoadingAnimation={true}
       type="text"
-      ready={!submitting}
+      ready={!loading}
       rows={1}
     >
       <Pagination>
@@ -92,7 +93,6 @@ const PaginationComponent = (props) => {
         />
       </Pagination>
       <span className="ml-2 mt-2 text-primary d-none d-sm-inline">
-        {' '}
         - {t('total')}: {totalRows || 0}
       </span>
     </ReactPlaceholder>

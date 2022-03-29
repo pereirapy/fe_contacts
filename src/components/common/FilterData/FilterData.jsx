@@ -1,20 +1,8 @@
 import React from 'react'
 import { withTranslation } from 'react-i18next'
-import { Form, Card, Col } from 'react-bootstrap'
 import ReactPlaceholder from 'react-placeholder'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Form, Card, Col } from 'react-bootstrap'
 import { Checkbox, Radio } from 'pretty-checkbox-react'
-import {
-  faFilter,
-  faUser,
-  faVenusMars,
-  faLanguage,
-  faTags,
-  faBuilding,
-  faMapMarkedAlt,
-  faWeight,
-  faBullhorn,
-} from '@fortawesome/free-solid-svg-icons'
 import {
   pipe,
   uniq,
@@ -27,9 +15,11 @@ import {
   isEqual,
 } from 'lodash/fp'
 
+import { EIcons } from '../../../enums/icons'
 import { parseErrorMessage } from '../../../utils/generic'
 import { reduceFiltersLocations } from '../../../stateReducers/locations'
 
+import Icon from '../Icon/Icon'
 import SuperSelect from '../SuperSelect/SuperSelect'
 
 class FilterData extends React.Component {
@@ -126,7 +116,7 @@ class FilterData extends React.Component {
         },
       })
     } catch (error) {
-      const messageParsed = parseErrorMessage(error) 
+      const messageParsed = parseErrorMessage(error)
       this.setState({
         error: t(`common:${messageParsed}`, messageParsed),
         loading: false,
@@ -199,7 +189,8 @@ class FilterData extends React.Component {
       <React.Fragment>
         <Col className="text-center">
           <h3>
-            <FontAwesomeIcon icon={faFilter} /> {t('title')}
+            <Icon name={EIcons.filterIcon} />
+            {t('title')}
           </h3>
         </Col>
         <Col className="text-center text-muted">{error}</Col>
@@ -211,7 +202,7 @@ class FilterData extends React.Component {
             <Card>
               <Card.Body>
                 <Card.Title>
-                  <FontAwesomeIcon icon={faBullhorn} />{' '}
+                  <Icon name={EIcons.bullhornIcon} />
                   {t('campaignsTitleFilter')}
                 </Card.Title>
                 <ReactPlaceholder
@@ -243,7 +234,7 @@ class FilterData extends React.Component {
             <Card>
               <Card.Body>
                 <Card.Title>
-                  <FontAwesomeIcon icon={faUser} />{' '}
+                  <Icon name={EIcons.userIcon} />
                   {t('publishersResponsiblesTitleFilter')}
                 </Card.Title>
                 <ReactPlaceholder
@@ -275,7 +266,7 @@ class FilterData extends React.Component {
             <Card>
               <Card.Body>
                 <Card.Title>
-                  <FontAwesomeIcon icon={faMapMarkedAlt} />{' '}
+                  <Icon name={EIcons.mapMarkedAltIcon} />
                   {t('locationsTitleFilter')}
                 </Card.Title>
                 <ReactPlaceholder
@@ -301,7 +292,7 @@ class FilterData extends React.Component {
             <Card>
               <Card.Body>
                 <Card.Title>
-                  <FontAwesomeIcon icon={faVenusMars} />{' '}
+                  <Icon name={EIcons.venusMarsIcon} />
                   {t('gendersTitleFilter')}
                 </Card.Title>
                 <ReactPlaceholder
@@ -335,7 +326,7 @@ class FilterData extends React.Component {
             <Card>
               <Card.Body>
                 <Card.Title>
-                  <FontAwesomeIcon icon={faLanguage} />{' '}
+                  <Icon name={EIcons.languageIcon} />
                   {t('languagesTitleFilter')}
                 </Card.Title>
                 <ReactPlaceholder
@@ -372,7 +363,8 @@ class FilterData extends React.Component {
             <Card>
               <Card.Body>
                 <Card.Title>
-                  <FontAwesomeIcon icon={faTags} /> {t('statusTitleFilter')}
+                  <Icon name={EIcons.tagsIcon} />
+                  {t('statusTitleFilter')}
                 </Card.Title>
                 <ReactPlaceholder
                   showLoadingAnimation={true}
@@ -410,7 +402,7 @@ class FilterData extends React.Component {
             <Card>
               <Card.Body>
                 <Card.Title>
-                  <FontAwesomeIcon icon={faWeight} />{' '}
+                  <Icon name={EIcons.weightIcon} />
                   {t('responsibilityTitleFilter')}
                 </Card.Title>
                 <ReactPlaceholder
@@ -454,7 +446,7 @@ class FilterData extends React.Component {
             <Card>
               <Card.Body>
                 <Card.Title>
-                  <FontAwesomeIcon icon={faBuilding} />{' '}
+                  <Icon name={EIcons.buildingIcon} />
                   {t('typeCompanyTitleFilter')}
                 </Card.Title>
                 <ReactPlaceholder

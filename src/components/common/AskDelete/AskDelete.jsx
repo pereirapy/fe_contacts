@@ -1,25 +1,25 @@
 import React from 'react'
-import { Button } from 'react-bootstrap'
-import { useTranslation } from 'react-i18next'
 import Swal from 'sweetalert2'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash } from '@fortawesome/free-solid-svg-icons'
+import { useTranslation } from 'react-i18next'
 
-const AskDelete = (props) => {
+import { EIcons } from '../../../enums/icons'
+
+import Button from '../Button/Button'
+
+const AskDelete = ({ title, id, funcToCallAfterConfirmation }) => {
   const { t } = useTranslation(['common'])
-  const title =
-    typeof props.title === 'string' ? props.title : t('askDeleteMessage')
+  const newTitle = typeof title === 'string' ? title : t('askDeleteMessage')
 
   const askForSureWantDelete = () => {
     Swal.fire({
-      title,
+      title: newTitle,
       icon: 'question',
       showDenyButton: true,
       confirmButtonText: t('yes'),
       denyButtonText: t('no'),
-    }).then((result) => {
-      if (result.isConfirmed) {
-        props.funcToCallAfterConfirmation(props.id)
+    }).then(({ isConfirmed }) => {
+      if (isConfirmed) {
+        funcToCallAfterConfirmation(id)
       }
     })
   }
@@ -29,9 +29,8 @@ const AskDelete = (props) => {
       variant="danger"
       title={t('delete')}
       onClick={() => askForSureWantDelete()}
-    >
-      <FontAwesomeIcon icon={faTrash} />
-    </Button>
+      iconName={EIcons.trashIcon}
+    />
   )
 }
 

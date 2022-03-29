@@ -1,10 +1,11 @@
 import React from 'react'
-import PrivateRoute from '../../../utils/privateRoute'
-import CampaignsList from '../../../pages/Campaigns/CampaignsList'
-import CampaignListAllContacts from '../../../pages/Campaigns/CampaignListAllContacts'
-import CampaignCharts from '../../../pages/Campaigns/CampaignCharts'
 
 import campaignsPath from './path'
+import PrivateRoute from '../../../utils/privateRoute'
+
+import CampaignsList from '../../../pages/Campaigns/CampaignsList'
+import CampaignCharts from '../../../pages/Campaigns/CampaignCharts'
+import CampaignListAllContacts from '../../../pages/Campaigns/CampaignListAllContacts'
 
 const Routes = () => [
   <PrivateRoute

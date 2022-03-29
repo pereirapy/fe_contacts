@@ -1,4 +1,5 @@
 import { get, map, getOr, pipe, compact, orderBy } from 'lodash/fp'
+
 import { getUserData } from '../utils/loginDataManager'
 
 const reduceResponsibility = (

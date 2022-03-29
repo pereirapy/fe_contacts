@@ -1,12 +1,13 @@
 import React from 'react'
 import { NavDropdown } from 'react-bootstrap'
 import { withTranslation } from 'react-i18next'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
 
+import { EIcons } from '../../enums/icons'
 import { showSuccessful } from '../../utils/generic'
 import { buildContextData } from '../../utils/loginDataManager'
 import useApplicationContext from '../../hooks/useApplicationContext'
+
+import Icon from '../common/Icon/Icon'
 
 const handleLogout = (props, dropToken, updateContext) => {
   const { history, t } = props
@@ -25,7 +26,8 @@ const Logout = (props) => {
     <NavDropdown.Item
       onClick={() => handleLogout(props, dropToken, updateContext)}
     >
-      <FontAwesomeIcon icon={faSignOutAlt} /> {props.t('btnLogout')}
+      <Icon name={EIcons.signOutAltIcon} />
+      {props.t('btnLogout')}
     </NavDropdown.Item>
   )
 }

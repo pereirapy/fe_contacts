@@ -1,7 +1,8 @@
 import moment from 'moment'
+import { startsWith } from 'lodash'
 import GqlBuilder from 'graphql-query-builder-v2'
 import { getOr, omit, trim, isString, isEmpty, pipe, forEach } from 'lodash/fp'
-import { startsWith } from 'lodash'
+
 import { START_NUMBER_NOT_ALLOWED } from '../constants/contacts'
 
 export const formatDateDMY = (date) =>
@@ -113,7 +114,9 @@ const hasSomeNotAllowedStartNumber = (val) => {
 
 export const numberStartsWithInvalidCharacter = (componentReact) => ({
   message: componentReact.props?.t('numberStartsWithInvalidCharacter', {
-    character: START_NUMBER_NOT_ALLOWED.join(` ${componentReact.props?.t('common:or')} `),
+    character: START_NUMBER_NOT_ALLOWED.join(
+      ` ${componentReact.props?.t('common:or')} `
+    ),
   }),
   rule: (val) => !hasSomeNotAllowedStartNumber(val),
   required: true,

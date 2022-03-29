@@ -1,15 +1,15 @@
 import React from 'react'
 import { get } from 'lodash/fp'
-import { Col, Row, Image } from 'react-bootstrap'
 import { withTranslation } from 'react-i18next'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPhoneVolume } from '@fortawesome/free-solid-svg-icons'
+import { Col, Row, Image } from 'react-bootstrap'
 
+import { EIcons } from '../../enums/icons'
 import { ApplicationContext } from '../../contexts/application'
 
-import ContainerWithNavBar from '../common/ContainerWithNavBar/ContainerWithNavBar'
+import Icon from '../common/Icon/Icon'
 import Charts from '../common/Charts/Charts'
 import logo from '../../assets/images/logo.png'
+import ContainerWithNavBar from '../common/ContainerWithNavBar/ContainerWithNavBar'
 
 class Dashboard extends React.Component {
   buildSubTitleMessage = () => {
@@ -31,7 +31,8 @@ class Dashboard extends React.Component {
             <Row>
               <Col className="text-center" style={{ marginTop: '31%' }}>
                 <h1>
-                  <FontAwesomeIcon icon={faPhoneVolume} /> {t('title')}
+                  <Icon name={EIcons.phoneVolumeIcon} />
+                  {t('title')}
                 </h1>
                 <h2>{t('titleCongregation')}</h2>
                 <h3>{this.buildSubTitleMessage()}</h3>

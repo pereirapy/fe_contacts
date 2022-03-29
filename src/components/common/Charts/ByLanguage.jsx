@@ -1,12 +1,13 @@
 import React from 'react'
+import { round } from 'lodash'
 import { Col, Card } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
+import ReactPlaceholder from 'react-placeholder'
 import { PieChart } from 'react-minimal-pie-chart'
 import { get, isEmpty, map, getOr } from 'lodash/fp'
+
 import { randomColor } from '../../../utils/generic'
 import { generateLabel } from '../../../stateReducers/dashboard'
-import { round } from 'lodash'
-import ReactPlaceholder from 'react-placeholder'
 
 const getByLanguage = (t, data) =>
   map(

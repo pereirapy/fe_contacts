@@ -1,12 +1,9 @@
 import React from 'react'
-import { withTranslation } from 'react-i18next'
-import { faAddressCard } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { getOr, pick, get } from 'lodash/fp'
-import SimpleReactValidator from 'simple-react-validator'
 import { Container } from 'react-bootstrap'
+import { getOr, pick, get } from 'lodash/fp'
+import { withTranslation } from 'react-i18next'
+import SimpleReactValidator from 'simple-react-validator'
 
-import { details, publishers, locations } from '../../../services'
 import {
   getLocale,
   handleInputChangeGeneric,
@@ -17,12 +14,16 @@ import {
   showSuccessful,
   ifEmptySetNull,
 } from '../../../utils/generic'
-import { WAITING_FEEDBACK, GENDER_UNKNOWN } from '../../../constants/contacts'
-import { reducePublishers } from '../../../stateReducers/publishers'
+import { EIcons } from '../../../enums/icons'
+import { details, publishers, locations } from '../../../services'
 import { reduceLocations } from '../../../stateReducers/locations'
-import ContainerCRUD from '../../../components/common/ContainerCRUD/ContainerCRUD'
-import ElementError from '../../../components/common/ElementError/ElementError'
+import { reducePublishers } from '../../../stateReducers/publishers'
+import { WAITING_FEEDBACK, GENDER_UNKNOWN } from '../../../constants/contacts'
+
 import FormDetails from '../FormDetails'
+import Icon from '../../common/Icon/Icon'
+import ContainerCRUD from '../../common/ContainerCRUD/ContainerCRUD'
+import ElementError from '../../common/ElementError/ElementError'
 
 const fields = {
   information: '',
@@ -45,6 +46,7 @@ class EditDetailsContact extends React.Component {
     this.state = {
       form: fields,
       loading: false,
+      submitting: false,
       validated: false,
       publishersOptions: [],
       locationsOptions: [],
@@ -52,7 +54,7 @@ class EditDetailsContact extends React.Component {
     }
     this.handleGetOne = this.handleGetOne.bind(this)
     this.getTitle = this.getTitle.bind(this)
-    
+
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleInputChange = this.handleInputChange.bind(this)
     this.getLastPublisherThatTouched =
@@ -113,7 +115,7 @@ class EditDetailsContact extends React.Component {
       this.validator.showMessages()
       return true
     }
-    this.setState({ loading: true })
+    this.setState({ submitting: true })
 
     const { form, phone } = this.state
     const { history } = this.props
@@ -144,11 +146,11 @@ class EditDetailsContact extends React.Component {
 
     try {
       await details.updateOneContactDetail(id, data)
-      this.setState({ loading: false })
+      this.setState({ submitting: false })
       history.goBack()
       showSuccessful(t)
     } catch (error) {
-      this.setState({ loading: false })
+      this.setState({ submitting: false })
       showError(error, t, 'detailsContacts')
     }
   }
@@ -162,9 +164,12 @@ class EditDetailsContact extends React.Component {
     const { phone } = this.state
     const title = `${t('common:edit')} ${t('detailsContacts:title')} #${phone}`
 
-    return onlyText ? title : (
+    return onlyText ? (
+      title
+    ) : (
       <React.Fragment>
-        <FontAwesomeIcon icon={faAddressCard} /> {title}
+        <Icon name={EIcons.addressCardIcon} />
+        {title}
       </React.Fragment>
     )
   }
@@ -175,17 +180,23 @@ class EditDetailsContact extends React.Component {
       validated,
       publishersOptions,
       loading,
+      submitting,
       locationsOptions,
     } = this.state
     const { history } = this.props
 
     return (
       <React.Fragment>
-        <ContainerCRUD title={this.getTitle()} titleOnlyText={this.getTitle(true)} {...this.props}>
+        <ContainerCRUD
+          title={this.getTitle()}
+          titleOnlyText={this.getTitle(true)}
+          {...this.props}
+        >
           <Container className="border p-4">
             <FormDetails
               validator={this.validator}
               loading={loading}
+              submitting={submitting}
               validated={validated}
               handleSubmit={this.handleSubmit}
               handleInputChange={this.handleInputChange}

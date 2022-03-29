@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
-import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap'
 import { withTranslation } from 'react-i18next'
+import { Tooltip, OverlayTrigger } from 'react-bootstrap'
+
+import Button from '../../common/Button/Button'
 
 class OurToolTip extends Component {
   renderTooltip = (props) => {
@@ -11,6 +13,7 @@ class OurToolTip extends Component {
       </Tooltip>
     )
   }
+
   render() {
     const {
       t,
@@ -26,7 +29,7 @@ class OurToolTip extends Component {
         placement={placement}
         overlay={this.renderTooltip}
       >
-        <Button variant={getStyleForFieldDays()}>{t(`${info}`)}</Button>
+        <Button variant={getStyleForFieldDays()} text={t(`${info}`)} />
       </OverlayTrigger>
     ) : (
       info

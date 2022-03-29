@@ -1,8 +1,9 @@
 import React from 'react'
-import { Button, Form, Row, Col } from 'react-bootstrap'
-import { useTranslation } from 'react-i18next'
 import moment from 'moment'
+import { useTranslation } from 'react-i18next'
+import { Form, Row, Col } from 'react-bootstrap'
 
+import Button from '../common/Button/Button'
 import SuperFormControl from '../common/SuperFormControl/SuperFormControl'
 
 const CampaignForm = (props) => {
@@ -78,12 +79,13 @@ const CampaignForm = (props) => {
 
       <Button
         disabled={submitting}
+        submitting={submitting}
         variant="primary"
         type="button"
         onClick={() => handleSubmit(onHide)}
-      >
-        {t(submitting ? 'common:btnSubmitting' : 'common:btnSubmit')}
-      </Button>
+        text={t('common:btnSubmit')}
+        textLoading={t('common:btnSubmitting')}
+      />
     </Form>
   )
 }

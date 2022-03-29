@@ -1,12 +1,9 @@
 import React from 'react'
-import { Navbar, Nav, NavDropdown, Image, Col } from 'react-bootstrap'
 import { get } from 'lodash/fp'
-import logo from '../../../assets/images/logo.png'
-import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import Login from '../../Login/Login'
-import Logout from '../../Logout/Logout'
-import SystemLanguages from '../../SystemLanguages/SystemLanguages'
+import { useTranslation } from 'react-i18next'
+import { Navbar, Nav, NavDropdown, Image, Col } from 'react-bootstrap'
+
 import {
   contactsPaths,
   publishersPaths,
@@ -14,30 +11,27 @@ import {
   languagesPaths,
   campaignsPaths,
 } from '../../../routes/paths'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faGlobeAmericas,
-  faHourglass,
-  faUserFriends,
-  faCogs,
-  faBriefcase,
-  faLanguage,
-  faTags,
-  faBullhorn,
-  faCheckDouble,
-} from '@fortawesome/free-solid-svg-icons'
+import { EIcons } from '../../../enums/icons'
 import useApplicationContext from '../../../hooks/useApplicationContext'
+
+import Login from '../../Login/Login'
+import Icon from '../Icon/Icon'
+import Logout from '../../Logout/Logout'
+import logo from '../../../assets/images/logo.png'
+import SystemLanguages from '../../SystemLanguages/SystemLanguages'
 import './styles.css'
 
 const MenuLogged = ({ t, user, isAtLeastSM, isAtLeastElder, ...props }) => {
   const contactsMenuItem = (
     <React.Fragment>
-      <FontAwesomeIcon icon={faUserFriends} /> {t('contacts')}
+      <Icon name={EIcons.userFriendsIcon} />
+      {t('contacts')}
     </React.Fragment>
   )
   const adminMenuItem = (
     <React.Fragment>
-      <FontAwesomeIcon icon={faCogs} /> {t('admin')}
+      <Icon name={EIcons.cogsIcon} />
+      {t('admin')}
     </React.Fragment>
   )
 
@@ -48,14 +42,15 @@ const MenuLogged = ({ t, user, isAtLeastSM, isAtLeastElder, ...props }) => {
           {isAtLeastSM && (
             <React.Fragment>
               <NavDropdown.Item as={Link} to={contactsPaths.CONTACTS_LIST_PATH}>
-                <FontAwesomeIcon icon={faGlobeAmericas} /> {t('allContacts')}
+                <Icon name={EIcons.globeAmericasIcon} />
+                {t('allContacts')}
               </NavDropdown.Item>
               <NavDropdown.Divider />
               <NavDropdown.Item
                 as={Link}
                 to={contactsPaths.CONTACTS_AVAILABLE_LIST_PATH}
               >
-                <FontAwesomeIcon icon={faCheckDouble} />{' '}
+                <Icon name={EIcons.checkDoubleIcon} />
                 {t('allContactsAvailable')}
               </NavDropdown.Item>
               <NavDropdown.Divider />
@@ -65,13 +60,14 @@ const MenuLogged = ({ t, user, isAtLeastSM, isAtLeastElder, ...props }) => {
             as={Link}
             to={contactsPaths.CONTACTS_WAITING_FEEDBACK_LIST_PATH}
           >
-            <FontAwesomeIcon icon={faHourglass} />{' '}
+            <Icon name={EIcons.hourglassIcon} />
             {t('allContactsWaitingFeedback')}
           </NavDropdown.Item>
         </NavDropdown>
         {isAtLeastElder && (
           <Nav.Link as={Link} to={campaignsPaths.CAMPAIGNS_LIST_PATH}>
-            <FontAwesomeIcon icon={faBullhorn} /> {t('campaigns')}
+            <Icon name={EIcons.bullhornIcon} />
+            {t('campaigns')}
           </Nav.Link>
         )}
         {isAtLeastSM && (
@@ -80,14 +76,17 @@ const MenuLogged = ({ t, user, isAtLeastSM, isAtLeastElder, ...props }) => {
               as={Link}
               to={publishersPaths.PUBLISHERS_LIST_PATH}
             >
-              <FontAwesomeIcon icon={faBriefcase} /> {t('publishers')}
+              <Icon name={EIcons.briefcaseIcon} />
+              {t('publishers')}
             </NavDropdown.Item>
             <NavDropdown.Divider />
             <NavDropdown.Item as={Link} to={statusPaths.STATUS_LIST_PATH}>
-              <FontAwesomeIcon icon={faTags} /> {t('status')}
+              <Icon name={EIcons.tagsIcon} />
+              {t('status')}
             </NavDropdown.Item>
             <NavDropdown.Item as={Link} to={languagesPaths.LANGUAGES_LIST_PATH}>
-              <FontAwesomeIcon icon={faLanguage} /> {t('languages')}
+              <Icon name={EIcons.languageIcon} />
+              {t('languages')}
             </NavDropdown.Item>
           </NavDropdown>
         )}

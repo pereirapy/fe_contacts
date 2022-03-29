@@ -1,4 +1,5 @@
 import { get, omit, pipe, getOr } from 'lodash/fp'
+
 import {
   LENS_TOKEN_KEY,
   LENS_TOKEN_EXPIRES,

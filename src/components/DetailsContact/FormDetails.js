@@ -1,15 +1,17 @@
 import React from 'react'
-import { Button, Form, Row, Col } from 'react-bootstrap'
+import { Radio } from 'pretty-checkbox-react'
 import { useTranslation } from 'react-i18next'
-import SuperFormControl from '../common/SuperFormControl/SuperFormControl'
+import ReactPlaceholder from 'react-placeholder'
+import { Form, Row, Col } from 'react-bootstrap'
+
+import { EIcons } from '../../enums/icons'
+
+import Button from '../common/Button/Button'
 import SuperSelect from '../common/SuperSelect/SuperSelect'
 import GenderSelect from '../common/GenderSelect/GenderSelect'
 import StatusSelect from '../common/StatusSelect/StatusSelect'
+import SuperFormControl from '../common/SuperFormControl/SuperFormControl'
 import LanguageSelect from '../common/LanguageSelect/LanguageSelect'
-import ReactPlaceholder from 'react-placeholder'
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Radio } from 'pretty-checkbox-react'
 
 const FormDetails = (props) => {
   const { t } = useTranslation(['detailsContacts', 'common', 'contacts'])
@@ -17,6 +19,7 @@ const FormDetails = (props) => {
   const {
     form,
     loading,
+    submitting,
     publishersOptions,
     handleSubmit,
     onHide,
@@ -169,20 +172,22 @@ const FormDetails = (props) => {
         <Row>
           <Col xs={12} md={{ order: 'first', span: 2 }}>
             <Button
-              disabled={loading}
+              disabled={submitting}
+              submitting={submitting}
               variant="primary"
               onClick={() => handleSubmit(onHide)}
-            >
-              {t(loading ? 'common:btnSubmitting' : 'common:btnSubmit')}
-            </Button>{' '}
+              text={t('common:btnSubmit')}
+              textLoading={t('common:btnSubmitting')}
+            />
+
             {history && (
               <Button
                 title={t('common:back')}
+                submitting={submitting}
                 variant="secondary"
                 onClick={() => history.goBack()}
-              >
-                <FontAwesomeIcon icon={faArrowLeft} />
-              </Button>
+                iconName={EIcons.arrowLeftIcon}
+              />
             )}
           </Col>
           <Col xs={{ order: 'first', span: 12 }} md={10} className="text-right">

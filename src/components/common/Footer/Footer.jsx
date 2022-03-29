@@ -1,6 +1,7 @@
 import React from 'react'
-import { Row, Col, Container } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
+import { Row, Col, Container } from 'react-bootstrap'
+
 import packageInfo from '../../../../package.json'
 
 const Footer = () => {

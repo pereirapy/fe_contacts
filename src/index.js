@@ -1,13 +1,15 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import App from './App.jsx'
-import * as serviceWorkerRegistration from './serviceWorkerRegistration'
+import '@djthoms/pretty-checkbox'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'react-placeholder/lib/reactPlaceholder.css'
-import '@djthoms/pretty-checkbox'
+
 import './i18n'
 import './utils/Validator.en'
 import './utils/Validator.pt'
+import * as serviceWorkerRegistration from './serviceWorkerRegistration'
+
+import App from './App.jsx'
 
 ReactDOM.render(<App />, document.getElementById('root'))
 serviceWorkerRegistration.register()

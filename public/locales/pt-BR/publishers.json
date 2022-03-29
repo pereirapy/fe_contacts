@@ -23,6 +23,7 @@
   "notAllowedDeleteCurrentUser": "Você não pode deletar o atual usuário logado",
   "publishers_email_unique": "Ja existe outro publicador com esse email",
   "active": "Ativo",
-  "inactive": "Inativo"
+  "inactive": "Inativo",
+  "detailscontacts_idpublisher_foreign": "Este publicador tem conversas com algum contato, por tanto não poderá ser eliminado"
 
 }

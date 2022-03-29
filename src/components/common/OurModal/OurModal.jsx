@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
-import { Button, Modal } from 'react-bootstrap'
+import { Modal } from 'react-bootstrap'
 import { withTranslation } from 'react-i18next'
+
+import Button from '../Button/Button'
 
 class OurModal extends Component {
   constructor(props) {
@@ -21,7 +23,6 @@ class OurModal extends Component {
       setTimeout(() => {
         onClose()
       }, 100)
-
     }
   }
 
@@ -48,6 +49,7 @@ class OurModal extends Component {
   render() {
     const {
       buttonText,
+      buttonIcon,
       buttonTitle,
       buttonVariant,
       title,
@@ -65,9 +67,9 @@ class OurModal extends Component {
           variant={buttonVariant || 'primary'}
           disabled={buttonDisabled}
           onClick={this.onShow}
-        >
-          {buttonText || t('open')}
-        </Button>
+          text={buttonText || null}
+          iconName={buttonIcon ? buttonIcon : null}
+        />
 
         <Modal
           show={modalShow}
@@ -85,7 +87,7 @@ class OurModal extends Component {
             <Component {...this.props} onHide={this.onHide} />
           </Modal.Body>
           <Modal.Footer>
-            <Button onClick={this.onHide}>{t('close')}</Button>
+            <Button onClick={this.onHide} text={t('close')} />
           </Modal.Footer>
         </Modal>
       </React.Fragment>

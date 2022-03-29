@@ -1,12 +1,12 @@
 import auth from './modules/auth'
-import publishers from './modules/publishers'
-import contacts from './modules/contacts'
-import details from './modules/details'
 import status from './modules/status'
-import campaigns from './modules/campaigns'
+import details from './modules/details'
+import contacts from './modules/contacts'
 import languages from './modules/languages'
-import responsibility from './modules/responsibility'
+import campaigns from './modules/campaigns'
 import locations from './modules/locations'
+import publishers from './modules/publishers'
+import responsibility from './modules/responsibility'
 
 export {
   auth,

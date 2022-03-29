@@ -3,13 +3,13 @@ import moment from 'moment'
 import { getOr } from 'lodash/fp'
 import { withTranslation } from 'react-i18next'
 import SimpleReactValidator from 'simple-react-validator'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlusSquare, faBullhorn } from '@fortawesome/free-solid-svg-icons'
 
+import { EIcons } from '../../enums/icons'
 import { campaigns } from '../../services'
 import { showError, showSuccessful } from '../../utils/generic'
 import { getLocale, handleInputChangeGeneric } from '../../utils/forms'
 
+import Icon from '../common/Icon/Icon'
 import CampaignForm from './CampaignForm.jsx'
 import OurModal from '../common/OurModal/OurModal'
 import ElementError from '../common/ElementError/ElementError'
@@ -82,7 +82,8 @@ class CampaignNew extends React.Component {
     const { t, afterClose } = this.props
     const title = (
       <React.Fragment>
-        <FontAwesomeIcon icon={faBullhorn} /> {`${t('new')} ${t('title')}`}{' '}
+        <Icon name={EIcons.bullhornIcon} />
+        {`${t('new')} ${t('title')}`}
       </React.Fragment>
     )
 
@@ -99,7 +100,7 @@ class CampaignNew extends React.Component {
         onExit={afterClose}
         onClose={this.resetForm}
         title={title}
-        buttonText={<FontAwesomeIcon icon={faPlusSquare} />}
+        buttonIcon={EIcons.plusSquareIcon}
       />
     )
   }

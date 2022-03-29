@@ -2,17 +2,17 @@ import React from 'react'
 import { getOr, omit } from 'lodash/fp'
 import { withTranslation } from 'react-i18next'
 import SimpleReactValidator from 'simple-react-validator'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEdit, faUserEdit } from '@fortawesome/free-solid-svg-icons'
 
 import {
   getLocale,
   handleInputChangeGeneric,
   mustBeEqualFieldPassword,
 } from '../../utils/forms'
+import { EIcons } from '../../enums/icons'
 import { publishers } from '../../services'
 import { showError, showSuccessful, ifEmptySetNull } from '../../utils/generic'
 
+import Icon from '../common/Icon/Icon'
 import FormPublisher from './FormPublisher'
 import OurModal from '../common/OurModal/OurModal'
 import ElementError from '../common/ElementError/ElementError'
@@ -35,6 +35,7 @@ class EditContact extends React.Component {
     this.state = {
       form: fields,
       loading: false,
+      submitting: false,
       validated: false,
     }
     this.handleGetOne = this.handleGetOne.bind(this)
@@ -81,7 +82,7 @@ class EditContact extends React.Component {
       this.validator.showMessages()
       return true
     }
-    this.setState({ loading: true })
+    this.setState({ submitting: true })
 
     const { form } = this.state
     const { t } = this.props
@@ -96,22 +97,21 @@ class EditContact extends React.Component {
       await publishers.updatePublishers(id, data)
       showSuccessful(t)
       onHide()
-      this.setState({ form: fields, loading: false, validated: false })
+      this.setState({ form: fields, submitting: false, validated: false })
       this.validator.hideMessages()
     } catch (error) {
-      this.setState({ loading: false })
+      this.setState({ submitting: false })
       showError(error, t, 'publishers')
     }
   }
 
   render() {
-    const { form, validated, loading } = this.state
+    const { form, validated, loading, submitting } = this.state
     const { t, afterClose } = this.props
     const title = (
       <React.Fragment>
-        {' '}
-        <FontAwesomeIcon icon={faUserEdit} />{' '}
-        {`${t('common:edit')} ${t('titleCrud')}`}{' '}
+        <Icon name={EIcons.userEditIcon} />
+        {`${t('common:edit')} ${t('titleCrud')}`}
       </React.Fragment>
     )
 
@@ -119,6 +119,7 @@ class EditContact extends React.Component {
       <OurModal
         body={FormPublisher}
         loading={loading}
+        submitting={submitting}
         validator={this.validator}
         validated={validated}
         handleSubmit={this.handleSubmit}
@@ -128,7 +129,7 @@ class EditContact extends React.Component {
         onExit={afterClose}
         buttonTitle={t('common:edit')}
         title={title}
-        buttonText={<FontAwesomeIcon icon={faEdit} />}
+        buttonIcon={EIcons.editIcon}
         buttonVariant="success"
       />
     )

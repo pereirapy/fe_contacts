@@ -1,14 +1,16 @@
 import React from 'react'
 import { withTranslation } from 'react-i18next'
-import { languages } from '../../services'
 import SimpleReactValidator from 'simple-react-validator'
+
+import { EIcons } from '../../enums/icons'
+import { languages } from '../../services'
+import { showError, showSuccessful } from '../../utils/generic'
 import { getLocale, handleInputChangeGeneric } from '../../utils/forms'
+
+import Icon from '../common/Icon/Icon'
 import OurModal from '../common/OurModal/OurModal'
 import ElementError from '../common/ElementError/ElementError'
-import { faPlusSquare, faLanguage } from '@fortawesome/free-solid-svg-icons'
 import LanguagesForm from './LanguagesForm.jsx'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { showError, showSuccessful } from '../../utils/generic'
 
 const fields = {
   name: '',
@@ -20,7 +22,7 @@ class StatusNew extends React.Component {
     super(props)
     this.state = {
       form: fields,
-      loading: false,
+      submitting: false,
       validated: false,
     }
     this.handleInputChange = this.handleInputChange.bind(this)
@@ -48,7 +50,7 @@ class StatusNew extends React.Component {
   }
 
   resetForm() {
-    this.setState({ form: fields, loading: false, validated: false })
+    this.setState({ form: fields, submitting: false, validated: false })
     this.validator.hideMessages()
   }
 
@@ -60,7 +62,7 @@ class StatusNew extends React.Component {
       return true
     }
 
-    this.setState({ loading: true })
+    this.setState({ submitting: true })
 
     const { form } = this.state
     const { t } = this.props
@@ -70,19 +72,18 @@ class StatusNew extends React.Component {
       showSuccessful(t)
       onHide()
     } catch (error) {
-      this.setState({ loading: false })
+      this.setState({ submitting: false })
       showError(error, t, 'languages')
     }
   }
 
   render() {
-    const { form, validated, loading } = this.state
+    const { form, validated, submitting } = this.state
     const { t, afterClose } = this.props
     const title = (
       <React.Fragment>
-        {' '}
-        <FontAwesomeIcon icon={faLanguage} />{' '}
-        {`${t('common:new')} ${t('titleModal')}`}{' '}
+        <Icon name={EIcons.languageIcon} />
+        {`${t('common:new')} ${t('titleModal')}`}
       </React.Fragment>
     )
 
@@ -90,7 +91,7 @@ class StatusNew extends React.Component {
       <OurModal
         body={LanguagesForm}
         validator={this.validator}
-        loading={loading}
+        submitting={submitting}
         validated={validated}
         handleSubmit={this.handleSubmit}
         handleInputChange={this.handleInputChange}
@@ -99,7 +100,7 @@ class StatusNew extends React.Component {
         onExit={afterClose}
         onClose={this.resetForm}
         title={title}
-        buttonText={<FontAwesomeIcon icon={faPlusSquare} />}
+        buttonIcon={EIcons.plusSquareIcon}
       />
     )
   }

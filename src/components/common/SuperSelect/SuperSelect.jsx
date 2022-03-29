@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { Form } from 'react-bootstrap'
 import Select from 'react-select'
+import { Form } from 'react-bootstrap'
 import { find, map, includes } from 'lodash/fp'
-import './style-super-select.css'
-import ReactPlaceholder from 'react-placeholder'
 import { withTranslation } from 'react-i18next'
+import ReactPlaceholder from 'react-placeholder'
+
+import './styles.css'
 
 const SuperSelect = (props) => {
   const {

@@ -1,11 +1,13 @@
 import React from 'react'
-import SuperSelect from '../SuperSelect/SuperSelect'
 import { withTranslation } from 'react-i18next'
-import { languages } from '../../../services'
 import { getOr, pipe, curry, orderBy } from 'lodash/fp'
-import { reduceLanguages } from '../../../stateReducers/languages'
+
+import { languages } from '../../../services'
 import { parseErrorMessage } from '../../../utils/generic'
+import { reduceLanguages } from '../../../stateReducers/languages'
+
 import ShowError from '../ShowError/ShowError'
+import SuperSelect from '../SuperSelect/SuperSelect'
 
 class LanguageSelect extends React.Component {
   constructor(props) {
@@ -27,7 +29,7 @@ class LanguageSelect extends React.Component {
 
       this.setState({ languagesOptions, loading: false })
     } catch (error) {
-      const messageParsed = parseErrorMessage(error) 
+      const messageParsed = parseErrorMessage(error)
       this.setState({
         error: t(`common:${messageParsed}`, messageParsed),
         loading: false,

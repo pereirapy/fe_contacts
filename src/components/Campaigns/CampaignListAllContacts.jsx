@@ -4,14 +4,8 @@ import { Link } from 'react-router-dom'
 import { withTranslation } from 'react-i18next'
 import ReactPlaceholder from 'react-placeholder'
 import { Checkbox } from 'pretty-checkbox-react'
-import { Button, Table, Row, Col, Form } from 'react-bootstrap'
+import { Table, Row, Col, Form } from 'react-bootstrap'
 import { map, getOr, isEmpty, contains, isEqual } from 'lodash/fp'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faList,
-  faFileExcel,
-  faBullhorn,
-} from '@fortawesome/free-solid-svg-icons'
 
 import {
   handleFilter,
@@ -31,19 +25,22 @@ import {
   ID_STATUS_NO_VISIT,
   ID_STATUS_SEND_TO_OTHER_CONG,
 } from '../../constants/status'
+import { EIcons } from '../../enums/icons'
 import { showError } from '../../utils/generic'
 import { campaigns, details } from '../../services'
 import { getQueryParamsFromURL } from '../../utils/forms'
 import { RECORDS_PER_PAGE } from '../../constants/application'
 import { ApplicationContext } from '../../contexts/application'
 
+import Icon from '../common/Icon/Icon'
+import Button from '../common/Button/Button'
 import Search from '../common/Search/Search'
+import EditContact from '../Contacts/EditContact'
 import AskDelete from '../common/AskDelete/AskDelete'
 import NoRecords from '../common/NoRecords/NoRecords'
 import Pagination from '../common/Pagination/Pagination'
 import FilterData from '../common/FilterData/FilterData'
 import OurToolTip from '../common/OurToolTip/OurToolTip'
-import EditContact from '../Contacts/EditContact'
 import ContainerCRUD from '../common/ContainerCRUD/ContainerCRUD'
 import ListDetailsContact from '../DetailsContact/Modal/ListDetailsContact'
 import './styles.css'
@@ -59,7 +56,7 @@ class CampaignListAllContacts extends React.Component {
       error: false,
       hiddenFilter: false,
       checksContactsPhones: [],
-      submitting: false,
+      loading: false,
       pagination: {},
       campaignData: null,
       statusForbidden: [ID_STATUS_NO_VISIT, ID_STATUS_SEND_TO_OTHER_CONG],
@@ -86,7 +83,7 @@ class CampaignListAllContacts extends React.Component {
   }
 
   async handleGetAll() {
-    this.setState({ submitting: true, checksContactsPhones: [] })
+    this.setState({ loading: true, checksContactsPhones: [] })
     uncheckCheckboxSelectAll()
     const { t } = this.props
     try {
@@ -102,21 +99,21 @@ class CampaignListAllContacts extends React.Component {
           data: getOr([], 'data.data.list', response),
           campaignData: getOr(null, 'data.data', campaignResponse),
           pagination: getOr({}, 'data.data.pagination', response),
-          submitting: false,
+          loading: false,
           error: false,
           queryParams,
         })
       } else {
         this.setState({
           error,
-          submitting: false,
+          loading: false,
         })
         showError(error, t, 'campaigns')
       }
     } catch (error) {
       this.setState({
         error,
-        submitting: false,
+        loading: false,
       })
       showError(error, t, 'campaigns')
     }
@@ -124,14 +121,14 @@ class CampaignListAllContacts extends React.Component {
 
   async handleDelete(id) {
     const { t } = this.props
-    this.setState({ submitting: true })
+    this.setState({ loading: true })
     await details
       .dellOne(id)
       .then(() => {
         this.handleGetAll()
       })
       .catch((error) => {
-        this.setState({ submitting: false })
+        this.setState({ loading: false })
         showError(error, t, 'contacts')
       })
   }
@@ -147,13 +144,13 @@ class CampaignListAllContacts extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { submitting } = this.state
-    const prevSubmiting = prevState.submitting
+    const { loading } = this.state
+    const prevLoading = prevState.loading
     const prevQueryParams = prevState.queryParams
     const queryParams = getQueryParamsFromURL(this.props)
     if (
-      !submitting &&
-      !prevSubmiting &&
+      !loading &&
+      !prevLoading &&
       queryParams &&
       !isEqual(queryParams, prevQueryParams)
     ) {
@@ -169,7 +166,8 @@ class CampaignListAllContacts extends React.Component {
       title
     ) : (
       <React.Fragment>
-        <FontAwesomeIcon icon={faBullhorn} /> {title}
+        <Icon name={EIcons.bullhornIcon} />
+        {title}
       </React.Fragment>
     )
   }
@@ -179,7 +177,7 @@ class CampaignListAllContacts extends React.Component {
     const {
       data,
       pagination,
-      submitting,
+      loading,
       checksContactsPhones,
       error,
       hiddenFilter,
@@ -206,7 +204,7 @@ class CampaignListAllContacts extends React.Component {
               handleFilters={(objQuery) =>
                 handleFilter({ objQuery, componentReact: this })
               }
-              refresh={submitting}
+              refresh={loading}
               error={error}
               showTypeCompany={true}
               getFilters={() => campaigns.getAllContactsOneFilters(idCampaign)}
@@ -267,24 +265,27 @@ class CampaignListAllContacts extends React.Component {
                       headers={headers}
                       filename={`${t('listTitle')}.csv`}
                       title={t('titleExportToCVS')}
-                      className={`btn btn-primary ${
-                        checksContactsPhones.length > 0 ? '' : 'disabled'
-                      }`}
                       onClick={() => parseDataCVS(this, false)}
                     >
-                      <FontAwesomeIcon icon={faFileExcel} />
+                      <Button
+                        margin={false}
+                        iconName={EIcons.fileExcelIcon}
+                        className={`${
+                          checksContactsPhones.length > 0 ? '' : 'disabled'
+                        }`}
+                      />
                     </CSVLink>
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {submitting ? (
+                {loading ? (
                   <tr>
                     <td colSpan={colSpan}>
                       <ReactPlaceholder
                         showLoadingAnimation={true}
                         type="text"
-                        ready={!submitting}
+                        ready={!loading}
                         rows={RECORDS_PER_PAGE}
                       />
                     </td>
@@ -377,22 +378,21 @@ class CampaignListAllContacts extends React.Component {
                             contact={contact}
                             id={contact.phone}
                             afterClose={() => this.handleGetAll()}
-                          />{' '}
+                          />
                           <Button
                             title={t('common:list')}
                             variant="secondary"
                             as={Link}
                             to={`/contacts/${encodeURI(contact.phone)}/details`}
-                          >
-                            <FontAwesomeIcon icon={faList} />
-                          </Button>
+                            iconName={EIcons.listIcon}
+                          />
                         </td>
                         <td>
                           <AskDelete
                             id={contact.idDetailContact}
                             title={t('deleteRecordWaitingFeedback')}
                             funcToCallAfterConfirmation={this.handleDelete}
-                          />{' '}
+                          />
                           <EditContact
                             id={contact.phone}
                             afterClose={this.handleGetAll}
@@ -417,7 +417,7 @@ class CampaignListAllContacts extends React.Component {
                           componentReact: this,
                         })
                       }
-                      submitting={submitting}
+                      loading={loading}
                     />
                   </td>
                 </tr>

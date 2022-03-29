@@ -1,10 +1,12 @@
 import React from 'react'
-import SuperSelect from '../SuperSelect/SuperSelect'
 import { withTranslation } from 'react-i18next'
-import { status } from '../../../services'
+import SuperSelect from '../SuperSelect/SuperSelect'
 import { getOr, pipe, curry, orderBy } from 'lodash/fp'
-import { reduceStatus } from '../../../stateReducers/status'
+
+import { status } from '../../../services'
 import { parseErrorMessage } from '../../../utils/generic'
+import { reduceStatus } from '../../../stateReducers/status'
+
 import ShowError from '../ShowError/ShowError'
 
 class StatusSelect extends React.Component {
@@ -25,7 +27,7 @@ class StatusSelect extends React.Component {
       )(await status.getAll())
       this.setState({ statusOptions, loading: false })
     } catch (error) {
-      const messageParsed = parseErrorMessage(error) 
+      const messageParsed = parseErrorMessage(error)
       this.setState({
         error: t(`common:${messageParsed}`, messageParsed),
         loading: false,

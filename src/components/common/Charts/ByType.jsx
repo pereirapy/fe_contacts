@@ -1,10 +1,11 @@
 import React from 'react'
+import { round } from 'lodash'
 import { Col, Card } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
+import ReactPlaceholder from 'react-placeholder'
 import { PieChart } from 'react-minimal-pie-chart'
 import { get, isEmpty, find, getOr, pipe, curry, filter } from 'lodash/fp'
-import { round } from 'lodash'
-import ReactPlaceholder from 'react-placeholder'
+
 import useApplicationContext from '../../../hooks/useApplicationContext'
 
 const getByType = (t, data) => {

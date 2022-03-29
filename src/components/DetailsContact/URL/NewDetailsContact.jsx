@@ -1,10 +1,8 @@
 import React from 'react'
+import { getOr, pick, get } from 'lodash/fp'
+import { Container } from 'react-bootstrap'
 import { withTranslation } from 'react-i18next'
 import SimpleReactValidator from 'simple-react-validator'
-import { getOr, pick, get } from 'lodash/fp'
-import { faAddressCard } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Container } from 'react-bootstrap'
 
 import {
   showError,
@@ -17,15 +15,17 @@ import {
   ID_STATUS_DEFAULT,
   ID_LOCATION_DEFAULT,
 } from '../../../constants/valuesPredefined'
+import { EIcons } from '../../../enums/icons'
 import { GENDER_UNKNOWN } from '../../../constants/contacts'
 import { reduceLocations } from '../../../stateReducers/locations'
 import { reducePublishers } from '../../../stateReducers/publishers'
 import { getLocale, handleInputChangeGeneric } from '../../../utils/forms'
 import { details, publishers, contacts, locations } from '../../../services'
 
-import ContainerCRUD from '../../../components/common/ContainerCRUD/ContainerCRUD'
-import ElementError from '../../../components/common/ElementError/ElementError'
 import FormDetails from '../FormDetails'
+import Icon from '../../common/Icon/Icon'
+import ContainerCRUD from '../../common/ContainerCRUD/ContainerCRUD'
+import ElementError from '../../common/ElementError/ElementError'
 
 const fields = {
   information: '',
@@ -45,6 +45,7 @@ class NewDetailsContact extends React.Component {
     this.state = {
       form: fields,
       loading: false,
+      submitting: false,
       validated: false,
       publishersOptions: [],
       locationsOptions: [],
@@ -95,7 +96,7 @@ class NewDetailsContact extends React.Component {
       this.validator.showMessages()
       return true
     }
-    this.setState({ loading: true })
+    this.setState({ submitting: true })
 
     const { form, phone } = this.state
     const { history } = this.props
@@ -125,11 +126,11 @@ class NewDetailsContact extends React.Component {
     }
     try {
       await details.create(data)
-      this.setState({ loading: false })
+      this.setState({ submitting: false })
       history.goBack()
       showSuccessful(t)
     } catch (error) {
-      this.setState({ loading: false })
+      this.setState({ submitting: false })
       showError(error, t, 'detailsContacts')
     }
   }
@@ -143,14 +144,21 @@ class NewDetailsContact extends React.Component {
       title
     ) : (
       <React.Fragment>
-        <FontAwesomeIcon icon={faAddressCard} /> {title}
+        <Icon name={EIcons.addressCardIcon} />
+        {title}
       </React.Fragment>
     )
   }
 
   render() {
-    const { form, validated, publishersOptions, loading, locationsOptions } =
-      this.state
+    const {
+      form,
+      validated,
+      publishersOptions,
+      loading,
+      submitting,
+      locationsOptions,
+    } = this.state
     const { history } = this.props
 
     return (
@@ -163,6 +171,7 @@ class NewDetailsContact extends React.Component {
           <FormDetails
             validator={this.validator}
             loading={loading}
+            submitting={submitting}
             validated={validated}
             handleSubmit={this.handleSubmit}
             handleInputChange={this.handleInputChange}

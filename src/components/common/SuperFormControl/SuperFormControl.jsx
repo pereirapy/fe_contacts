@@ -3,7 +3,6 @@ import moment from 'moment'
 import { Form } from 'react-bootstrap'
 import ReactPlaceholder from 'react-placeholder'
 
-
 const SuperFormControl = (props) => {
   const {
     validator,

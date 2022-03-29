@@ -2,13 +2,13 @@ import React from 'react'
 import { get, getOr } from 'lodash/fp'
 import { withTranslation } from 'react-i18next'
 import SimpleReactValidator from 'simple-react-validator'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEdit, faBullhorn } from '@fortawesome/free-solid-svg-icons'
 
+import { EIcons } from '../../enums/icons'
 import { campaigns, details } from '../../services'
 import { showError, showSuccessful } from '../../utils/generic'
 import { getLocale, handleInputChangeGeneric } from '../../utils/forms'
 
+import Icon from '../common/Icon/Icon'
 import CampaignForm from './CampaignForm.jsx'
 import OurModal from '../common/OurModal/OurModal'
 import ElementError from '../common/ElementError/ElementError'
@@ -102,7 +102,7 @@ class CampaignEdit extends React.Component {
     const { t, afterClose } = this.props
     const title = (
       <React.Fragment>
-        <FontAwesomeIcon icon={faBullhorn} />{' '}
+        <Icon name={EIcons.bullhornIcon} />
         {`${t('common:edit')} ${t('title')}`}
       </React.Fragment>
     )
@@ -121,7 +121,7 @@ class CampaignEdit extends React.Component {
         onEnter={this.handleThatCampaignHasDetailsContacts}
         onExit={afterClose}
         title={title}
-        buttonText={<FontAwesomeIcon icon={faEdit} />}
+        buttonIcon={EIcons.editIcon}
         buttonVariant="success"
       />
     )

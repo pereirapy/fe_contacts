@@ -1,7 +1,9 @@
 import React from 'react'
-import PrivateRoute from '../../../utils/privateRoute'
-import StatusList from '../../../pages/Status/StatusList'
+
 import statusPath from './path'
+import PrivateRoute from '../../../utils/privateRoute'
+
+import StatusList from '../../../pages/Status/StatusList'
 
 const Routes = () => [
   <PrivateRoute

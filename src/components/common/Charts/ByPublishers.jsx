@@ -1,12 +1,15 @@
 import React, { useState } from 'react'
-import { Col, Card, Row, ListGroup, Button } from 'react-bootstrap'
-import { useTranslation } from 'react-i18next'
-import { PieChart } from 'react-minimal-pie-chart'
-import { get, isEmpty, getOr, map, pipe, orderBy } from 'lodash/fp'
 import { round } from 'lodash'
+import { useTranslation } from 'react-i18next'
+import ReactPlaceholder from 'react-placeholder'
+import { PieChart } from 'react-minimal-pie-chart'
+import { Col, Card, Row, ListGroup } from 'react-bootstrap'
+import { get, isEmpty, getOr, map, pipe, orderBy } from 'lodash/fp'
+
 import { randomColor } from '../../../utils/generic'
 import { generateLabel } from '../../../stateReducers/dashboard'
-import ReactPlaceholder from 'react-placeholder'
+
+import Button from '../Button/Button'
 
 const getByPublishers = (t, data) =>
   pipe(orderBy(['percent'], 'desc'), (data) => parseDataPublishers(t, data))(
@@ -48,9 +51,8 @@ const ByPublishers = (props) => {
             title={t('moreInformation')}
             onClick={() => toggleDetailsByPublisher((prevState) => !prevState)}
             className="titleCard"
-          >
-            {t('titleChartWaitingFeedbackByPublishers')}
-          </Button>
+            text={t('titleChartWaitingFeedbackByPublishers')}
+          />
         </Card.Header>
         <Card.Body style={{ textAlign: '-webkit-center' }}>
           <ReactPlaceholder

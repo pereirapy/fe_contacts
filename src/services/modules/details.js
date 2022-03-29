@@ -26,7 +26,7 @@ const allExport = {
   create,
   updateOneContactDetail,
   dellOne,
-  thatCampaignHasDetailsContacts
+  thatCampaignHasDetailsContacts,
 }
 
 export default allExport

@@ -1,26 +1,23 @@
 import React from 'react'
-import { Table, Container, Button } from 'react-bootstrap'
-import ReactPlaceholder from 'react-placeholder'
-import { withTranslation } from 'react-i18next'
-import { map, isEmpty } from 'lodash/fp'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link } from 'react-router-dom'
-import {
-  faSearchPlus,
-  faBullhorn,
-  faChartPie,
-} from '@fortawesome/free-solid-svg-icons'
+import { map, isEmpty } from 'lodash/fp'
+import { withTranslation } from 'react-i18next'
+import ReactPlaceholder from 'react-placeholder'
+import { Table, Container } from 'react-bootstrap'
 
-import { showError } from '../../utils/generic'
+import { EIcons } from '../../enums/icons'
 import { campaigns } from '../../services'
+import { showError } from '../../utils/generic'
 import { formatDateDMY } from '../../utils/forms'
 import { ApplicationContext } from '../../contexts/application'
 
+import Icon from '../common/Icon/Icon'
+import CampaignNew from './CampaignNew'
+import CampaignEdit from './CampaignEdit'
+import Button from '../common/Button/Button'
 import NoRecords from '../common/NoRecords/NoRecords'
 import AskDelete from '../common/AskDelete/AskDelete'
 import ContainerCRUD from '../common/ContainerCRUD/ContainerCRUD'
-import CampaignNew from './CampaignNew'
-import CampaignEdit from './CampaignEdit'
 
 class CampaignsList extends React.Component {
   constructor(props) {
@@ -76,7 +73,8 @@ class CampaignsList extends React.Component {
       title
     ) : (
       <React.Fragment>
-        <FontAwesomeIcon icon={faBullhorn} /> {title}
+        <Icon name={EIcons.bullhornIcon} />
+        {title}
       </React.Fragment>
     )
   }
@@ -128,27 +126,25 @@ class CampaignsList extends React.Component {
                         <CampaignEdit
                           data={campaign}
                           afterClose={this.handleGetAll}
-                        />{' '}
+                        />
                         <AskDelete
                           id={campaign.id}
                           funcToCallAfterConfirmation={this.handleDelete}
-                        />{' '}
+                        />
                         <Button
                           title={t('seeCampaignDetails')}
                           variant="primary"
                           as={Link}
                           to={`/campaigns/${campaign.id}/all`}
-                        >
-                          <FontAwesomeIcon icon={faSearchPlus} />
-                        </Button>{' '}
+                          iconName={EIcons.searchPlusIcon}
+                        />
                         <Button
                           title={t('seeCampaignCharts')}
                           variant="warning"
                           as={Link}
                           to={`/campaigns/${campaign.id}/charts`}
-                        >
-                          <FontAwesomeIcon icon={faChartPie} />
-                        </Button>
+                          iconName={EIcons.chartPieIcon}
+                        />
                       </td>
                     </tr>
                   ),

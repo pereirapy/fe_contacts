@@ -1,29 +1,30 @@
 import React from 'react'
 import { withTranslation } from 'react-i18next'
-import OurModal from '../common/OurModal/OurModal'
-import ElementError from '../common/ElementError/ElementError'
 import SimpleReactValidator from 'simple-react-validator'
+import { getOr, get } from 'lodash/fp'
+
 import {
   getLocale,
   handleInputChangeGeneric,
   numberStartsWithInvalidCharacter,
 } from '../../utils/forms'
-import { contacts, publishers, locations } from '../../services'
-import FormContacts from './FormContacts'
-import { faUserPlus, faPlusSquare } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { showError, showSuccessful, ifEmptySetNull } from '../../utils/generic'
-import { getOr, get } from 'lodash/fp'
-import { GENDER_UNKNOWN } from '../../constants/contacts'
-import { reducePublishers } from '../../stateReducers/publishers'
-import { reduceLocations } from '../../stateReducers/locations'
-
 import {
   ID_LANGUAGE_DEFAULT,
   ID_GENDER_DEFAULT,
   ID_STATUS_DEFAULT,
   ID_LOCATION_DEFAULT,
 } from '../../constants/valuesPredefined'
+import { EIcons } from '../../enums/icons'
+import { GENDER_UNKNOWN } from '../../constants/contacts'
+import { reduceLocations } from '../../stateReducers/locations'
+import { contacts, publishers, locations } from '../../services'
+import { reducePublishers } from '../../stateReducers/publishers'
+import { showError, showSuccessful, ifEmptySetNull } from '../../utils/generic'
+
+import Icon from '../common/Icon/Icon'
+import FormContacts from './FormContacts'
+import OurModal from '../common/OurModal/OurModal'
+import ElementError from '../common/ElementError/ElementError'
 
 const fields = {
   phone: '',
@@ -154,13 +155,13 @@ class NewContact extends React.Component {
       statusOptions,
       submitting,
       locationsOptions,
+      loading,
     } = this.state
     const { t, afterClose } = this.props
     const title = (
       <React.Fragment>
-        {' '}
-        <FontAwesomeIcon icon={faUserPlus} />{' '}
-        {`${t('common:new')} ${t('titleCrud')}`}{' '}
+        <Icon name={EIcons.userPlusIcon} />
+        {`${t('common:new')} ${t('titleCrud')}`}
       </React.Fragment>
     )
 
@@ -169,6 +170,7 @@ class NewContact extends React.Component {
         body={FormContacts}
         validator={this.validator}
         submitting={submitting}
+        loading={loading}
         validated={validated}
         handleSubmit={this.handleSubmit}
         handleInputChange={this.handleInputChange}
@@ -182,7 +184,7 @@ class NewContact extends React.Component {
         statusOptions={statusOptions}
         buttonTitle={t('common:new')}
         title={title}
-        buttonText={<FontAwesomeIcon icon={faPlusSquare} />}
+        buttonIcon={EIcons.plusSquareIcon}
       />
     )
   }
