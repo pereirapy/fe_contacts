@@ -23,7 +23,7 @@ const CheckNumber = (props) => {
 
   return (
     <Button
-      style={{ position: 'relative', marginBottom: '-16px', top: '-17px' }}
+      style={{ position: 'relative', marginBottom: '-16px', top: '-18px!important' }}
       variant="success"
       disabled={isEmpty(phone)}
       onClick={() => check()}
