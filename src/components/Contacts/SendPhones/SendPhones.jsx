@@ -152,7 +152,7 @@ class SendPhones extends React.Component {
       ? `${this.getDetailsLastConversation(contact)} - ${formatDateDMY(
           contact.createdAtDetailsContacts
         )}`
-      : t('withoutDetails')
+      : t('common:withoutDetails')
     return contactName + contactGender + contactLanguage + lastInformation
   }
 

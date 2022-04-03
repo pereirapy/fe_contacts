@@ -46,7 +46,7 @@
   "noData": "No data",
   "errorTextUndefined": "Error undefined",
   "new": "New",
-  "errorWithoutDetails": "Without details",
+  "errorWithoutDetails": "No details",
   "networkError": "Error Network",
   "NO_PERMISSION_ENOUGH": "You don't have enough permissions",
   "loading": "Loading",
@@ -74,7 +74,9 @@
   "appDescription": "It is a App to help JW in the telephone preaching work",
   "UNAUTHORIZED": "You are not authorized",
   "ErrorGraphQL": "Error in the GraphQL",
-  "or": "or"
+  "or": "or",
+  "withoutDetails": "No Details"
+
 
 
 }

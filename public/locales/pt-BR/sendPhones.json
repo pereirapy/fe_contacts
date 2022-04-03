@@ -3,7 +3,6 @@
   "messageToSend": "Olá,  *{{name}}*. \nAqui estão os números que estarão aos seus cuidados juntamente com a última conversa",
   "sendTo": "Enviar para:",
   "numbersSelected": "Números selecionados: ",
-  "withoutDetails": "Sem detalhes",
   "labelPublisher": "Publicador",
   "ERROR_PUBLISHER_ALREADY_WAITING_FEEDBACK": "O número {{phone}} já está aguardando uma resposta. Favor anotar essa resposta antes de designar para outro publicador",
   "noPhone": "Este publicador não tem um numero de celular",

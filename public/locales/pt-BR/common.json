@@ -74,5 +74,7 @@
   "appDescription": "Este é um App para ajudar as TJ com o trabalho de pregação por telefone",
   "UNAUTHORIZED": "Você não está autorizado",
   "ErrorGraphQL": "Erro na consulta do GraphQL",
-  "or": "ou"
+  "or": "ou",
+  "withoutDetails": "Sem detalhes"
+
 }

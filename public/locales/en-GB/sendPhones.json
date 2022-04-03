@@ -3,7 +3,6 @@
   "messageToSend":"Hello, *{{name}}*. \nThese are the numbers assigned to you with the last conversation",
   "sendTo": "Send To:",
   "numbersSelected": "Numbers selected: ",
-  "withoutDetails": "No Details",
   "labelPublisher": "Publisher",
   "ERROR_PUBLISHER_ALREADY_WAITING_FEEDBACK": "The number {{phone}} is already waiting a feedback. Please, take a note of this feedback before assign to other publisher",
   "noPhone": "This publisher does not have a phone number",

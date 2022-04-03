@@ -1,10 +1,4 @@
 import {
-  parseQuery,
-  setFiltersToURL,
-  formatDateDMYHHmm,
-  diffDate,
-} from './forms'
-import {
   map,
   getOr,
   isEmpty,
@@ -17,6 +11,13 @@ import {
   contains,
   some,
 } from 'lodash/fp'
+
+import {
+  parseQuery,
+  setFiltersToURL,
+  formatDateDMYHHmm,
+  diffDate,
+} from './forms'
 import {
   ID_STATUS_AVAILABLE,
   ID_STATUS_BIBLE_STUDY,
@@ -69,23 +70,25 @@ function getHeaders(t, isWaitingFeedback) {
     { label: t('location'), key: 'locationName' },
   ]
 
-  return isWaitingFeedback
-    ? [
-        ...headersGeneric,
-        {
-          label: t('publisherCreatedBy'),
-          key: 'publisherNameCreatedBy',
-        },
-        { label: t('publisherResponsible'), key: 'publisherName' },
-      ]
-    : [
-        ...headersGeneric,
-        {
-          label: t('lastConversationsInDays'),
-          key: 'lastConversationInDays',
-        },
-        { label: t('details'), key: 'details' },
-      ]
+  const columnsWaitingFeedback = [
+    ...headersGeneric,
+    {
+      label: t('publisherCreatedBy'),
+      key: 'publisherNameCreatedBy',
+    },
+    { label: t('publisherResponsible'), key: 'publisherName' },
+  ]
+
+  const columnsDefault = [
+    ...headersGeneric,
+    {
+      label: t('lastConversationsInDays'),
+      key: 'lastConversationInDays',
+    },
+    { label: t('details'), key: 'details' },
+  ]
+
+  return isWaitingFeedback ? columnsWaitingFeedback : columnsDefault
 }
 
 export function parseDataCVS(componentReact, isWaitingFeedback) {
@@ -111,7 +114,9 @@ export function parseDataCVS(componentReact, isWaitingFeedback) {
       return {
         ...basicData,
         lastConversationInDays: t(`${contact.lastConversationInDays}`),
-        details: t(`detailsContacts:${contact.information}`),
+        details: !isNil(contact.information)
+          ? t(`detailsContacts:${contact.information}`, contact.information)
+          : t('common:withoutDetails'),
       }
     }
   }, checksContactsPhones)

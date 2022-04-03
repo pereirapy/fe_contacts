@@ -1,26 +1,11 @@
 import React from 'react'
-import { CSVLink } from 'react-csv'
-import { Link } from 'react-router-dom'
+import { Row, Col } from 'react-bootstrap'
 import { withTranslation } from 'react-i18next'
-import ReactPlaceholder from 'react-placeholder'
-import { Checkbox } from 'pretty-checkbox-react'
-import { Table, Row, Col, Form } from 'react-bootstrap'
-import { map, getOr, isEmpty, contains, isEqual } from 'lodash/fp'
+import { getOr, isEmpty, isEqual } from 'lodash/fp'
 
 import {
   handleFilter,
-  toggleFilter,
-  handleCheckAll,
-  parseDataCVS,
-  handleOnClick,
   uncheckCheckboxSelectAll,
-  setBackgroundForbidden,
-  getInformationAboveName,
-  setSubRowVisible,
-  setRowColor,
-  showInformationAboutCampaign,
-  setTitleWhenNumberWasContactedDuringCampaign,
-  verifyIfWasContactedDuringCurrentCampaign,
 } from '../../utils/contactsHelper'
 import {
   ID_STATUS_NO_VISIT,
@@ -33,19 +18,10 @@ import { getQueryParamsFromURL } from '../../utils/forms'
 import { RECORDS_PER_PAGE } from '../../constants/application'
 import { ApplicationContext } from '../../contexts/application'
 
-import NewContact from './NewContact'
-import EditContact from './EditContact'
+import Table from './Table'
 import Icon from '../common/Icon/Icon'
-import Button from '../common/Button/Button'
-import Search from '../common/Search/Search'
-import SendPhones from './SendPhones/SendPhones'
-import AskDelete from '../common/AskDelete/AskDelete'
-import NoRecords from '../common/NoRecords/NoRecords'
-import BatchChanges from './BatchChanges/BatchChanges'
-import Pagination from '../common/Pagination/Pagination'
 import FilterData from '../common/FilterData/FilterData'
 import ContainerCRUD from '../common/ContainerCRUD/ContainerCRUD'
-import ListDetailsContact from '../DetailsContact/Modal/ListDetailsContact'
 import './styles.css'
 
 const defaultSort =
@@ -218,8 +194,7 @@ class Contacts extends React.Component {
   }
 
   render() {
-    const { t, modeAllContacts } = this.props
-    const { isAtLeastElder } = this.context
+    const { modeAllContacts } = this.props
     const {
       data,
       pagination,
@@ -231,7 +206,6 @@ class Contacts extends React.Component {
       dataCVS,
       queryParams: { filters },
     } = this.state
-    const colSpan = '10'
     const title = this.getTitle()
     const titleOnlyText = this.getTitle(true)
     const filtersParams = this.getFilterQueryParams()
@@ -257,237 +231,19 @@ class Contacts extends React.Component {
             />
           </Col>
           <Col xs={12} lg={hiddenFilter ? 12 : 9} xl={hiddenFilter ? 12 : 10}>
-            <Table striped bordered hover responsive size="sm">
-              <thead>
-                <Search
-                  filters={filtersParsed}
-                  onFilter={(objQuery) =>
-                    handleFilter({
-                      objQuery,
-                      componentReact: this,
-                    })
-                  }
-                  fields={['name', 'phone', 'note', 'owner']}
-                  colspan={colSpan}
-                  toggleFilter={() => toggleFilter(this)}
-                />
-                <tr>
-                  <th style={{ width: '60px' }}>
-                    <Checkbox
-                      id="checkall"
-                      name="all"
-                      value="all"
-                      onClick={(event) =>
-                        handleCheckAll({
-                          event,
-                          componentReact: this,
-                        })
-                      }
-                      color="success"
-                      className="marginLeftCheckbox"
-                      bigger
-                      animation="pulse"
-                    />
-                  </th>
-                  <th>{t('phone')}</th>
-                  <th className="d-none d-sm-table-cell">{t('name')}</th>
-                  <th className="d-none d-lg-table-cell">{t('typeCompany')}</th>
-                  <th className="d-none d-lg-table-cell">{t('language')}</th>
-                  <th className="d-none d-lg-table-cell">{t('status')}</th>
-                  <th
-                    style={{ maxWidth: '90px' }}
-                    className="d-none d-lg-table-cell text-center"
-                  >
-                    {t('lastConversationsInDays')}
-                  </th>
-                  {modeAllContacts && (
-                    <th className="d-none d-lg-table-cell">
-                      {t('waitingFeedback')}
-                    </th>
-                  )}
-                  <th style={{ minWidth: '116px' }}>{t('details')}</th>
-                  <th style={{ minWidth: '189px' }}>
-                    <NewContact afterClose={this.handleGetAll} />
-                    <SendPhones
-                      checksContactsPhones={checksContactsPhones}
-                      contactsData={data}
-                      afterClose={this.handleGetAll}
-                    />
-                    {isAtLeastElder && (
-                      <BatchChanges
-                        checksContactsPhones={checksContactsPhones}
-                        contactsData={data}
-                        afterClose={this.handleGetAll}
-                      />
-                    )}
-                    <CSVLink
-                      data={dataCVS}
-                      headers={headers}
-                      filename={`${t(
-                        modeAllContacts ? 'listAllTitle' : 'listTitle'
-                      )}.csv`}
-                      title={t('titleExportToCVS')}
-                      onClick={() => parseDataCVS(this, false)}
-                    >
-                      <Button
-                        iconName={EIcons.fileExcelIcon}
-                        className={`${
-                          checksContactsPhones.length > 0 ? '' : 'disabled'
-                        }`}
-                      />
-                    </CSVLink>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {loading ? (
-                  <tr>
-                    <td colSpan={colSpan}>
-                      <ReactPlaceholder
-                        showLoadingAnimation={true}
-                        type="text"
-                        ready={!loading}
-                        rows={RECORDS_PER_PAGE}
-                      />
-                    </td>
-                  </tr>
-                ) : !isEmpty(data) ? (
-                  map(
-                    (contact) => (
-                      <tr
-                        key={contact.phone}
-                        className={setBackgroundForbidden({
-                          contact,
-                          componentReact: this,
-                        })}
-                        title={setTitleWhenNumberWasContactedDuringCampaign({
-                          contact,
-                          componentReact: this,
-                        })}
-                      >
-                        <td style={{ minWidth: '60px' }}>
-                          <Checkbox
-                            checked={contains(
-                              contact.phone,
-                              checksContactsPhones
-                            )}
-                            name="checksContactsPhones"
-                            disabled={verifyIfWasContactedDuringCurrentCampaign({contact, componentReact: this})}
-                            value={contact.phone}
-                            color="success"
-                            className="marginLeftCheckbox"
-                            bigger
-                            onChange={(event) =>
-                              handleOnClick({
-                                event,
-                                componentReact: this,
-                              })
-                            }
-                          />
-                        </td>
-                        <td>{contact.phone}</td>
-                        <td className="d-none d-sm-table-cell verticalBottom">
-                          <span>{contact.name}</span>
-                          <div style={setSubRowVisible(contact)}>
-                            <Form.Text
-                              className={`text-muted ${setRowColor(
-                                contact.idStatus
-                              )}`}
-                            >
-                              {getInformationAboveName({
-                                contact,
-                                componentReact: this,
-                              })}
-                            </Form.Text>
-                          </div>
-                          {showInformationAboutCampaign({
-                            detailContact: contact,
-                            componentReact: this,
-                            modeAllContacts,
-                          })}
-                        </td>
-                        <td className="d-none d-lg-table-cell">
-                          {t(
-                            `${
-                              contact.typeCompany ? 'commercial' : 'residential'
-                            }`
-                          )}
-                        </td>
-                        <td className="d-none d-lg-table-cell">
-                          {t(`languages:${contact.languageName}`)}
-                        </td>
-                        <td
-                          className={`d-none d-lg-table-cell ${setRowColor(
-                            contact.idStatus
-                          )}`}
-                        >
-                          {t(`status:${contact.statusDescription}`)}
-                        </td>
-                        <td className="d-none d-lg-table-cell">
-                          {t(contact.lastConversationInDays)}
-                        </td>
-                        {modeAllContacts && (
-                          <td
-                            className={`d-none d-lg-table-cell text-${
-                              contact.waitingFeedback ? 'danger' : 'success'
-                            }`}
-                          >
-                            {t(
-                              `common:${contact.waitingFeedback ? 'yes' : 'no'}`
-                            )}
-                          </td>
-                        )}
-                        <td>
-                          <ListDetailsContact
-                            contact={contact}
-                            id={contact.phone}
-                            afterClose={() => this.handleGetAll()}
-                          />
-                          <Button
-                            title={t('common:list')}
-                            variant="secondary"
-                            as={Link}
-                            to={`/contacts/${encodeURI(contact.phone)}/details`}
-                            iconName={EIcons.listIcon}
-                          />
-                        </td>
-                        <td>
-                          {!modeAllContacts && (
-                            <EditContact
-                              id={contact.phone}
-                              afterClose={() => this.handleGetAll()}
-                            />
-                          )}
-                          <AskDelete
-                            id={contact.phone}
-                            funcToCallAfterConfirmation={this.handleDelete}
-                          />
-                        </td>
-                      </tr>
-                    ),
-                    data
-                  )
-                ) : (
-                  <NoRecords cols={colSpan} />
-                )}
-              </tbody>
-              <tfoot>
-                <tr>
-                  <td colSpan={colSpan} style={{ border: 0 }}>
-                    <Pagination
-                      pagination={pagination}
-                      onClick={(objQuery) =>
-                        handleFilter({
-                          objQuery,
-                          componentReact: this,
-                        })
-                      }
-                      loading={loading}
-                    />
-                  </td>
-                </tr>
-              </tfoot>
-            </Table>
+            <Table
+              filtersParsed={filtersParsed}
+              modeAllContacts={modeAllContacts}
+              data={data}
+              checksContactsPhones={checksContactsPhones}
+              loading={loading}
+              dataCVS={dataCVS}
+              headers={headers}
+              componentReact={this}
+              pagination={pagination}
+              handleGetAll={this.handleGetAll}
+              handleDelete={this.handleDelete}
+            />
           </Col>
         </Row>
       </ContainerCRUD>
@@ -503,4 +259,5 @@ export default withTranslation([
   'detailsContacts',
   'languages',
   'status',
+  'sendPhones',
 ])(Contacts)
