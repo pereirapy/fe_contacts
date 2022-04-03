@@ -3,7 +3,7 @@
   "version": "3.3.2",
   "private": true,
   "resolutions": {
-    "react-error-overlay": "6.0.9"
+    "react-error-overlay": "6.0.10"
   },
   "dependencies": {
     "@djthoms/pretty-checkbox": "^3.1.0",
