@@ -121,7 +121,7 @@ class CampaignEdit extends React.Component {
         onEnter={this.handleThatCampaignHasDetailsContacts}
         onExit={afterClose}
         title={title}
-        buttonIcon={EIcons.editIcon}
+        buttonIcon={EIcons.pencilAlt}
         buttonVariant="success"
       />
     )

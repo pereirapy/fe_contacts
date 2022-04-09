@@ -108,7 +108,7 @@ class StatusEdit extends React.Component {
         onEnter={this.onEnter}
         onClose={this.resetForm}
         title={title}
-        buttonIcon={EIcons.editIcon}
+        buttonIcon={EIcons.pencilAlt}
         buttonVariant="success"
       />
     )

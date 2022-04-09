@@ -213,7 +213,7 @@ const FormContacts = (props) => {
           <Col xs={12} md={{ order: 'first', span: 3 }}>
             <Button
               disabled={submitting}
-              variant="primary"
+              variant="success"
               onClick={() => handleSubmit(onHide)}
               submitting={submitting}
               text={t('common:btnSubmit')}

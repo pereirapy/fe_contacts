@@ -7,17 +7,15 @@ import packageInfo from '../../../../package.json'
 const Footer = () => {
   const { t } = useTranslation(['footer'])
   const currentEnv = `${
-    process.env.NODE_ENV === 'development'
-      ? ` - development - v${packageInfo.version}`
-      : ''
+    process.env.NODE_ENV === 'development' ? ` - development` : ''
   }`
+  const complementMessage = `${currentEnv} - v${packageInfo.version}`
 
   return (
     <Container fluid>
       <Row className="bg-light mt-4">
         <Col className="mt-4 mb-4 text-center">
-          {t('message')}
-          {currentEnv}
+          {t('message', { complementMessage })}
         </Col>
       </Row>
     </Container>

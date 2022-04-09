@@ -90,7 +90,7 @@ class StatusEdit extends React.Component {
         form={form}
         onExit={afterClose}
         title={title}
-        buttonIcon={EIcons.editIcon}
+        buttonIcon={EIcons.pencilAlt}
         buttonVariant="success"
       />
     )

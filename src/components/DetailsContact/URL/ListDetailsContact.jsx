@@ -236,7 +236,7 @@ class ListDetailsContact extends React.Component {
                               to={`/contacts/${encodeURI(phone)}/details/edit/${
                                 detail.id
                               }`}
-                              iconName={EIcons.editIcon}
+                              iconName={EIcons.pencilAlt}
                             />
                             <AskDelete
                               id={detail.id}

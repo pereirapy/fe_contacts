@@ -174,7 +174,7 @@ const FormDetails = (props) => {
             <Button
               disabled={submitting}
               submitting={submitting}
-              variant="primary"
+              variant="success"
               onClick={() => handleSubmit(onHide)}
               text={t('common:btnSubmit')}
               textLoading={t('common:btnSubmitting')}

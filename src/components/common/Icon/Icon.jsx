@@ -37,7 +37,9 @@ import {
   faCogs,
   faSortUp,
   faSortDown,
-  faSpinner
+  faSpinner,
+  faPenSquare,
+  faPencilAlt,
 } from '@fortawesome/free-solid-svg-icons'
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -84,6 +86,8 @@ const iconMap = {
   [EIcons.sortUp]: faSortUp,
   [EIcons.sortDown]: faSortDown,
   [EIcons.spinner]: faSpinner,
+  [EIcons.penSquare]: faPenSquare,
+  [EIcons.pencilAlt]: faPencilAlt,
 }
 
 export default function IconComponent({
@@ -97,7 +101,9 @@ export default function IconComponent({
   return (
     <span className={marginClass}>
       {position === 'right' && label ? `${label} ` : ''}
-      {name && iconMap[name] && <FontAwesomeIcon icon={iconMap[name]} spin={animate} />}
+      {name && iconMap[name] && (
+        <FontAwesomeIcon icon={iconMap[name]} spin={animate} />
+      )}
       {position === 'left' && label ? ` ${label}` : ''}
     </span>
   )

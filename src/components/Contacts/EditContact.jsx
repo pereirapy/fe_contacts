@@ -210,7 +210,7 @@ class EditContact extends React.Component {
         statusOptions={statusOptions}
         buttonTitle={t('common:edit')}
         title={title}
-        buttonIcon={EIcons.editIcon}
+        buttonIcon={EIcons.pencilAlt}
         buttonVariant="success"
       />
     )

@@ -122,7 +122,7 @@ const NavBarMenu = (props) => {
         <Image
           src={logo}
           width="50px"
-          height="50px"
+          height="auto"
           alt="Agenda"
           roundedCircle
         />

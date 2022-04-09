@@ -38,4 +38,7 @@ export const EIcons = {
   sortUp: 'faSortUp',
   sortDown: 'faSortDown',
   spinner: 'faSpinner',
+  penSquare: 'faPenSquare',
+  pencilAlt: 'faPencilAlt',
+  
 }

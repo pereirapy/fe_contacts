@@ -48,7 +48,7 @@ const LanguagesForm = (props) => {
       <Button
         disabled={submitting}
         submitting={submitting}
-        variant="primary"
+        variant="success"
         type="button"
         onClick={() => handleSubmit(onHide)}
         text={t('common:btnSubmit')}

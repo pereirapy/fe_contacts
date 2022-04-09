@@ -49,7 +49,7 @@ const FormLogin = (props) => {
       <Button
         disabled={submitting}
         submitting={submitting}
-        variant="primary"
+        variant="success"
         type="button"
         onClick={handleSubmit}
         text={t('common:btnSubmit')}

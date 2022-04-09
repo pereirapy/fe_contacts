@@ -129,7 +129,7 @@ class EditContact extends React.Component {
         onExit={afterClose}
         buttonTitle={t('common:edit')}
         title={title}
-        buttonIcon={EIcons.editIcon}
+        buttonIcon={EIcons.pencilAlt}
         buttonVariant="success"
       />
     )

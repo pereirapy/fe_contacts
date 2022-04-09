@@ -164,7 +164,7 @@ class EditDetailsContact extends React.Component {
       submitting,
     } = this.state
     const { t, afterClose, contact, icon, buttonTitleTranslated } = this.props
-    const iconButtonName = icon ? icon : EIcons.editIcon
+    const iconButtonName = icon ? icon : EIcons.pencilAlt
     const buttonTitle = buttonTitleTranslated
       ? buttonTitleTranslated
       : t('common:edit')
