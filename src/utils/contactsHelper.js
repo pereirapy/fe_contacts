@@ -1,3 +1,4 @@
+import { reduce, replace } from 'lodash'
 import {
   map,
   getOr,
@@ -10,11 +11,15 @@ import {
   isNil,
   contains,
   some,
+  split,
+  head,
+  last,
+  trim,
+  reduce as reduceFP,
 } from 'lodash/fp'
-
 import {
   parseQuery,
-  setFiltersToURL,
+  setSearchToURL,
   formatDateDMYHHmm,
   diffDate,
 } from './forms'
@@ -24,11 +29,12 @@ import {
   ID_STATUS_RETURN_VISIT,
   ID_STATUS_SEND_TO_OTHER_CONG,
 } from '../constants/status'
+import { EIcons } from '../enums/icons'
 import { MAX_DAYS_ALLOWED_WITH_NUMBERS } from '../constants/application'
 
 export function handleFilter({ objQuery, componentReact }) {
   const queryParams = parseQuery(objQuery, componentReact.state)
-  setFiltersToURL(queryParams, componentReact.props)
+  setSearchToURL(queryParams, componentReact.props)
 }
 
 export function uncheckCheckboxSelectAll() {
@@ -82,7 +88,7 @@ function getHeaders(t, isWaitingFeedback) {
   const columnsDefault = [
     ...headersGeneric,
     {
-      label: t('lastConversationsInDays'),
+      label: t('lastConversationInDays'),
       key: 'lastConversationInDays',
     },
     { label: t('details'), key: 'details' },
@@ -262,4 +268,41 @@ export function verifyIfWasContactedDuringCurrentCampaign({
   return (
     !contact.waitingFeedback && contact.campaignName === campaignActive.name
   )
+}
+
+export const getColumnOrder = (currentSort, columnName) => {
+  if (!currentSort[columnName] || currentSort[columnName] === 'DESC')
+    return 'ASC'
+  else return 'DESC'
+}
+
+const objectToStringOrder = ({ key, value, acc }) => {
+  const separate = isEmpty(acc) ? '' : ','
+  return key && value ? `${acc}${separate}"${key}":${value}` : acc
+}
+
+export const convertSortObjectToString = (newOrders) =>
+  reduce(
+    newOrders,
+    (acc, value, key) => objectToStringOrder({ key, value, acc }),
+    ''
+  )
+
+export const convertSortStringToObject = (sort) =>
+  pipe(
+    split(','),
+    map((field) => {
+      const arrayField = split(':', field)
+      const column = replace(trim(head(arrayField)), new RegExp('"', 'g'), '')
+      const order = trim(last(arrayField))
+      return { column, order }
+    }),
+    reduceFP((acc, { column, order }) => ({ ...acc, [column]: order }), {})
+  )(sort)
+
+export const getSortIconName = (stringSort, columnName) => {
+  const arraySort = convertSortStringToObject(stringSort)
+
+  if (!arraySort[columnName]) return null
+  return arraySort[columnName] === 'ASC' ? EIcons.sortUp : EIcons.sortDown
 }

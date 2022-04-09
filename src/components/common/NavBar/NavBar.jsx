@@ -23,17 +23,9 @@ import './styles.css'
 
 const MenuLogged = ({ t, user, isAtLeastSM, isAtLeastElder, ...props }) => {
   const contactsMenuItem = (
-    <React.Fragment>
-      <Icon name={EIcons.userFriendsIcon} />
-      {t('contacts')}
-    </React.Fragment>
+    <Icon name={EIcons.userFriendsIcon} label={t('contacts')} />
   )
-  const adminMenuItem = (
-    <React.Fragment>
-      <Icon name={EIcons.cogsIcon} />
-      {t('admin')}
-    </React.Fragment>
-  )
+  const adminMenuItem = <Icon name={EIcons.cogsIcon} label={t('admin')} />
 
   return (
     <React.Fragment>
@@ -42,16 +34,20 @@ const MenuLogged = ({ t, user, isAtLeastSM, isAtLeastElder, ...props }) => {
           {isAtLeastSM && (
             <React.Fragment>
               <NavDropdown.Item as={Link} to={contactsPaths.CONTACTS_LIST_PATH}>
-                <Icon name={EIcons.globeAmericasIcon} />
-                {t('allContacts')}
+                <Icon
+                  name={EIcons.globeAmericasIcon}
+                  label={t('allContacts')}
+                />
               </NavDropdown.Item>
               <NavDropdown.Divider />
               <NavDropdown.Item
                 as={Link}
                 to={contactsPaths.CONTACTS_AVAILABLE_LIST_PATH}
               >
-                <Icon name={EIcons.checkDoubleIcon} />
-                {t('allContactsAvailable')}
+                <Icon
+                  name={EIcons.checkDoubleIcon}
+                  label={t('allContactsAvailable')}
+                />
               </NavDropdown.Item>
               <NavDropdown.Divider />
             </React.Fragment>
@@ -60,14 +56,15 @@ const MenuLogged = ({ t, user, isAtLeastSM, isAtLeastElder, ...props }) => {
             as={Link}
             to={contactsPaths.CONTACTS_WAITING_FEEDBACK_LIST_PATH}
           >
-            <Icon name={EIcons.hourglassIcon} />
-            {t('allContactsWaitingFeedback')}
+            <Icon
+              name={EIcons.hourglassIcon}
+              label={t('allContactsWaitingFeedback')}
+            />
           </NavDropdown.Item>
         </NavDropdown>
         {isAtLeastElder && (
           <Nav.Link as={Link} to={campaignsPaths.CAMPAIGNS_LIST_PATH}>
-            <Icon name={EIcons.bullhornIcon} />
-            {t('campaigns')}
+            <Icon name={EIcons.bullhornIcon} label={t('campaigns')} />
           </Nav.Link>
         )}
         {isAtLeastSM && (
@@ -76,17 +73,14 @@ const MenuLogged = ({ t, user, isAtLeastSM, isAtLeastElder, ...props }) => {
               as={Link}
               to={publishersPaths.PUBLISHERS_LIST_PATH}
             >
-              <Icon name={EIcons.briefcaseIcon} />
-              {t('publishers')}
+              <Icon name={EIcons.briefcaseIcon} label={t('publishers')} />
             </NavDropdown.Item>
             <NavDropdown.Divider />
             <NavDropdown.Item as={Link} to={statusPaths.STATUS_LIST_PATH}>
-              <Icon name={EIcons.tagsIcon} />
-              {t('status')}
+              <Icon name={EIcons.tagsIcon} label={t('status')} />
             </NavDropdown.Item>
             <NavDropdown.Item as={Link} to={languagesPaths.LANGUAGES_LIST_PATH}>
-              <Icon name={EIcons.languageIcon} />
-              {t('languages')}
+              <Icon name={EIcons.languageIcon} label={t('languages')} />
             </NavDropdown.Item>
           </NavDropdown>
         )}

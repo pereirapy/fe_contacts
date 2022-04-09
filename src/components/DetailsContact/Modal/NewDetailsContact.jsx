@@ -155,10 +155,10 @@ class NewDetailsContact extends React.Component {
     } = this.state
     const { t, afterClose, waitingFeedback, contact } = this.props
     const title = (
-      <React.Fragment>
-        <Icon name={EIcons.addressCardIcon} />
-        {`${t('common:new')} ${t('titleCrud')} #${get('phone', contact)}`}
-      </React.Fragment>
+      <Icon
+        name={EIcons.addressCardIcon}
+        label={`${t('common:new')} ${t('titleCrud')} #${get('phone', contact)}`}
+      />
     )
 
     return waitingFeedback ? (

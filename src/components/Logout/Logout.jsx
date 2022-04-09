@@ -26,8 +26,7 @@ const Logout = (props) => {
     <NavDropdown.Item
       onClick={() => handleLogout(props, dropToken, updateContext)}
     >
-      <Icon name={EIcons.signOutAltIcon} />
-      {props.t('btnLogout')}
+      <Icon name={EIcons.signOutAltIcon} label={props.t('btnLogout')} />
     </NavDropdown.Item>
   )
 }

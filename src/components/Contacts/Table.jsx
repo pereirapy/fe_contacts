@@ -20,8 +20,12 @@ import {
   showInformationAboutCampaign,
   setTitleWhenNumberWasContactedDuringCampaign,
   verifyIfWasContactedDuringCurrentCampaign,
+  getColumnOrder,
+  convertSortObjectToString,
+  convertSortStringToObject,
 } from '../../utils/contactsHelper'
 import { EIcons } from '../../enums/icons'
+import { setSearchToURL } from '../../utils/forms'
 import { RECORDS_PER_PAGE } from '../../constants/application'
 import useApplicationContext from '../../hooks/useApplicationContext'
 
@@ -30,6 +34,7 @@ import EditContact from './EditContact'
 import Button from '../common/Button/Button'
 import Search from '../common/Search/Search'
 import SendPhones from './SendPhones/SendPhones'
+import SortIcon from '../common/SortIcon/SortIcon'
 import NoRecords from '../common/NoRecords/NoRecords'
 import AskDelete from '../common/AskDelete/AskDelete'
 import BatchChanges from './BatchChanges/BatchChanges'
@@ -49,10 +54,27 @@ export default function TableComponent({
   pagination,
   handleGetAll,
   handleDelete,
+  updateSortState,
+  currentSort,
+  history,
 }) {
   const { t } = useTranslation(['contacts', 'common'])
   const { isAtLeastElder } = useApplicationContext()
   const colSpan = '10'
+
+  const handleSorter = (columnName) => {
+    if (!columnName) return
+    const currentObjectSort = convertSortStringToObject(currentSort)
+    const order = getColumnOrder(currentObjectSort, columnName)
+
+    const newOrders = {
+      [columnName]: order,
+    }
+
+    const stringOrder = convertSortObjectToString(newOrders)
+    const queryParams = updateSortState(stringOrder)
+    setSearchToURL(queryParams, { history })
+  }
 
   return (
     <Table striped bordered hover responsive size="sm">
@@ -87,19 +109,68 @@ export default function TableComponent({
               animation="pulse"
             />
           </th>
-          <th>{t('phone')}</th>
-          <th className="d-none d-sm-table-cell">{t('name')}</th>
-          <th className="d-none d-lg-table-cell">{t('typeCompany')}</th>
-          <th className="d-none d-lg-table-cell">{t('language')}</th>
-          <th className="d-none d-lg-table-cell">{t('status')}</th>
+          <th className="hand" onClick={() => handleSorter('phone')}>
+            <SortIcon
+              stringSort={currentSort}
+              columnName="phone"
+              columnNameTranslated={t('phone')}
+            />
+          </th>
+          <th className="hand" onClick={() => handleSorter('name')}>
+            <SortIcon
+              stringSort={currentSort}
+              columnName="name"
+              columnNameTranslated={t('name')}
+            />
+          </th>
+          <th className="hand" onClick={() => handleSorter('typeCompany')}>
+            <SortIcon
+              stringSort={currentSort}
+              columnName="typeCompany"
+              columnNameTranslated={t('typeCompany')}
+            />
+          </th>
+          <th className="hand" onClick={() => handleSorter('languageName')}>
+            <SortIcon
+              stringSort={currentSort}
+              columnName="languageName"
+              columnNameTranslated={t('language')}
+            />
+          </th>
+          <th
+            className="hand"
+            onClick={() => handleSorter('statusDescription')}
+          >
+            <SortIcon
+              stringSort={currentSort}
+              columnName="statusDescription"
+              columnNameTranslated={t('status')}
+            />
+          </th>
           <th
             style={{ maxWidth: '90px' }}
-            className="d-none d-lg-table-cell text-center"
+            className="hand text-center"
+            data-name="lastConversationInDays"
+            onClick={() => handleSorter('lastConversationInDays')}
           >
-            {t('lastConversationsInDays')}
+            <SortIcon
+              stringSort={currentSort}
+              columnName="lastConversationInDays"
+              columnNameTranslated={t('lastConversationInDays')}
+            />
           </th>
           {modeAllContacts && (
-            <th className="d-none d-lg-table-cell">{t('waitingFeedback')}</th>
+            <th
+              className="hand"
+              data-name="waitingFeedback"
+              onClick={() => handleSorter('waitingFeedback')}
+            >
+              <SortIcon
+                stringSort={currentSort}
+                columnName="waitingFeedback"
+                columnNameTranslated={t('waitingFeedback')}
+              />
+            </th>
           )}
           <th style={{ minWidth: '116px' }}>{t('details')}</th>
           <th style={{ minWidth: '189px' }}>
@@ -182,7 +253,7 @@ export default function TableComponent({
                   />
                 </td>
                 <td>{contact.phone}</td>
-                <td className="d-none d-sm-table-cell verticalBottom">
+                <td className="verticalBottom">
                   <span>{contact.name}</span>
                   <div style={setSubRowVisible(contact)}>
                     <Form.Text
@@ -200,25 +271,17 @@ export default function TableComponent({
                     modeAllContacts,
                   })}
                 </td>
-                <td className="d-none d-lg-table-cell">
+                <td className="">
                   {t(`${contact.typeCompany ? 'commercial' : 'residential'}`)}
                 </td>
-                <td className="d-none d-lg-table-cell">
-                  {t(`languages:${contact.languageName}`)}
-                </td>
-                <td
-                  className={`d-none d-lg-table-cell ${setRowColor(
-                    contact.idStatus
-                  )}`}
-                >
+                <td className="">{t(`languages:${contact.languageName}`)}</td>
+                <td className={` ${setRowColor(contact.idStatus)}`}>
                   {t(`status:${contact.statusDescription}`)}
                 </td>
-                <td className="d-none d-lg-table-cell">
-                  {t(contact.lastConversationInDays)}
-                </td>
+                <td className="">{t(contact.lastConversationInDays)}</td>
                 {modeAllContacts && (
                   <td
-                    className={`d-none d-lg-table-cell text-${
+                    className={` text-${
                       contact.waitingFeedback ? 'danger' : 'success'
                     }`}
                   >

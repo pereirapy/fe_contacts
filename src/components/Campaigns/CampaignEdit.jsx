@@ -101,10 +101,10 @@ class CampaignEdit extends React.Component {
       this.state
     const { t, afterClose } = this.props
     const title = (
-      <React.Fragment>
-        <Icon name={EIcons.bullhornIcon} />
-        {`${t('common:edit')} ${t('title')}`}
-      </React.Fragment>
+      <Icon
+        name={EIcons.bullhornIcon}
+        label={`${t('common:edit')} ${t('title')}`}
+      />
     )
 
     return (

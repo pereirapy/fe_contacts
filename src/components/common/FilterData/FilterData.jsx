@@ -189,8 +189,7 @@ class FilterData extends React.Component {
       <React.Fragment>
         <Col className="text-center">
           <h3>
-            <Icon name={EIcons.filterIcon} />
-            {t('title')}
+            <Icon name={EIcons.filterIcon} label={t('title')} />
           </h3>
         </Col>
         <Col className="text-center text-muted">{error}</Col>
@@ -202,8 +201,10 @@ class FilterData extends React.Component {
             <Card>
               <Card.Body>
                 <Card.Title>
-                  <Icon name={EIcons.bullhornIcon} />
-                  {t('campaignsTitleFilter')}
+                  <Icon
+                    name={EIcons.bullhornIcon}
+                    label={t('campaignsTitleFilter')}
+                  />
                 </Card.Title>
                 <ReactPlaceholder
                   showLoadingAnimation={true}
@@ -234,8 +235,10 @@ class FilterData extends React.Component {
             <Card>
               <Card.Body>
                 <Card.Title>
-                  <Icon name={EIcons.userIcon} />
-                  {t('publishersResponsiblesTitleFilter')}
+                  <Icon
+                    name={EIcons.userIcon}
+                    label={t('publishersResponsiblesTitleFilter')}
+                  />
                 </Card.Title>
                 <ReactPlaceholder
                   showLoadingAnimation={true}
@@ -292,8 +295,10 @@ class FilterData extends React.Component {
             <Card>
               <Card.Body>
                 <Card.Title>
-                  <Icon name={EIcons.venusMarsIcon} />
-                  {t('gendersTitleFilter')}
+                  <Icon
+                    name={EIcons.venusMarsIcon}
+                    label={t('gendersTitleFilter')}
+                  />
                 </Card.Title>
                 <ReactPlaceholder
                   showLoadingAnimation={true}
@@ -363,8 +368,7 @@ class FilterData extends React.Component {
             <Card>
               <Card.Body>
                 <Card.Title>
-                  <Icon name={EIcons.tagsIcon} />
-                  {t('statusTitleFilter')}
+                  <Icon name={EIcons.tagsIcon} label={t('statusTitleFilter')} />
                 </Card.Title>
                 <ReactPlaceholder
                   showLoadingAnimation={true}
@@ -402,8 +406,10 @@ class FilterData extends React.Component {
             <Card>
               <Card.Body>
                 <Card.Title>
-                  <Icon name={EIcons.weightIcon} />
-                  {t('responsibilityTitleFilter')}
+                  <Icon
+                    name={EIcons.weightIcon}
+                    label={t('responsibilityTitleFilter')}
+                  />
                 </Card.Title>
                 <ReactPlaceholder
                   showLoadingAnimation={true}

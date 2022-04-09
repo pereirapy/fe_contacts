@@ -169,10 +169,13 @@ class EditDetailsContact extends React.Component {
       ? buttonTitleTranslated
       : t('common:edit')
     const title = (
-      <React.Fragment>
-        <Icon name={EIcons.addressCardIcon} />
-        {`${t('common:edit')} ${t('titleCrud')} #${get('phone', contact)}`}
-      </React.Fragment>
+      <Icon
+        name={EIcons.addressCardIcon}
+        label={`${t('common:edit')} ${t('titleCrud')} #${get(
+          'phone',
+          contact
+        )}`}
+      />
     )
 
     return (

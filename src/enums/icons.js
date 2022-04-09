@@ -35,4 +35,7 @@ export const EIcons = {
   signInAltIcon: 'faSignInAlt',
   checkDoubleIcon: 'faCheckDouble',
   signOutAltIcon: 'faSignOutAlt',
+  sortUp: 'faSortUp',
+  sortDown: 'faSortDown',
+  spinner: 'faSpinner',
 }

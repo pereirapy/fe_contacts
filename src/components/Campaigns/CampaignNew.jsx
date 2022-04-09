@@ -81,10 +81,7 @@ class CampaignNew extends React.Component {
     const { form, validated, submitting } = this.state
     const { t, afterClose } = this.props
     const title = (
-      <React.Fragment>
-        <Icon name={EIcons.bullhornIcon} />
-        {`${t('new')} ${t('title')}`}
-      </React.Fragment>
+      <Icon name={EIcons.bullhornIcon} label={`${t('new')} ${t('title')}`} />
     )
 
     return (

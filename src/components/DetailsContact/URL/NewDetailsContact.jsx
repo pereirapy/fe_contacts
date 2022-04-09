@@ -143,10 +143,7 @@ class NewDetailsContact extends React.Component {
     return onlyText ? (
       title
     ) : (
-      <React.Fragment>
-        <Icon name={EIcons.addressCardIcon} />
-        {title}
-      </React.Fragment>
+      <Icon name={EIcons.addressCardIcon} label={title} />
     )
   }
 

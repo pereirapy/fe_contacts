@@ -69,14 +69,7 @@ class CampaignsList extends React.Component {
   getTitle(onlyText) {
     const { t } = this.props
     const title = t('titleList')
-    return onlyText ? (
-      title
-    ) : (
-      <React.Fragment>
-        <Icon name={EIcons.bullhornIcon} />
-        {title}
-      </React.Fragment>
-    )
+    return onlyText ? title : <Icon name={EIcons.bullhornIcon} label={title} />
   }
 
   render() {

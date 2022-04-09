@@ -68,7 +68,7 @@ class OurModal extends Component {
           disabled={buttonDisabled}
           onClick={this.onShow}
           text={buttonText || null}
-          iconName={buttonIcon ? buttonIcon : null}
+          iconName={buttonIcon || null}
         />
 
         <Modal

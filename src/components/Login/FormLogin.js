@@ -54,6 +54,8 @@ const FormLogin = (props) => {
         onClick={handleSubmit}
         text={t('common:btnSubmit')}
         textLoading={t('common:btnSubmitting')}
+        behavior="submit"
+        animate
       />
     </Form>
   )

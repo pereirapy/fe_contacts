@@ -57,14 +57,7 @@ class CampaignCharts extends React.Component {
     const { t } = this.props
     const { data } = this.state
     const title = t('chartsTitle', { campaign: data?.name })
-    return onlyText ? (
-      title
-    ) : (
-      <React.Fragment>
-        <Icon name={EIcons.bullhornIcon} />
-        {title}
-      </React.Fragment>
-    )
+    return onlyText ? title : <Icon name={EIcons.bullhornIcon} label={title} />
   }
 
   componentDidMount() {

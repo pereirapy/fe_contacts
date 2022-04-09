@@ -137,14 +137,7 @@ class ContactsWaitingFeedbackList extends React.Component {
     const { campaignActive } = this.context
     const campaignName = campaignActive ? ` - ${campaignActive.name}` : ''
     const title = `${t('titleWaitingFeedback')}${campaignName}`
-    return onlyText ? (
-      title
-    ) : (
-      <React.Fragment>
-        <Icon name={EIcons.hourglassIcon} />
-        {title}
-      </React.Fragment>
-    )
+    return onlyText ? title : <Icon name={EIcons.hourglassIcon} label={title} />
   }
 
   getFilterQueryParams() {

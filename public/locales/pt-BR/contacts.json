@@ -23,7 +23,7 @@
   "publisherCreatedBy": "Criado por",
   "waitingFeedback": "Pendente",
   "lastConversation": "Última conversa",
-  "lastConversationsInDays": "Última conversa (em dias)",
+  "lastConversationInDays": "Última conversa (em dias)",
   "typeCompany": "Estabelecimento",
   "email": "Email",
   "location": "Localidade",
@@ -31,7 +31,7 @@
   "notePlaceHolder": "Se desejar escreva aqui alguma observação sobre este contato",
   "owner": "Proprietário",
   "99999999999": "Sem conversa",
-  "createdAt":"Gerado em",
+  "createdAt": "Gerado em",
   "titleExportToCVS": "Exportar contatos selecionados ao Excel",
   "titleExportToCVSWaitingFeedback": "Exportar contatos selecionados ao Excel - Aguardam resposta",
   "lastSpokeToPublisherName": "Falou por último com",
@@ -43,11 +43,4 @@
   "numberStartsWithInvalidCharacter": "Este número começa com o caracter inválido {{character}}",
   "giveBack": "Devolver",
   "numberAlreadyContactedDuringCampaign": "Este número já foi contatado durante a campanha atual"
-
-
-
-
-
-
-
 }

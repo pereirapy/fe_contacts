@@ -52,13 +52,15 @@ const FormSendPhones = (props) => {
           </Col>
         </Row>
         <Button
-          style={{ marginTop: '20px' }}
           disabled={submitting}
           submitting={submitting}
           variant="primary"
           onClick={() => handleSubmit(onHide)}
           text={t('common:btnSubmit')}
           textLoading={t('common:btnSubmitting')}
+          behavior="submit"
+          className='mt-1'
+          animate
         />
       </Form>
     </ReactPlaceholder>

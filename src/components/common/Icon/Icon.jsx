@@ -35,6 +35,9 @@ import {
   faCheckDouble,
   faUserFriends,
   faCogs,
+  faSortUp,
+  faSortDown,
+  faSpinner
 } from '@fortawesome/free-solid-svg-icons'
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -78,14 +81,24 @@ const iconMap = {
   [EIcons.checkDoubleIcon]: faCheckDouble,
   [EIcons.userFriendsIcon]: faUserFriends,
   [EIcons.cogsIcon]: faCogs,
+  [EIcons.sortUp]: faSortUp,
+  [EIcons.sortDown]: faSortDown,
+  [EIcons.spinner]: faSpinner,
 }
 
-export default function IconComponent({ name, noMarginRight }) {
-  return noMarginRight ? (
-    <FontAwesomeIcon icon={iconMap[name]} />
-  ) : (
-    <span className="mr-1">
-      <FontAwesomeIcon icon={iconMap[name]} />
+export default function IconComponent({
+  name,
+  noMarginRight,
+  label,
+  position = 'left',
+  animate = false,
+}) {
+  const marginClass = noMarginRight ? '' : position === 'left' ? 'mr-1' : 'ml-1'
+  return (
+    <span className={marginClass}>
+      {position === 'right' && label ? `${label} ` : ''}
+      {name && iconMap[name] && <FontAwesomeIcon icon={iconMap[name]} spin={animate} />}
+      {position === 'left' && label ? ` ${label}` : ''}
     </span>
   )
 }

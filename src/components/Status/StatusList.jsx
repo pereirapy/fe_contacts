@@ -55,13 +55,7 @@ class StatusList extends React.Component {
     const { t } = this.props
     const title = t('titleList')
 
-    return onlyText ? (
-      title
-    ) : (
-      <React.Fragment>
-        <Icon name={EIcons.tagsIcon} /> {title}
-      </React.Fragment>
-    )
+    return onlyText ? title : <Icon name={EIcons.tagsIcon} label={title} />
   }
 
   render() {

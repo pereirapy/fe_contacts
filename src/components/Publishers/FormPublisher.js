@@ -9,7 +9,6 @@ import CheckNumber from '../common/CheckNumbers/CheckNumbers'
 import SuperFormControl from '../common/SuperFormControl/SuperFormControl'
 import ResponsibilitySelect from '../common/ResponsibilitySelect/ResponsibilitySelect'
 
-
 const FormPublishers = (props) => {
   const { t } = useTranslation([
     'publishers',
@@ -164,6 +163,8 @@ const FormPublishers = (props) => {
           onClick={() => handleSubmit(onHide)}
           text={t('common:btnSubmit')}
           textLoading={t('common:btnSubmitting')}
+          behavior="submit"
+          animate
         />
       </Form>
     </ReactPlaceholder>

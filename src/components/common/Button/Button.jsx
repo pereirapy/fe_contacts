@@ -1,5 +1,8 @@
 import React from 'react'
 import { Button } from 'react-bootstrap'
+
+import { EIcons } from '../../../enums/icons'
+
 import Icon from '../Icon/Icon'
 
 export default function ButtonComponent({
@@ -17,8 +20,13 @@ export default function ButtonComponent({
   className,
   style,
   margin = true,
+  animate = false,
+  behavior = 'normal'
 }) {
   const newClassName = `${margin ? ' m-1 ' : ''}${className || ''}`
+  const label = loading || submitting ? textLoading : text
+  const icon = behavior === 'submit' && (loading || submitting) ? EIcons.spinner : iconName
+
   return (
     <Button
       title={title}
@@ -30,8 +38,11 @@ export default function ButtonComponent({
       className={newClassName}
       style={style}
     >
-      {iconName && <Icon noMarginRight={Boolean(!text)} name={iconName} />}
-      {loading || submitting ? textLoading : text}
+      {icon ? (
+        <Icon noMarginRight={Boolean(!text)} name={icon} label={label} animate={animate} />
+      ) : (
+        label
+      )}
     </Button>
   )
 }

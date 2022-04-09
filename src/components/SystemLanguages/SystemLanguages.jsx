@@ -24,12 +24,7 @@ const SystemLanguages = () => {
     updateContext((previous) => ({ ...previous, settings }))
   }
 
-  const title = (
-    <React.Fragment>
-      <Icon name={EIcons.languageIcon} />
-      {`${t('title')}`}
-    </React.Fragment>
-  )
+  const title = <Icon name={EIcons.languageIcon} label={t('title')} />
 
   return (
     <OurModal

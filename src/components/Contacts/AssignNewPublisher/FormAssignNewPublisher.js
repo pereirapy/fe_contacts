@@ -63,6 +63,8 @@ const FormAssignNewPublisher = (props) => {
               onClick={() => handleSubmit(onHide)}
               text={t('common:btnSubmit')}
               textLoading={t('common:btnSubmitting')}
+              behavior="submit"
+              animate
             />
           </Col>
         </Row>

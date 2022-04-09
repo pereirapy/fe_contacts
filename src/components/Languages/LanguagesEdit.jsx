@@ -88,10 +88,10 @@ class StatusEdit extends React.Component {
     const { form, validated, submitting } = this.state
     const { t, afterClose } = this.props
     const title = (
-      <React.Fragment>
-        <Icon name={EIcons.languageIcon} />
-        {`${t('common:edit')} ${t('titleModal')}`}
-      </React.Fragment>
+      <Icon
+        name={EIcons.languageIcon}
+        label={`${t('common:edit')} ${t('titleModal')}`}
+      />
     )
 
     return (

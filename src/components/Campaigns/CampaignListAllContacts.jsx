@@ -162,14 +162,7 @@ class CampaignListAllContacts extends React.Component {
     const { t } = this.props
     const { campaignData } = this.state
     const title = t('campaigns:listAllTitle', { campaign: campaignData?.name })
-    return onlyText ? (
-      title
-    ) : (
-      <React.Fragment>
-        <Icon name={EIcons.bullhornIcon} />
-        {title}
-      </React.Fragment>
-    )
+    return onlyText ? title : <Icon name={EIcons.bullhornIcon} label={title} />
   }
 
   render() {
@@ -253,7 +246,7 @@ class CampaignListAllContacts extends React.Component {
                     style={{ maxWidth: '90px' }}
                     className="d-none d-lg-table-cell text-center"
                   >
-                    {t('lastConversationsInDays')}
+                    {t('lastConversationInDays')}
                   </th>
                   <th className="d-none d-lg-table-cell">
                     {t('waitingFeedback')}

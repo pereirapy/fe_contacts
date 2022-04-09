@@ -24,7 +24,7 @@ import FilterData from '../common/FilterData/FilterData'
 import ContainerCRUD from '../common/ContainerCRUD/ContainerCRUD'
 import './styles.css'
 
-const defaultSort =
+const sortDuringCampaign =
   '"waitingFeedback":DESC,"idStatus":ASC,name:IS NULL DESC,name:ASC'
 const sortNoCampaign =
   '"idStatus":ASC,"lastConversationInDays":DESC,name:IS NULL DESC,name:ASC'
@@ -46,7 +46,7 @@ class Contacts extends React.Component {
       pagination: {},
       statusForbidden: [ID_STATUS_NO_VISIT, ID_STATUS_SEND_TO_OTHER_CONG],
       queryParams: {
-        sort: defaultSort,
+        sort: sortNoCampaign,
         perPage: RECORDS_PER_PAGE,
         currentPage: 1,
         filters: JSON.stringify({
@@ -65,6 +65,7 @@ class Contacts extends React.Component {
     }
     this.handleGetAll = this.handleGetAll.bind(this)
     this.handleDelete = this.handleDelete.bind(this)
+    this.updateSortState = this.updateSortState.bind(this)
   }
 
   async handleGetAll(newQueyParams) {
@@ -72,10 +73,10 @@ class Contacts extends React.Component {
     uncheckCheckboxSelectAll()
     const { t } = this.props
     try {
-      const queryParams = getQueryParamsFromURL(this.props)
-        ? getQueryParamsFromURL(this.props)
-        : this.state.queryParams
-      const lastQueryParams = newQueyParams ? newQueyParams : queryParams
+      const queryParams =
+        getQueryParamsFromURL(this.props) || this.state.queryParams
+      const lastQueryParams = newQueyParams || queryParams
+
       const response = await contacts.getAll(lastQueryParams)
       const error = getOr([], 'data.errors[0]', response)
       if (isEmpty(error)) {
@@ -116,13 +117,14 @@ class Contacts extends React.Component {
       })
   }
 
-  updateSort() {
+  updateSortState(newSort) {
     const { campaignActive } = this.context
     const { modeAllContacts } = this.props
     const { queryParams } = this.state
 
-    const sort =
-      !campaignActive && !modeAllContacts ? sortNoCampaign : defaultSort
+    const defaultSort =
+      !campaignActive && !modeAllContacts ? sortNoCampaign : sortDuringCampaign
+    const sort = newSort || defaultSort
     const newQueyParams = {
       ...queryParams,
       sort,
@@ -141,8 +143,9 @@ class Contacts extends React.Component {
     if (isPublisher) {
       history.push('/')
     } else {
-      const newQueyParams = this.updateSort()
-      this.handleGetAll(newQueyParams)
+      const queryParams =
+        getQueryParamsFromURL(this.props) || this.updateSortState()
+      this.handleGetAll(queryParams)
     }
   }
 
@@ -173,14 +176,7 @@ class Contacts extends React.Component {
       campaignActive && !modeAllContacts ? ` - ${campaignActive.name}` : ''
     const fullTitle = `${t(title)}${campaignName}`
 
-    return onlyText ? (
-      fullTitle
-    ) : (
-      <React.Fragment>
-        <Icon name={iconName} />
-        {fullTitle}
-      </React.Fragment>
-    )
+    return onlyText ? fullTitle : <Icon name={iconName} label={fullTitle} />
   }
 
   getFilterQueryParams() {
@@ -204,7 +200,7 @@ class Contacts extends React.Component {
       hiddenFilter,
       headers,
       dataCVS,
-      queryParams: { filters },
+      queryParams: { filters, sort },
     } = this.state
     const title = this.getTitle()
     const titleOnlyText = this.getTitle(true)
@@ -243,6 +239,9 @@ class Contacts extends React.Component {
               pagination={pagination}
               handleGetAll={this.handleGetAll}
               handleDelete={this.handleDelete}
+              currentSort={sort}
+              updateSortState={this.updateSortState}
+              history={this.props.history}
             />
           </Col>
         </Row>

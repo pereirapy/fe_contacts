@@ -128,14 +128,7 @@ class Publishers extends React.Component {
     const { t } = this.props
     const title = t('listTitle')
 
-    return onlyText ? (
-      title
-    ) : (
-      <React.Fragment>
-        <Icon name={EIcons.briefcaseIcon} />
-        {title}
-      </React.Fragment>
-    )
+    return onlyText ? title : <Icon name={EIcons.briefcaseIcon} label={title} />
   }
 
   render() {

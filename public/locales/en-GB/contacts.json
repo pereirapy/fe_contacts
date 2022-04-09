@@ -23,7 +23,7 @@
   "publisherCreatedBy": "Created by",
   "waitingFeedback": "Pending",
   "lastConversation": "Last conversation",
-  "lastConversationsInDays": "Last conversation (in days)",
+  "lastConversationInDays": "Last conversation (in days)",
   "typeCompany": "Type",
   "email": "Email",
   "location": "Location",
@@ -31,7 +31,7 @@
   "notePlaceHolder": "Write a comment here",
   "owner": "Owner",
   "99999999999": "No contact",
-  "createdAt":"Generate at",
+  "createdAt": "Generate at",
   "titleExportToCVS": "Export selected contacts to Excel",
   "titleExportToCVSWaitingFeedback": "Export selected contacts to Excel - Waiting Feedback",
   "lastSpokeToPublisherName": "Last spoke to",
@@ -43,6 +43,4 @@
   "numberStartsWithInvalidCharacter": "This number starts with the invalid character {{character}}",
   "giveBack": "Give Back",
   "numberAlreadyContactedDuringCampaign": "This number already was contacted during the current campaign"
-
-
 }

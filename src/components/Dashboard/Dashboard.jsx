@@ -31,8 +31,7 @@ class Dashboard extends React.Component {
             <Row>
               <Col className="text-center" style={{ marginTop: '31%' }}>
                 <h1>
-                  <Icon name={EIcons.phoneVolumeIcon} />
-                  {t('title')}
+                  <Icon name={EIcons.phoneVolumeIcon} label={t('title')} />
                 </h1>
                 <h2>{t('titleCongregation')}</h2>
                 <h3>{this.buildSubTitleMessage()}</h3>

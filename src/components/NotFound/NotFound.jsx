@@ -21,8 +21,10 @@ const Landing = (props) => {
       <Row className="text-center">
         <Col lg={{ span: 3, offset: 2 }} xs={12}>
           <h1 style={{ marginTop: '25%' }}>
-            <Icon name={EIcons.exclamationTriangleIcon} />
-            {t('pageNotFound')}
+            <Icon
+              name={EIcons.exclamationTriangleIcon}
+              label={t('pageNotFound')}
+            />
           </h1>
           <Button onClick={toHome} text={t('goToHome')}></Button>
         </Col>

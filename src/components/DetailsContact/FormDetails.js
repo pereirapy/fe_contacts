@@ -170,7 +170,7 @@ const FormDetails = (props) => {
           </Col>
         </Row>
         <Row>
-          <Col xs={12} md={{ order: 'first', span: 2 }}>
+          <Col xs={12} md={{ order: 'first', span: 3 }}>
             <Button
               disabled={submitting}
               submitting={submitting}
@@ -178,6 +178,8 @@ const FormDetails = (props) => {
               onClick={() => handleSubmit(onHide)}
               text={t('common:btnSubmit')}
               textLoading={t('common:btnSubmitting')}
+              behavior="submit"
+              animate
             />
 
             {history && (
@@ -190,7 +192,7 @@ const FormDetails = (props) => {
               />
             )}
           </Col>
-          <Col xs={{ order: 'first', span: 12 }} md={10} className="text-right">
+          <Col xs={{ order: 'first', span: 12 }} md={9} className="text-right">
             <Form.Text muted>{form.lastPublisherThatTouched}</Form.Text>
           </Col>
         </Row>

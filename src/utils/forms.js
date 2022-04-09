@@ -48,7 +48,7 @@ export const getQueryParamsFromURL = (props) => {
   else return false
 }
 
-export const setFiltersToURL = (queryParams, props) => {
+export const setSearchToURL = (queryParams, props) => {
   const { history } = props
 
   const search = '?search=' + JSON.stringify(queryParams)

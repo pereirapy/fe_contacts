@@ -186,10 +186,10 @@ class EditContact extends React.Component {
     } = this.state
     const { t, afterClose } = this.props
     const title = (
-      <React.Fragment>
-        <Icon name={EIcons.userEditIcon} />
-        {`${t('common:edit')} ${t('titleCrud')}`}
-      </React.Fragment>
+      <Icon
+        name={EIcons.userEditIcon}
+        label={`${t('common:edit')} ${t('titleCrud')}`}
+      />
     )
 
     return (
