@@ -233,8 +233,6 @@ class SendPhones extends React.Component {
       this.sendMessage()
       showSuccessful(t)
       onHide()
-      this.setState({ form: fields, submitting: false, validated: false })
-      this.validator.hideMessages()
     } catch (error) {
       const phone = getOr(0, 'response.data.extra.phone', error)
       this.setState({ submitting: false })
@@ -246,6 +244,12 @@ class SendPhones extends React.Component {
     }
   }
 
+  resetForm() {
+    this.setState({ form: fields, submitting: false, validated: false })
+    this.validator.hideMessages()
+  }
+
+
   getTitle() {
     const { t } = this.props
     const { campaignActive } = this.context
@@ -254,12 +258,6 @@ class SendPhones extends React.Component {
       : t('title')
     return titleWithCampaignName
   }
-
-  resetForm() {
-    this.setState({ form: fields, validated: false })
-    this.validator.hideMessages()
-  }
-
 
   render() {
     const { form, validated, publishersOptions, submitting, loading } =

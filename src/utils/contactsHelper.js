@@ -173,7 +173,7 @@ export function thisDateAlreadyReachedMaxAllowed(contact) {
   }
 }
 
-export function getStyleForFieldDays(contact) {
+export function getToolTipVariant(contact) {
   return thisDateAlreadyReachedMaxAllowed(contact) ? 'link text-danger' : 'link'
 }
 
@@ -266,7 +266,9 @@ export function verifyIfWasContactedDuringCurrentCampaign({
 }) {
   const { campaignActive } = componentReact.context
   return (
-    !contact.waitingFeedback && contact.campaignName === campaignActive.name
+    campaignActive &&
+    !contact.waitingFeedback &&
+    contact.campaignName === campaignActive.name
   )
 }
 

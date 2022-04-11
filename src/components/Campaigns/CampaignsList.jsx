@@ -89,6 +89,7 @@ class CampaignsList extends React.Component {
             <thead>
               <tr>
                 <th>{t('name')}</th>
+                <th>{t('goal')}</th>
                 <th>{t('dateStart')}</th>
                 <th>{t('dateFinal')}</th>
                 <th>
@@ -113,6 +114,7 @@ class CampaignsList extends React.Component {
                   (campaign) => (
                     <tr key={campaign.id}>
                       <td>{campaign.name}</td>
+                      <td>{campaign.goal}</td>
                       <td>{t(formatDateDMY(campaign.dateStart))}</td>
                       <td>{t(formatDateDMY(campaign.dateFinal))}</td>
                       <td style={{ minWidth: '114px' }}>

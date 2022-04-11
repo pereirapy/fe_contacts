@@ -1,27 +1,27 @@
 import React, { Component } from 'react'
-import { withTranslation } from 'react-i18next'
-import { Tooltip, OverlayTrigger } from 'react-bootstrap'
-
-import Button from '../../common/Button/Button'
+import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap'
 
 class OurToolTip extends Component {
   renderTooltip = (props) => {
-    const { t, toolTipContent } = this.props
+    const { toolTipContent } = this.props
     return (
       <Tooltip id="button-tooltip" {...props}>
-        {t(toolTipContent)}
+        {toolTipContent}
       </Tooltip>
     )
   }
 
   render() {
     const {
-      t,
       showTooltip,
       info,
-      getStyleForFieldDays,
+      getToolTipVariant,
       placement = 'left',
+      variant = 'link',
+      children,
     } = this.props
+
+    const buttonVariant = getToolTipVariant ? getToolTipVariant() : variant
 
     return showTooltip ? (
       <OverlayTrigger
@@ -29,12 +29,14 @@ class OurToolTip extends Component {
         placement={placement}
         overlay={this.renderTooltip}
       >
-        <Button variant={getStyleForFieldDays()} text={t(`${info}`)} />
+        <Button variant={buttonVariant}>{info ? info : children}</Button>
       </OverlayTrigger>
-    ) : (
+    ) : info ? (
       info
+    ) : (
+      children
     )
   }
 }
 
-export default withTranslation(['contacts'])(OurToolTip)
+export default OurToolTip

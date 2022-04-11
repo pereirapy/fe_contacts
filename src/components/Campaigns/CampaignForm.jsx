@@ -22,7 +22,7 @@ const CampaignForm = (props) => {
   return (
     <Form>
       <Row className="mb-2">
-        <Col xs={12}>
+      <Col xs={12} lg={6}>
           <SuperFormControl
             type="text"
             name="name"
@@ -33,6 +33,19 @@ const CampaignForm = (props) => {
             value={form.name}
             onChange={handleInputChange}
             rules="required|max:40"
+          />
+        </Col>
+        <Col xs={12} lg={6}>
+          <SuperFormControl
+            type="text"
+            name="goal"
+            label={t('goal')}
+            validator={validator}
+            validated={validated}
+            placeholder={t('goalPlaceHolder')}
+            value={form.goal}
+            onChange={handleInputChange}
+            rules="required|max:50"
           />
         </Col>
       </Row>

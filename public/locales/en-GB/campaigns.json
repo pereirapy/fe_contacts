@@ -15,5 +15,8 @@
   "seeCampaignDetails": "To see the numbers that was contacted during the campaign",
   "chartsTitle": "Campaign progress charts",
   "seeCampaignCharts": "To see the charts of this campaign",
-  "ERROR_CAMPAIGN_ALREADY_HAS_DETAILS_CONTACTS": "Is not allowed update dates because this campaign already has some contacts that was contacted or is waiting feedback"
+  "ERROR_CAMPAIGN_ALREADY_HAS_DETAILS_CONTACTS": "Is not allowed update dates because this campaign already has some contacts that was contacted or is waiting feedback",
+  "goal": "Goal",
+  "goalPlaceHolder": "Write the goal to this campaign"
+
 }

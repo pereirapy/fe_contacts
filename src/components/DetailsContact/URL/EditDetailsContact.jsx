@@ -14,16 +14,20 @@ import {
   showSuccessful,
   ifEmptySetNull,
 } from '../../../utils/generic'
+import {
+  WAITING_FEEDBACK,
+  GENDER_UNKNOWN,
+  GOAL_REACHED,
+} from '../../../constants/contacts'
 import { EIcons } from '../../../enums/icons'
 import { details, publishers, locations } from '../../../services'
 import { reduceLocations } from '../../../stateReducers/locations'
 import { reducePublishers } from '../../../stateReducers/publishers'
-import { WAITING_FEEDBACK, GENDER_UNKNOWN } from '../../../constants/contacts'
 
 import FormDetails from '../FormDetails'
 import Icon from '../../common/Icon/Icon'
-import ContainerCRUD from '../../common/ContainerCRUD/ContainerCRUD'
 import ElementError from '../../common/ElementError/ElementError'
+import ContainerCRUD from '../../common/ContainerCRUD/ContainerCRUD'
 
 const fields = {
   information: '',
@@ -37,6 +41,7 @@ const fields = {
   typeCompany: '0',
   updatedAt: '',
   publisherUpdatedBy: '',
+  goalReached: '0',
 }
 
 class EditDetailsContact extends React.Component {
@@ -89,7 +94,7 @@ class EditDetailsContact extends React.Component {
     const form = {
       ...data,
       information:
-        getOr('', 'information', data) === WAITING_FEEDBACK
+        getOr('', 'information', data) === WAITING_FEEDBACK || GOAL_REACHED
           ? ''
           : getOr('', 'information', data),
       lastPublisherThatTouched: this.getLastPublisherThatTouched(data),
@@ -121,15 +126,24 @@ class EditDetailsContact extends React.Component {
     const { history } = this.props
     const { t } = this.props
     const id = getOr(0, 'props.match.params.id', this)
+
     const gender =
       form.typeCompany === true || form.typeCompany === '1'
         ? GENDER_UNKNOWN
         : form.gender
+
     const owner =
       form.typeCompany === true || form.typeCompany === '1' ? form.owner : null
+
+    const information =
+      form.goalReached === true || form.goalReached === '1'
+        ? GOAL_REACHED
+        : getOr('', 'information', form)
+
     const data = {
       detailsContact: {
-        ...pick(['idPublisher', 'information'], form),
+        ...pick(['idPublisher', 'goalReached'], form),
+        information,
         phoneContact: phone,
       },
       contact: {

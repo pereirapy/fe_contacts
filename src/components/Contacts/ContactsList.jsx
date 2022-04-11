@@ -29,11 +29,16 @@ const sortDuringCampaign =
 const sortNoCampaign =
   '"idStatus":ASC,"lastConversationInDays":DESC,name:IS NULL DESC,name:ASC'
 
+const modeAllContactsEnable = '-1'
+const modeAllContactsDisabled = '0'
+
 class Contacts extends React.Component {
   constructor(props) {
     super(props)
 
-    const modeAllContacts = props.modeAllContacts ? '-1' : '0'
+    const modeAllContacts = props.modeAllContacts
+      ? modeAllContactsEnable
+      : modeAllContactsDisabled
 
     this.state = {
       data: [],
@@ -182,11 +187,17 @@ class Contacts extends React.Component {
   getFilterQueryParams() {
     const { campaignActive } = this.context
     const { modeAllContacts } = this.props
+
+    const modeAllContactsForURL = modeAllContacts
+      ? modeAllContactsEnable
+      : modeAllContactsDisabled
+
     return campaignActive && !modeAllContacts
       ? {
           toOmit: JSON.stringify(['campaigns']),
+          modeAllContacts: modeAllContactsForURL,
         }
-      : {}
+      : { modeAllContacts: modeAllContactsForURL }
   }
 
   render() {

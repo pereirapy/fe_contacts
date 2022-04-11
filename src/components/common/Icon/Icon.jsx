@@ -40,6 +40,7 @@ import {
   faSpinner,
   faPenSquare,
   faPencilAlt,
+  faInfoCircle
 } from '@fortawesome/free-solid-svg-icons'
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -88,6 +89,7 @@ const iconMap = {
   [EIcons.spinner]: faSpinner,
   [EIcons.penSquare]: faPenSquare,
   [EIcons.pencilAlt]: faPencilAlt,
+  [EIcons.infoCircle]: faInfoCircle,
 }
 
 export default function IconComponent({

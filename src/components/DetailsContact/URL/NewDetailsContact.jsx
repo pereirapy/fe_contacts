@@ -16,16 +16,16 @@ import {
   ID_LOCATION_DEFAULT,
 } from '../../../constants/valuesPredefined'
 import { EIcons } from '../../../enums/icons'
-import { GENDER_UNKNOWN } from '../../../constants/contacts'
 import { reduceLocations } from '../../../stateReducers/locations'
 import { reducePublishers } from '../../../stateReducers/publishers'
 import { getLocale, handleInputChangeGeneric } from '../../../utils/forms'
+import { GENDER_UNKNOWN, GOAL_REACHED } from '../../../constants/contacts'
 import { details, publishers, contacts, locations } from '../../../services'
 
 import FormDetails from '../FormDetails'
 import Icon from '../../common/Icon/Icon'
-import ContainerCRUD from '../../common/ContainerCRUD/ContainerCRUD'
 import ElementError from '../../common/ElementError/ElementError'
+import ContainerCRUD from '../../common/ContainerCRUD/ContainerCRUD'
 
 const fields = {
   information: '',
@@ -37,6 +37,7 @@ const fields = {
   name: '',
   owner: '',
   typeCompany: '0',
+  goalReached: '0',
 }
 
 class NewDetailsContact extends React.Component {
@@ -54,6 +55,7 @@ class NewDetailsContact extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleGetOneContact = this.handleGetOneContact.bind(this)
     this.handleInputChange = this.handleInputChange.bind(this)
+    
     this.validator = new SimpleReactValidator({
       autoForceUpdate: this,
       locale: getLocale(this.props),
@@ -101,16 +103,24 @@ class NewDetailsContact extends React.Component {
     const { form, phone } = this.state
     const { history } = this.props
     const { t } = this.props
+
     const gender =
       form.typeCompany === true || form.typeCompany === '1'
         ? GENDER_UNKNOWN
         : form.gender
+
     const owner =
       form.typeCompany === true || form.typeCompany === '1' ? form.owner : null
 
+    const information =
+      form.goalReached === true || form.goalReached === '1'
+        ? GOAL_REACHED
+        : getOr('', 'information', form)
+
     const data = {
       detailsContact: {
-        ...pick(['idPublisher', 'information'], form),
+        ...pick(['idPublisher', 'goalReached'], form),
+        information,
         phoneContact: phone,
       },
       contact: {

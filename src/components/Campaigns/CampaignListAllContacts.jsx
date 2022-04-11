@@ -18,7 +18,7 @@ import {
   setRowColor,
   getInformationAboveName,
   thisDateAlreadyReachedMaxAllowed,
-  getStyleForFieldDays,
+  getToolTipVariant,
   uncheckCheckboxSelectAll,
 } from '../../utils/contactsHelper'
 import {
@@ -348,13 +348,11 @@ class CampaignListAllContacts extends React.Component {
                         <td className="d-none d-lg-table-cell">
                           <OurToolTip
                             info={t(contact.lastConversationInDays)}
-                            toolTipContent="toolTipWaitingFeedback"
+                            toolTipContent={t('toolTipWaitingFeedback')}
                             showTooltip={thisDateAlreadyReachedMaxAllowed(
                               contact
                             )}
-                            getStyleForFieldDays={() =>
-                              getStyleForFieldDays(contact)
-                            }
+                            getToolTipVariant={() => getToolTipVariant(contact)}
                           />
                         </td>
                         <td

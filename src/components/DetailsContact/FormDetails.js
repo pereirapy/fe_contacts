@@ -5,13 +5,16 @@ import ReactPlaceholder from 'react-placeholder'
 import { Form, Row, Col } from 'react-bootstrap'
 
 import { EIcons } from '../../enums/icons'
+import useApplicationContext from '../../hooks/useApplicationContext'
 
+import Icon from '../common/Icon/Icon'
 import Button from '../common/Button/Button'
+import OurToolTip from '../common/OurToolTip/OurToolTip'
 import SuperSelect from '../common/SuperSelect/SuperSelect'
 import GenderSelect from '../common/GenderSelect/GenderSelect'
 import StatusSelect from '../common/StatusSelect/StatusSelect'
-import SuperFormControl from '../common/SuperFormControl/SuperFormControl'
 import LanguageSelect from '../common/LanguageSelect/LanguageSelect'
+import SuperFormControl from '../common/SuperFormControl/SuperFormControl'
 
 const FormDetails = (props) => {
   const { t } = useTranslation(['detailsContacts', 'common', 'contacts'])
@@ -28,6 +31,11 @@ const FormDetails = (props) => {
     history,
     locationsOptions,
   } = props
+  const { campaignActive } = useApplicationContext()
+  const hiddenInformation =
+    (form.goalReached === true || form.goalReached === '1') && campaignActive
+  const goalCampaignActive = campaignActive ? campaignActive.goal : ''
+
   return (
     <ReactPlaceholder
       showLoadingAnimation={true}
@@ -114,6 +122,7 @@ const FormDetails = (props) => {
               validated={validated}
               value={form.idLanguage}
               onChange={handleInputChange}
+              rules="required"
             />
           </Col>
           <Col xs={12} lg={6}>
@@ -138,6 +147,7 @@ const FormDetails = (props) => {
                 validated={validated}
                 value={form.gender}
                 onChange={handleInputChange}
+                rules="required"
               />
             </Col>
           )}
@@ -153,7 +163,54 @@ const FormDetails = (props) => {
             />
           </Col>
         </Row>
-        <Row>
+        {campaignActive && (
+          <Row>
+            <Col xs={12} lg={6}>
+              <Form.Group controlId="goalReached0">
+                <Radio
+                  name="goalReached"
+                  color="danger"
+                  bigger
+                  checked={
+                    form.goalReached === false || form.goalReached === '0'
+                  }
+                  value={'0'}
+                  onChange={handleInputChange}
+                >
+                  {t('goalReachedNo')}
+                </Radio>
+              </Form.Group>
+            </Col>
+            <Col xs={12} lg={6}>
+              <Form.Group controlId="goalReached1">
+                <Radio
+                  name="goalReached"
+                  color="success"
+                  bigger
+                  validator={validator}
+                  checked={
+                    form.goalReached === true || form.goalReached === '1'
+                  }
+                  value={'1'}
+                  onChange={handleInputChange}
+                >
+                  {t('goalReachedYes')}
+                </Radio>
+                <OurToolTip
+                  toolTipContent={t('goalCampaignActive', {
+                    goalCampaignActive,
+                  })}
+                  showTooltip={true}
+                  variant="link text-warning"
+                  placement="top"
+                >
+                  <Icon name={EIcons.infoCircle} />
+                </OurToolTip>
+              </Form.Group>
+            </Col>
+          </Row>
+        )}
+        <Row style={{ display: hiddenInformation ? 'none' : 'block' }}>
           <Col>
             <SuperFormControl
               as="textarea"
@@ -165,7 +222,9 @@ const FormDetails = (props) => {
               placeholder={t('informationPlaceHolder')}
               value={form.information}
               onChange={handleInputChange}
-              rules="required|min:5|max:500"
+              rules={
+                hiddenInformation ? 'min:1|max:500' : 'required|min:5|max:500'
+              }
             />
           </Col>
         </Row>

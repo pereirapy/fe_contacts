@@ -40,5 +40,6 @@ export const EIcons = {
   spinner: 'faSpinner',
   penSquare: 'faPenSquare',
   pencilAlt: 'faPencilAlt',
+  infoCircle: 'faInfoCircle',
   
 }

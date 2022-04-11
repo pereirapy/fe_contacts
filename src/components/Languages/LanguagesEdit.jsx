@@ -28,14 +28,14 @@ class StatusEdit extends React.Component {
     }
     this.handleInputChange = this.handleInputChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleChangeColor = this.handleChangeColor.bind(this)
+    this.onEnter = this.onEnter.bind(this)
+
     this.validator = new SimpleReactValidator({
       autoForceUpdate: this,
       locale: getLocale(this.props),
       element: (message) => <ElementError message={message} />,
     })
-    this.resetForm = this.resetForm.bind(this)
-    this.handleChangeColor = this.handleChangeColor.bind(this)
-    this.onEnter = this.onEnter.bind(this)
   }
 
   handleInputChange(event) {
@@ -49,11 +49,6 @@ class StatusEdit extends React.Component {
         color: hex,
       },
     })
-  }
-
-  resetForm() {
-    this.setState({ form: fields, submitting: false, validated: false })
-    this.validator.hideMessages()
   }
 
   async handleSubmit(onHide) {
@@ -106,7 +101,6 @@ class StatusEdit extends React.Component {
         form={form}
         onExit={afterClose}
         onEnter={this.onEnter}
-        onClose={this.resetForm}
         title={title}
         buttonIcon={EIcons.pencilAlt}
         buttonVariant="success"

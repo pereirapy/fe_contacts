@@ -27,13 +27,14 @@ class StatusNew extends React.Component {
     }
     this.handleInputChange = this.handleInputChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.resetForm = this.resetForm.bind(this)
+    this.handleChangeColor = this.handleChangeColor.bind(this)
+
     this.validator = new SimpleReactValidator({
       autoForceUpdate: this,
       locale: getLocale(this.props),
       element: (message) => <ElementError message={message} />,
     })
-    this.resetForm = this.resetForm.bind(this)
-    this.handleChangeColor = this.handleChangeColor.bind(this)
   }
 
   handleInputChange(event) {

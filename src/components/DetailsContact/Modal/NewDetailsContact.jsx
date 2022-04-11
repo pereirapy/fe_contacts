@@ -17,10 +17,10 @@ import {
   ID_LOCATION_DEFAULT,
 } from '../../../constants/valuesPredefined'
 import { EIcons } from '../../../enums/icons'
-import { GENDER_UNKNOWN } from '../../../constants/contacts'
 import { reduceLocations } from '../../../stateReducers/locations'
 import { reducePublishers } from '../../../stateReducers/publishers'
 import { getLocale, handleInputChangeGeneric } from '../../../utils/forms'
+import { GENDER_UNKNOWN, GOAL_REACHED } from '../../../constants/contacts'
 import { details, publishers, contacts, locations } from '../../../services'
 
 import FormDetails from '../FormDetails'
@@ -38,6 +38,7 @@ const fields = {
   name: '',
   owner: '',
   typeCompany: '0',
+  goalReached: '0',
 }
 
 class NewDetailsContact extends React.Component {
@@ -57,6 +58,8 @@ class NewDetailsContact extends React.Component {
     this.notificationNotAllowedNewDetails =
       this.notificationNotAllowedNewDetails.bind(this)
     this.handleInputChange = this.handleInputChange.bind(this)
+    this.resetForm = this.resetForm.bind(this)
+
     this.validator = new SimpleReactValidator({
       autoForceUpdate: this,
       locale: getLocale(this.props),
@@ -99,16 +102,24 @@ class NewDetailsContact extends React.Component {
 
     const { form } = this.state
     const { contact, t } = this.props
+
     const gender =
       form.typeCompany === true || form.typeCompany === '1'
         ? GENDER_UNKNOWN
         : form.gender
+
     const owner =
       form.typeCompany === true || form.typeCompany === '1' ? form.owner : null
 
+    const information =
+      form.goalReached === true || form.goalReached === '1'
+        ? GOAL_REACHED
+        : getOr('', 'information', form)
+
     const data = {
       detailsContact: {
-        ...pick(['idPublisher', 'information'], form),
+        ...pick(['idPublisher', 'goalReached'], form),
+        information,
         phoneContact: get('phone', contact),
       },
       contact: {
@@ -127,12 +138,15 @@ class NewDetailsContact extends React.Component {
       await details.create(data)
       showSuccessful(t)
       onHide()
-      this.setState({ form: fields, submitting: false, validated: false })
-      this.validator.hideMessages()
     } catch (error) {
       this.setState({ submitting: false })
       showError(error, t, 'detailsContacts')
     }
+  }
+
+  resetForm() {
+    this.setState({ form: fields, submitting: false, validated: false })
+    this.validator.hideMessages()
   }
 
   notificationNotAllowedNewDetails() {
@@ -179,6 +193,7 @@ class NewDetailsContact extends React.Component {
         form={form}
         onExit={afterClose}
         onEnter={this.onOpen}
+        onClose={this.resetForm}
         locationsOptions={locationsOptions}
         publishersOptions={publishersOptions}
         title={title}

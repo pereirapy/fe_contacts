@@ -13,11 +13,15 @@ import {
   showSuccessful,
   ifEmptySetNull,
 } from '../../../utils/generic'
+import {
+  WAITING_FEEDBACK,
+  GENDER_UNKNOWN,
+  GOAL_REACHED,
+} from '../../../constants/contacts'
 import { EIcons } from '../../../enums/icons'
 import { details, publishers, locations } from '../../../services'
 import { reduceLocations } from '../../../stateReducers/locations'
 import { reducePublishers } from '../../../stateReducers/publishers'
-import { WAITING_FEEDBACK, GENDER_UNKNOWN } from '../../../constants/contacts'
 
 import FormDetails from '../FormDetails'
 import Icon from '../../common/Icon/Icon'
@@ -34,6 +38,7 @@ const fields = {
   name: '',
   owner: '',
   typeCompany: '0',
+  goalReached: '0',
 }
 
 class EditDetailsContact extends React.Component {
@@ -85,7 +90,7 @@ class EditDetailsContact extends React.Component {
       const form = {
         ...data,
         information:
-          getOr('', 'information', data) === WAITING_FEEDBACK
+          getOr('', 'information', data) === WAITING_FEEDBACK || GOAL_REACHED
             ? ''
             : getOr('', 'information', data),
         lastPublisherThatTouched: this.getLastPublisherThatTouched(data),
@@ -126,11 +131,20 @@ class EditDetailsContact extends React.Component {
       form.typeCompany === true || form.typeCompany === '1'
         ? GENDER_UNKNOWN
         : form.gender
+
     const owner =
       form.typeCompany === true || form.typeCompany === '1' ? form.owner : null
 
+    const information =
+      form.goalReached === true || form.goalReached === '1'
+        ? GOAL_REACHED
+        : getOr('', 'information', form)
+
     const data = {
-      detailsContact: pick(['idPublisher', 'information'], form),
+      detailsContact: {
+        ...pick(['idPublisher', 'goalReached'], form),
+        information,
+      },
       contact: {
         idStatus: get('idStatus', form),
         idLanguage: get('idLanguage', form),
@@ -146,8 +160,6 @@ class EditDetailsContact extends React.Component {
       await details.updateOneContactDetail(id, data)
       showSuccessful(t)
       onHide()
-      this.setState({ form: fields, submitting: false, validated: false })
-      this.validator.hideMessages()
     } catch (error) {
       this.setState({ submitting: false })
       showError(error, t, 'detailsContacts')

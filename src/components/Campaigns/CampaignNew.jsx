@@ -16,6 +16,7 @@ import ElementError from '../common/ElementError/ElementError'
 
 const fields = {
   name: '',
+  goal: '',
   dateStart: moment().format('YYYY-MM-DD'),
   dateFinal: moment().add(1, 'day').format('YYYY-MM-DD'),
 }

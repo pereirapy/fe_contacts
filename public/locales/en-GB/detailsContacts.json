@@ -13,5 +13,9 @@
   "[WAITING_FEEDBACK]": "Waiting for feedback",
   "ERROR_PUBLISHER_ALREADY_WAITING_FEEDBACK": "This contact is already waiting a feedback. Please, take a note of this feedback before assign to other publisher",
   "details": "Details",
-  "campaignName": "Contacted during the campaign {{campaignName}}"
+  "campaignName": "Contacted during the campaign {{campaignName}}",
+  "goalReachedYes": "Goal reached",
+  "goalReachedNo": "Goal NOT reached",
+  "[GOAL_REACHED]": "Goal reached",
+  "goalCampaignActive": "The campaign goal is: '{{goalCampaignActive}}'"
 }

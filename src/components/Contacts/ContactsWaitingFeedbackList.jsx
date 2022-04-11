@@ -13,7 +13,7 @@ import {
   parseDataCVS,
   handleOnClick,
   thisDateAlreadyReachedMaxAllowed,
-  getStyleForFieldDays,
+  getToolTipVariant,
   uncheckCheckboxSelectAll,
 } from '../../utils/contactsHelper'
 import { details } from '../../services'
@@ -324,12 +324,12 @@ class ContactsWaitingFeedbackList extends React.Component {
                         <td className="d-none d-lg-table-cell">
                           <OurToolTip
                             info={formatDateDMY(detailContact.createdAt)}
-                            toolTipContent="toolTipWaitingFeedback"
+                            toolTipContent={t('toolTipWaitingFeedback')}
                             showTooltip={thisDateAlreadyReachedMaxAllowed(
                               detailContact
                             )}
-                            getStyleForFieldDays={() =>
-                              getStyleForFieldDays(detailContact)
+                            getToolTipVariant={() =>
+                              getToolTipVariant(detailContact)
                             }
                           />
                         </td>

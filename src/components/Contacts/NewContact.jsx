@@ -124,7 +124,6 @@ class NewContact extends React.Component {
 
     try {
       await contacts.create(data)
-      this.setState({ submitting: false })
       showSuccessful(t)
       onHide()
     } catch (error) {
@@ -143,7 +142,7 @@ class NewContact extends React.Component {
   }
 
   resetForm() {
-    this.setState({ form: fields, validated: false })
+    this.setState({ form: fields, submitting: false, validated: false })
     this.validator.hideMessages()
   }
 

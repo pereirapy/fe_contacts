@@ -27,6 +27,7 @@ class StatusEdit extends React.Component {
     }
     this.handleInputChange = this.handleInputChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
+
     this.validator = new SimpleReactValidator({
       autoForceUpdate: this,
       locale: getLocale(this.props),
@@ -56,8 +57,6 @@ class StatusEdit extends React.Component {
       await status.updateOne(get('id', form), data)
       showSuccessful(t)
       onHide()
-      this.setState({ form: fields, submitting: false, validated: false })
-      this.validator.hideMessages()
     } catch (error) {
       this.setState({ submitting: false })
       showError(error, t, 'status')

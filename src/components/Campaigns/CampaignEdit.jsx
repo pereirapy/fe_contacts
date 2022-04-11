@@ -15,6 +15,7 @@ import ElementError from '../common/ElementError/ElementError'
 
 const fields = {
   name: '',
+  goal: '',
   dateStart: '',
   dateFinal: '',
 }
@@ -60,8 +61,6 @@ class CampaignEdit extends React.Component {
       await campaigns.updateOne(get('id', form), form)
       showSuccessful(t)
       onHide()
-      this.setState({ form: fields, submitting: false, validated: false })
-      this.validator.hideMessages()
     } catch (error) {
       this.setState({ submitting: false })
       const campaign = getOr(0, 'response.data.extra.name', error)

@@ -41,6 +41,7 @@ class EditContact extends React.Component {
     this.handleGetOne = this.handleGetOne.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleInputChange = this.handleInputChange.bind(this)
+
     this.validator = new SimpleReactValidator({
       autoForceUpdate: this,
       locale: getLocale(this.props),
@@ -97,13 +98,12 @@ class EditContact extends React.Component {
       await publishers.updatePublishers(id, data)
       showSuccessful(t)
       onHide()
-      this.setState({ form: fields, submitting: false, validated: false })
-      this.validator.hideMessages()
     } catch (error) {
       this.setState({ submitting: false })
       showError(error, t, 'publishers')
     }
   }
+
 
   render() {
     const { form, validated, loading, submitting } = this.state

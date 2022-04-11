@@ -38,6 +38,8 @@ class BatchChanges extends React.Component {
     this.allFieldsIsOriginal = this.allFieldsIsOriginal.bind(this)
     this.onOpen = this.onOpen.bind(this)
     this.handleInputChange = this.handleInputChange.bind(this)
+    this.resetForm = this.resetForm.bind(this)
+
     this.validator = new SimpleReactValidator({
       autoForceUpdate: this,
       locale: getLocale(this.props),
@@ -104,13 +106,17 @@ class BatchChanges extends React.Component {
       await contacts.updateSome(data)
       showSuccessful(t)
       onHide()
-      this.setState({ form: fields, submitting: false, validated: false })
-      this.validator.hideMessages()
     } catch (error) {
       this.setState({ submitting: false })
       showError(error, t, 'bachChanges')
     }
   }
+
+  resetForm() {
+    this.setState({ form: fields, submitting: false, validated: false })
+    this.validator.hideMessages()
+  }
+
 
   render() {
     const { form, validated, publishersOptions, loading, submitting } =
@@ -130,6 +136,7 @@ class BatchChanges extends React.Component {
         form={form}
         onExit={afterClose}
         onEnter={this.onOpen}
+        onClose={this.resetForm}
         publishersOptions={publishersOptions}
         title={`${t('title')}`}
         buttonTitle={t('btnTitle')}
