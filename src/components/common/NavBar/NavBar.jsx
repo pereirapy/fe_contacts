@@ -121,7 +121,7 @@ const NavBarMenu = (props) => {
       <Navbar.Brand as={Link} to="/">
         <Image
           src={logo}
-          width="34px"
+          width="36px"
           height="auto"
           alt="Agenda"
           roundedCircle
