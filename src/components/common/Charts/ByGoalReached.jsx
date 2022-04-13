@@ -3,73 +3,72 @@ import { round } from 'lodash'
 import { Col, Card } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import ReactPlaceholder from 'react-placeholder'
-import { get, isEmpty, getOr, compact } from 'lodash/fp'
 import { PieChart } from 'react-minimal-pie-chart'
+import { get, isEmpty, getOr, compact } from 'lodash/fp'
 
-const getByContacted = (t, data) => {
+const getByGoalReached = (t, data) => {
   if (
-    getOr(0, 'totalPercentContacted', data) === 0 &&
-    getOr(0, 'totalPercentWithoutContacted', data) === 0
+    getOr(0, 'totalPercentContactsReachedGoal', data) === 0 &&
+    getOr(0, 'totalPercentContactsNoReachedGoal', data) === 0
   )
     return []
 
   return compact([
-    getOr(0, 'totalPercentContacted', data) > 0
+    getOr(0, 'totalPercentContactsReachedGoal', data) > 0
       ? {
-          label: t('contacted'),
+          label: t('contactsReachedGoal'),
           title: `${round(
-            getOr(0, 'totalPercentContacted', data),
+            getOr(0, 'totalPercentContactsReachedGoal', data),
             2
-          )}% (${getOr(0, 'totalContactsContacted', data)}) ${t('contacted')}`,
-          value: getOr(0, 'totalPercentContacted', data),
+          )}% (${getOr(0, 'totalContactsReachedGoal', data)}) ${t(
+            'contactsReachedGoal'
+          )}`,
+          value: getOr(0, 'totalPercentContactsReachedGoal', data),
           color: '#28a745',
         }
       : null,
-    getOr(0, 'totalPercentWithoutContacted', data) > 0
+    getOr(0, 'totalPercentContactsNoReachedGoal', data) > 0
       ? {
-          label: t('withoutContact'),
+          label: t('contactsNoReachedGoal'),
           title: `${round(
-            getOr(0, 'totalPercentWithoutContacted', data),
+            getOr(0, 'totalPercentContactsNoReachedGoal', data),
             2
-          )}% (${getOr(0, 'totalContactsWithoutContact', data)}) ${t(
-            'withoutContact'
-          )}`,
-          value: getOr(0, 'totalPercentWithoutContacted', data),
+          )}% (${getOr(0, 'totalContactsNoReachedGoal', data)}) ${t('contactsNoReachedGoal')}`,
+          value: getOr(0, 'totalPercentContactsNoReachedGoal', data),
           color: '#f73939',
         }
       : null,
   ])
 }
 
-const ByContacted = ({ data, loading, hasCampaign }) => {
+const ByGoalReached = (props) => {
   const { t } = useTranslation(['dashboard', 'common'])
-  const byContacted = getByContacted(t, data)
+  const byGoalReached = getByGoalReached(t, get('data', props))
 
-  const LgXlSpan = hasCampaign ? 3 : 4
   return (
     <Col
       xs={{ span: 8, offset: 2 }}
       md={{ span: 4, offset: 0 }}
-      lg={{ span: LgXlSpan, offset: 0 }}
-      xl={{ span: LgXlSpan, offset: 0 }}
+      lg={{ span: 3, offset: 0 }}
+      xl={{ span: 3, offset: 0 }}
       className="mt-2"
     >
       <Card>
         <Card.Header className="text-center" style={{ minHeight: '87px' }}>
-          {t('titleChartContacts')}
+          {t('titleChartContactsGoalReached')}
         </Card.Header>
         <Card.Body style={{ textAlign: '-webkit-center' }}>
           <ReactPlaceholder
             showLoadingAnimation={true}
             type="round"
             className="size-react-placeholder"
-            ready={!loading}
+            ready={!props.loading}
             rows={1}
           >
-            {!isEmpty(byContacted) ? (
+            {!isEmpty(byGoalReached) ? (
               <PieChart
                 animate={true}
-                data={byContacted}
+                data={byGoalReached}
                 totalValue={100}
                 label={({ dataEntry }) => get('label', dataEntry)}
                 labelStyle={{
@@ -88,4 +87,4 @@ const ByContacted = ({ data, loading, hasCampaign }) => {
   )
 }
 
-export default ByContacted
+export default ByGoalReached

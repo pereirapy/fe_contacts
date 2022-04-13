@@ -15,6 +15,7 @@ import ChartByFeedback from './ByFeedback'
 import ChartByLocations from './ByLocations'
 import ChartByContacted from './ByContacted'
 import ChartByPublishers from './ByPublishers'
+import ChartByGoalReached from './ByGoalReached'
 import ShowErrorComponent from '../ShowError/ShowError'
 import './styles.css'
 
@@ -69,7 +70,7 @@ function CardHeaderCampaign({ campaignActive, campaignNext, t }) {
 function RenderChartsWithCampaign({
   data,
   loading,
-  isAtLeastElder,
+  hasCampaign,
   campaignActive,
   campaignNext,
   t,
@@ -87,26 +88,27 @@ function RenderChartsWithCampaign({
         <RenderOnlyCharts
           data={data}
           loading={loading}
-          isAtLeastElder={isAtLeastElder}
+          hasCampaign={hasCampaign}
         />
       </Card.Body>
     </Card>
   )
 }
 
-function RenderOnlyCharts({ data, loading, isAtLeastElder }) {
+function RenderOnlyCharts({ data, loading, hasCampaign }) {
   return (
     <React.Fragment>
       <Row className="mt-4">
-        <ChartByContacted data={data} loading={loading} />
-        <ChartByGender data={data} loading={loading} />
-        <ChartByLanguage data={data} loading={loading} />
+        <ChartByContacted data={data} loading={loading} hasCampaign={hasCampaign} />
+        <ChartByGender data={data} loading={loading} hasCampaign={hasCampaign} />
+        <ChartByLanguage data={data} loading={loading} hasCampaign={hasCampaign} />
+        {hasCampaign && <ChartByGoalReached data={data} loading={loading} />}
       </Row>
       <Row className="mt-4">
         <ChartByFeedback data={data} loading={loading} />
         <ChartByType data={data} loading={loading} />
         <ChartByLocations data={data} loading={loading} />
-        {isAtLeastElder && <ChartByPublishers data={data} loading={loading} />}
+        <ChartByPublishers data={data} loading={loading} />
       </Row>
     </React.Fragment>
   )
@@ -115,7 +117,7 @@ function RenderOnlyCharts({ data, loading, isAtLeastElder }) {
 function RenderCharts({
   data,
   loading,
-  isAtLeastElder,
+  hasCampaign,
   campaignActive,
   campaignNext,
   t,
@@ -124,7 +126,7 @@ function RenderCharts({
     <RenderChartsWithCampaign
       data={data}
       loading={loading}
-      isAtLeastElder={isAtLeastElder}
+      hasCampaign={hasCampaign}
       campaignActive={campaignActive}
       campaignNext={campaignNext}
       t={t}
@@ -133,17 +135,16 @@ function RenderCharts({
     <RenderOnlyCharts
       data={data}
       loading={loading}
-      isAtLeastElder={isAtLeastElder}
+      hasCampaign={hasCampaign}
     />
   )
 }
 
-const Charts = () => {
+const Charts = ({ campaign }) => {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
   const {
-    isAtLeastElder,
     updateContext,
     hasToken,
     campaignActive,
@@ -155,7 +156,8 @@ const Charts = () => {
     async function handleGetSummary() {
       setLoading(true)
       try {
-        const response = await contacts.getWhichSummary(campaignActive?.id)
+        const idCampaign = campaignActive?.id || campaign?.id
+        const response = await contacts.getWhichSummary(idCampaign)
         const dataSummary = get('data', response)
         setData(dataSummary)
         setLoading(false)
@@ -167,7 +169,9 @@ const Charts = () => {
     }
 
     if (hasToken) handleGetSummary()
-  }, [hasToken, campaignActive, updateContext, t])
+  }, [hasToken, campaignActive, updateContext, t, campaign])
+
+  const hasCampaign = campaignActive?.id || campaign?.id
 
   return (
     <Container>
@@ -181,7 +185,7 @@ const Charts = () => {
         <RenderCharts
           data={data}
           loading={loading}
-          isAtLeastElder={isAtLeastElder}
+          hasCampaign={hasCampaign}
           campaignActive={campaignActive}
           campaignNext={campaignNext}
           t={t}

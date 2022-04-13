@@ -15,12 +15,19 @@ import {
   ID_STATUS_DEFAULT,
   ID_LOCATION_DEFAULT,
 } from '../../../constants/valuesPredefined'
+import {
+  details,
+  publishers,
+  contacts,
+  locations,
+  campaigns,
+} from '../../../services'
 import { EIcons } from '../../../enums/icons'
+import { ApplicationContext } from '../../../contexts/application'
 import { reduceLocations } from '../../../stateReducers/locations'
 import { reducePublishers } from '../../../stateReducers/publishers'
 import { getLocale, handleInputChangeGeneric } from '../../../utils/forms'
 import { GENDER_UNKNOWN, GOAL_REACHED } from '../../../constants/contacts'
-import { details, publishers, contacts, locations } from '../../../services'
 
 import FormDetails from '../FormDetails'
 import Icon from '../../common/Icon/Icon'
@@ -51,11 +58,13 @@ class NewDetailsContact extends React.Component {
       publishersOptions: [],
       locationsOptions: [],
       phone: getOr(0, 'match.params.phone', props),
+      showRadioButtonGoalReached: false,
+      goalCampaign: '',
     }
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleGetOneContact = this.handleGetOneContact.bind(this)
     this.handleInputChange = this.handleInputChange.bind(this)
-    
+
     this.validator = new SimpleReactValidator({
       autoForceUpdate: this,
       locale: getLocale(this.props),
@@ -65,23 +74,44 @@ class NewDetailsContact extends React.Component {
 
   async handleGetOneContact() {
     const { phone } = this.state
+    const { t } = this.props
+    const { campaignActive } = this.context
+
     this.setState({ loading: true })
+    try {
+      const contact = await contacts.getOne(phone)
+      const publishersOptions = reducePublishers(await publishers.getAll())
+      const locationsOptions = reduceLocations(await locations.getAll())
 
-    const contact = await contacts.getOne(phone)
-    const publishersOptions = reducePublishers(await publishers.getAll())
-    const locationsOptions = reduceLocations(await locations.getAll())
+      const form = getOr(fields, 'data.data', contact)
+      const newForm = {
+        ...fields,
+        ...form,
+      }
 
-    const form = getOr(fields, 'data.data', contact)
-    const newForm = {
-      ...fields,
-      ...form,
+      const showRadioButtonGoalReached = campaignActive || form.idCampaign
+
+      let goalCampaign = ''
+      if (campaignActive) {
+        goalCampaign = campaignActive.goal
+      } else if (form.idCampaign) {
+        const campaignResponse = await campaigns.getOne(form.idCampaign)
+        const campaignData = getOr({ goal: '' }, 'data.data', campaignResponse)
+        goalCampaign = campaignData.goal
+      }
+
+      this.setState({
+        form: newForm,
+        publishersOptions,
+        loading: false,
+        locationsOptions,
+        showRadioButtonGoalReached,
+        goalCampaign,
+      })
+    } catch (error) {
+      this.setState({ loading: false })
+      showError(error, t, 'detailsContacts')
     }
-    this.setState({
-      form: newForm,
-      publishersOptions,
-      loading: false,
-      locationsOptions,
-    })
   }
 
   async componentDidMount() {
@@ -165,6 +195,8 @@ class NewDetailsContact extends React.Component {
       loading,
       submitting,
       locationsOptions,
+      showRadioButtonGoalReached,
+      goalCampaign,
     } = this.state
     const { history } = this.props
 
@@ -187,11 +219,15 @@ class NewDetailsContact extends React.Component {
             publishersOptions={publishersOptions}
             onSubmit={this.handleSubmit}
             history={history}
+            showRadioButtonGoalReached={showRadioButtonGoalReached}
+            goalCampaign={goalCampaign}
           />
         </Container>
       </ContainerCRUD>
     )
   }
 }
+
+NewDetailsContact.contextType = ApplicationContext
 
 export default withTranslation(['contacts', 'common'])(NewDetailsContact)

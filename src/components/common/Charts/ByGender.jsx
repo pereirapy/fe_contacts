@@ -39,16 +39,18 @@ const getByGender = (t, data) => {
   )
 }
 
-const ByGender = (props) => {
+const ByGender = ({data, loading, hasCampaign}) => {
   const { t } = useTranslation(['dashboard', 'common', 'contacts'])
-  const byGender = getByGender(t, get('data', props))
+  const byGender = getByGender(t,data)
+  const LgXlSpan = hasCampaign ? 3 : 4
+  const MdOffset = hasCampaign ? 2 : 4
 
   return (
     <Col
       xs={{ span: 8, offset: 2 }}
-      md={{ span: 4, offset: 0 }}
-      lg={{ span: 4, offset: 0 }}
-      xl={{ span: 4, offset: 0 }}
+      md={{ span: 4, offset: MdOffset }}
+      lg={{ span: LgXlSpan, offset: 0 }}
+      xl={{ span: LgXlSpan, offset: 0 }}
       className="mt-2"
     >
       <Card>
@@ -60,7 +62,7 @@ const ByGender = (props) => {
             showLoadingAnimation={true}
             type="round"
             className="size-react-placeholder"
-            ready={!props.loading}
+            ready={!loading}
             rows={1}
           >
             {!isEmpty(byGender) ? (

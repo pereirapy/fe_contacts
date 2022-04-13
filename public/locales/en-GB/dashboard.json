@@ -22,8 +22,10 @@
   "daysToFinishActiveCampaign_one": "Tomorrow will finish the '{{name}}' campaign",
   "daysToFinishActiveCampaign_other": "{{count}} Days left to finish the '{{name}}' campaign",
   "daysToStartNextCampaign_one": "Tomorrow will start the campaign '{{name}}'",
-  "daysToStartNextCampaign_other": "{{count}} Days left to start the '{{name}}' campaign"
-
+  "daysToStartNextCampaign_other": "{{count}} Days left to start the '{{name}}' campaign",
+  "titleChartContactsGoalReached": "Goal reached vs. no reached",
+  "contactsReachedGoal": "Reached",
+  "contactsNoReachedGoal": "No reached"
 
 
 }

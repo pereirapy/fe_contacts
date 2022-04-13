@@ -19,9 +19,10 @@ import {
   GOAL_REACHED,
 } from '../../../constants/contacts'
 import { EIcons } from '../../../enums/icons'
-import { details, publishers, locations } from '../../../services'
 import { reduceLocations } from '../../../stateReducers/locations'
+import { ApplicationContext } from '../../../contexts/application'
 import { reducePublishers } from '../../../stateReducers/publishers'
+import { details, publishers, locations, campaigns } from '../../../services'
 
 import FormDetails from '../FormDetails'
 import Icon from '../../common/Icon/Icon'
@@ -51,6 +52,8 @@ class EditDetailsContact extends React.Component {
       validated: false,
       publishersOptions: [],
       locationsOptions: [],
+      showRadioButtonGoalReached: false,
+      goalCampaign: '',
     }
     this.handleGetOne = this.handleGetOne.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -81,6 +84,7 @@ class EditDetailsContact extends React.Component {
 
   async handleGetOne() {
     const { t } = this.props
+    const { campaignActive } = this.context
 
     try {
       this.setState({ loading: true })
@@ -90,19 +94,32 @@ class EditDetailsContact extends React.Component {
       const form = {
         ...data,
         information:
-          getOr('', 'information', data) === WAITING_FEEDBACK || GOAL_REACHED
+          getOr('', 'information', data) === WAITING_FEEDBACK ||
+          getOr('', 'information', data) === GOAL_REACHED
             ? ''
             : getOr('', 'information', data),
         lastPublisherThatTouched: this.getLastPublisherThatTouched(data),
       }
       const publishersOptions = reducePublishers(await publishers.getAll())
       const locationsOptions = reduceLocations(await locations.getAll())
+      const showRadioButtonGoalReached = campaignActive || form.idCampaign
+
+      let goalCampaign = ''
+      if (campaignActive) {
+        goalCampaign = campaignActive.goal
+      } else if (form.idCampaign) {
+        const campaignResponse = await campaigns.getOne(form.idCampaign)
+        const campaignData = getOr({ goal: '' }, 'data.data', campaignResponse)
+        goalCampaign = campaignData.goal
+      }
 
       this.setState({
         form,
         publishersOptions,
         locationsOptions,
         loading: false,
+        showRadioButtonGoalReached,
+        goalCampaign,
       })
     } catch (error) {
       this.setState({ loading: false })
@@ -174,6 +191,8 @@ class EditDetailsContact extends React.Component {
       loading,
       locationsOptions,
       submitting,
+      showRadioButtonGoalReached,
+      goalCampaign,
     } = this.state
     const { t, afterClose, contact, icon, buttonTitleTranslated } = this.props
     const iconButtonName = icon ? icon : EIcons.pencilAlt
@@ -208,10 +227,13 @@ class EditDetailsContact extends React.Component {
         buttonTitle={buttonTitle}
         buttonIcon={iconButtonName}
         buttonVariant="success"
+        showRadioButtonGoalReached={showRadioButtonGoalReached}
+        goalCampaign={goalCampaign}
       />
     )
   }
 }
+EditDetailsContact.contextType = ApplicationContext
 
 export default withTranslation(['detailsContacts', 'common'])(
   EditDetailsContact

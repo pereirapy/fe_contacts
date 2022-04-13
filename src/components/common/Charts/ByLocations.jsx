@@ -7,7 +7,6 @@ import { Col, Card, Row, ListGroup } from 'react-bootstrap'
 import { get, isEmpty, getOr, map, isNil, pipe, orderBy } from 'lodash/fp'
 
 import { randomColor } from '../../../utils/generic'
-import useApplicationContext from '../../../hooks/useApplicationContext'
 
 import Button from '../Button/Button'
 
@@ -43,18 +42,13 @@ const ByLocations = (props) => {
   const { t } = useTranslation(['dashboard', 'common'])
   const byLocations = getByLocations(t, get('data', props))
   const [detailsByLocations, toggleDetailsByPLocations] = useState(false)
-  const { isAtLeastElder } = useApplicationContext()
-
-  const spanLG = isAtLeastElder ? 3 : 4
-  const spanXL = isAtLeastElder ? 3 : 4
-  const offsetMD = isAtLeastElder ? 2 : 0
 
   return (
     <Col
       xs={{ span: 8, offset: 2 }}
-      md={{ span: 4, offset: offsetMD }}
-      lg={{ span: spanLG, offset: 0 }}
-      xl={{ span: spanXL, offset: 0 }}
+      md={{ span: 4, offset: 2 }}
+      lg={{ span: 3, offset: 0 }}
+      xl={{ span: 3, offset: 0 }}
       className="mt-2"
     >
       <Card>

@@ -1,10 +1,7 @@
 {
   "name": "fe_contacts",
-  "version": "3.4.5",
+  "version": "3.4.7",
   "private": true,
-  "resolutions": {
-    "react-error-overlay": "6.0.10"
-  },
   "dependencies": {
     "@djthoms/pretty-checkbox": "^3.1.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
@@ -62,11 +59,7 @@
     "lint": "npm run lint:eslint && npm run lint:format",
     "lint:eslint": "eslint . --ext .js,.jsx --fix",
     "lint:format": "prettier --config .prettierrc  \"./src/**/*.js\" \"src/**/*.jsx\"  --check",
-    "format": "prettier --config .prettierrc \"./src/**/*.js\" \"src/**/*.jsx\" --write",
-    "preinstall": "npx npm-force-resolutions"
-  },
-  "devDependencies": {
-    "react-error-overlay": "6.0.10"
+    "format": "prettier --config .prettierrc \"./src/**/*.js\" \"src/**/*.jsx\" --write"
   },
   "eslintConfig": {
     "extends": "react-app"

@@ -5,7 +5,6 @@ import ReactPlaceholder from 'react-placeholder'
 import { Form, Row, Col } from 'react-bootstrap'
 
 import { EIcons } from '../../enums/icons'
-import useApplicationContext from '../../hooks/useApplicationContext'
 
 import Icon from '../common/Icon/Icon'
 import Button from '../common/Button/Button'
@@ -30,11 +29,12 @@ const FormDetails = (props) => {
     validated,
     history,
     locationsOptions,
+    showRadioButtonGoalReached,
+    goalCampaign,
   } = props
-  const { campaignActive } = useApplicationContext()
   const hiddenInformation =
-    (form.goalReached === true || form.goalReached === '1') && campaignActive
-  const goalCampaignActive = campaignActive ? campaignActive.goal : ''
+    (form.goalReached === true || form.goalReached === '1') &&
+    showRadioButtonGoalReached
 
   return (
     <ReactPlaceholder
@@ -163,7 +163,7 @@ const FormDetails = (props) => {
             />
           </Col>
         </Row>
-        {campaignActive && (
+        {showRadioButtonGoalReached && (
           <Row>
             <Col xs={12} lg={6}>
               <Form.Group controlId="goalReached0">
@@ -197,8 +197,8 @@ const FormDetails = (props) => {
                   {t('goalReachedYes')}
                 </Radio>
                 <OurToolTip
-                  toolTipContent={t('goalCampaignActive', {
-                    goalCampaignActive,
+                  toolTipContent={t('goalCampaign', {
+                    goalCampaign,
                   })}
                   showTooltip={true}
                   variant="link text-warning"

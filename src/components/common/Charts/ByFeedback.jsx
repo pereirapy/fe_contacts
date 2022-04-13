@@ -6,8 +6,6 @@ import ReactPlaceholder from 'react-placeholder'
 import { PieChart } from 'react-minimal-pie-chart'
 import { get, isEmpty, getOr, compact } from 'lodash/fp'
 
-import useApplicationContext from '../../../hooks/useApplicationContext'
-
 const getByFeedback = (t, data) => {
   if (
     getOr(0, 'totalPercentContactsAssignByMeWaitingFeedback', data) === 0 &&
@@ -58,18 +56,14 @@ const getByFeedback = (t, data) => {
 const ByFeedback = (props) => {
   const { t } = useTranslation(['dashboard', 'common'])
   const byFeedback = getByFeedback(t, get('data', props))
-  const { isAtLeastElder } = useApplicationContext()
 
-  const offsetMD = isAtLeastElder ? 2 : 0
-  const spanLG = isAtLeastElder ? 3 : 4
-  const spanXL = isAtLeastElder ? 3 : 4
 
   return (
     <Col
       xs={{ span: 8, offset: 2 }}
-      md={{ span: 4, offset: offsetMD }}
-      lg={{ span: spanLG, offset: 0 }}
-      xl={{ span: spanXL, offset: 0 }}
+      md={{ span: 4, offset: 2 }}
+      lg={{ span: 3, offset: 0 }}
+      xl={{ span: 3, offset: 0 }}
       className="mt-2"
     >
       <Card>

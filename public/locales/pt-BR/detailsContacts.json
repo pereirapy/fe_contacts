@@ -16,7 +16,6 @@
   "campaignName": "Contactado durante a campanha {{campaignName}}",
   "goalReachedYes": "Alvo alcançado",
   "goalReachedNo": "Alvo NÃO alcançado",
-  "[GOAL_REACHED]":  "Alvo alcançado",
-  "goalCampaignActive": "O alvo desta campanha é: '{{goalCampaignActive}}'"
-
+  "[GOAL_REACHED]": "Alvo alcançado",
+  "goalCampaign": "O alvo desta campanha é: '{{goalCampaign}}'"
 }

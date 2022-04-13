@@ -20,9 +20,10 @@ import {
   GOAL_REACHED,
 } from '../../../constants/contacts'
 import { EIcons } from '../../../enums/icons'
-import { details, publishers, locations } from '../../../services'
+import { ApplicationContext } from '../../../contexts/application'
 import { reduceLocations } from '../../../stateReducers/locations'
 import { reducePublishers } from '../../../stateReducers/publishers'
+import { details, publishers, locations, campaigns } from '../../../services'
 
 import FormDetails from '../FormDetails'
 import Icon from '../../common/Icon/Icon'
@@ -56,6 +57,8 @@ class EditDetailsContact extends React.Component {
       publishersOptions: [],
       locationsOptions: [],
       phone: getOr(0, 'match.params.phone', props),
+      showRadioButtonGoalReached: false,
+      goalCampaign: '',
     }
     this.handleGetOne = this.handleGetOne.bind(this)
     this.getTitle = this.getTitle.bind(this)
@@ -87,27 +90,49 @@ class EditDetailsContact extends React.Component {
   }
 
   async handleGetOne() {
+    const { campaignActive } = this.context
+    const { t } = this.props
+
     const id = getOr(0, 'props.match.params.id', this)
     this.setState({ loading: true })
-    const response = await details.getOne(id)
-    const data = getOr(fields, 'data.data', response)
-    const form = {
-      ...data,
-      information:
-        getOr('', 'information', data) === WAITING_FEEDBACK || GOAL_REACHED
-          ? ''
-          : getOr('', 'information', data),
-      lastPublisherThatTouched: this.getLastPublisherThatTouched(data),
-    }
-    const publishersOptions = reducePublishers(await publishers.getAll())
-    const locationsOptions = reduceLocations(await locations.getAll())
+    try {
+      const response = await details.getOne(id)
+      const data = getOr(fields, 'data.data', response)
+      const form = {
+        ...data,
+        information:
+          getOr('', 'information', data) === WAITING_FEEDBACK ||
+          getOr('', 'information', data) === GOAL_REACHED
+            ? ''
+            : getOr('', 'information', data),
+        lastPublisherThatTouched: this.getLastPublisherThatTouched(data),
+      }
+      const publishersOptions = reducePublishers(await publishers.getAll())
+      const locationsOptions = reduceLocations(await locations.getAll())
 
-    this.setState({
-      form,
-      publishersOptions,
-      locationsOptions,
-      loading: false,
-    })
+      const showRadioButtonGoalReached = campaignActive || form.idCampaign
+
+      let goalCampaign = ''
+      if (campaignActive) {
+        goalCampaign = campaignActive.goal
+      } else if (form.idCampaign) {
+        const campaignResponse = await campaigns.getOne(form.idCampaign)
+        const campaignData = getOr({ goal: '' }, 'data.data', campaignResponse)
+        goalCampaign = campaignData.goal
+      }
+
+      this.setState({
+        form,
+        publishersOptions,
+        locationsOptions,
+        loading: false,
+        showRadioButtonGoalReached,
+        goalCampaign,
+      })
+    } catch (error) {
+      this.setState({ loading: false })
+      showError(error, t, 'detailsContacts')
+    }
   }
 
   handleInputChange(event) {
@@ -196,11 +221,12 @@ class EditDetailsContact extends React.Component {
       loading,
       submitting,
       locationsOptions,
+      showRadioButtonGoalReached,
+      goalCampaign,
     } = this.state
     const { history } = this.props
 
     return (
-      <React.Fragment>
         <ContainerCRUD
           title={this.getTitle()}
           titleOnlyText={this.getTitle(true)}
@@ -219,12 +245,15 @@ class EditDetailsContact extends React.Component {
               publishersOptions={publishersOptions}
               onSubmit={this.handleSubmit}
               history={history}
+              showRadioButtonGoalReached={showRadioButtonGoalReached}
+              goalCampaign={goalCampaign}
             />
           </Container>
         </ContainerCRUD>
-      </React.Fragment>
     )
   }
 }
+
+EditDetailsContact.contextType = ApplicationContext
 
 export default withTranslation(['contacts', 'common'])(EditDetailsContact)

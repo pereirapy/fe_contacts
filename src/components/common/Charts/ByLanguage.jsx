@@ -24,16 +24,17 @@ const getByLanguage = (t, data) =>
     getOr([], 'totalContactsByLanguageContacted', data)
   )
 
-const ByLanguage = (props) => {
+const ByLanguage = ({ data, loading, hasCampaign }) => {
   const { t } = useTranslation(['dashboard', 'common', 'languages'])
-  const byLanguage = getByLanguage(t, get('data', props))
+  const byLanguage = getByLanguage(t, data)
+  const LgXlSpan = hasCampaign ? 3 : 4
 
   return (
     <Col
       xs={{ span: 8, offset: 2 }}
-      md={{ span: 6, offset: 3, order: 'first' }}
-      lg={{ span: 4, offset: 0 }}
-      xl={{ span: 4, offset: 0 }}
+      md={{ span: 4, offset: 2, order: 'first' }}
+      lg={{ span: LgXlSpan, offset: 0 }}
+      xl={{ span: LgXlSpan, offset: 0 }}
       className="mt-2"
     >
       <Card>
@@ -45,7 +46,7 @@ const ByLanguage = (props) => {
             showLoadingAnimation={true}
             type="round"
             className="size-react-placeholder"
-            ready={!props.loading}
+            ready={!loading}
             rows={1}
           >
             {!isEmpty(byLanguage) ? (
