@@ -87,6 +87,7 @@ class NewDetailsContact extends React.Component {
       const newForm = {
         ...fields,
         ...form,
+        idCampaign: campaignActive?.id || null,
       }
 
       const showRadioButtonGoalReached = campaignActive || form.idCampaign
@@ -149,7 +150,7 @@ class NewDetailsContact extends React.Component {
 
     const data = {
       detailsContact: {
-        ...pick(['idPublisher', 'goalReached'], form),
+        ...pick(['idPublisher', 'goalReached', 'idCampaign'], form),
         information,
         phoneContact: phone,
       },

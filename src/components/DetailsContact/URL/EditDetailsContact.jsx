@@ -105,6 +105,7 @@ class EditDetailsContact extends React.Component {
           getOr('', 'information', data) === GOAL_REACHED
             ? ''
             : getOr('', 'information', data),
+        idCampaign: campaignActive?.id || null,
         lastPublisherThatTouched: this.getLastPublisherThatTouched(data),
       }
       const publishersOptions = reducePublishers(await publishers.getAll())
@@ -167,7 +168,7 @@ class EditDetailsContact extends React.Component {
 
     const data = {
       detailsContact: {
-        ...pick(['idPublisher', 'goalReached'], form),
+        ...pick(['idPublisher', 'goalReached', 'idCampaign'], form),
         information,
         phoneContact: phone,
       },
@@ -227,29 +228,29 @@ class EditDetailsContact extends React.Component {
     const { history } = this.props
 
     return (
-        <ContainerCRUD
-          title={this.getTitle()}
-          titleOnlyText={this.getTitle(true)}
-          {...this.props}
-        >
-          <Container className="border p-4">
-            <FormDetails
-              validator={this.validator}
-              loading={loading}
-              submitting={submitting}
-              validated={validated}
-              handleSubmit={this.handleSubmit}
-              handleInputChange={this.handleInputChange}
-              form={form}
-              locationsOptions={locationsOptions}
-              publishersOptions={publishersOptions}
-              onSubmit={this.handleSubmit}
-              history={history}
-              showRadioButtonGoalReached={showRadioButtonGoalReached}
-              goalCampaign={goalCampaign}
-            />
-          </Container>
-        </ContainerCRUD>
+      <ContainerCRUD
+        title={this.getTitle()}
+        titleOnlyText={this.getTitle(true)}
+        {...this.props}
+      >
+        <Container className="border p-4">
+          <FormDetails
+            validator={this.validator}
+            loading={loading}
+            submitting={submitting}
+            validated={validated}
+            handleSubmit={this.handleSubmit}
+            handleInputChange={this.handleInputChange}
+            form={form}
+            locationsOptions={locationsOptions}
+            publishersOptions={publishersOptions}
+            onSubmit={this.handleSubmit}
+            history={history}
+            showRadioButtonGoalReached={showRadioButtonGoalReached}
+            goalCampaign={goalCampaign}
+          />
+        </Container>
+      </ContainerCRUD>
     )
   }
 }

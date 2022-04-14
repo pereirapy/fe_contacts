@@ -1,5 +1,5 @@
 import React from 'react'
-import { Table } from 'react-bootstrap'
+import { Table, Container } from 'react-bootstrap'
 import { map, isEmpty } from 'lodash/fp'
 import { withTranslation } from 'react-i18next'
 import ReactPlaceholder from 'react-placeholder'
@@ -80,57 +80,59 @@ class LanguagesList extends React.Component {
         titleOnlyText={this.getTitle(true)}
         {...this.props}
       >
-        <Table striped bordered hover responsive>
-          <thead>
-            <tr>
-              <th>{t('descriptionLabel')}</th>
-              <th>{t('descriptionTraducedLabel')}</th>
-              <th>{t('colorLabel')}</th>
-              <th>
-                <LanguagesNew afterClose={this.handleGetAll} />
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
+        <Container>
+          <Table striped bordered hover responsive>
+            <thead>
               <tr>
-                <td colSpan={colSpan}>
-                  <ReactPlaceholder
-                    showLoadingAnimation={true}
-                    type="text"
-                    ready={!loading}
-                    rows={RECORDS_PER_PAGE}
-                  />
-                </td>
+                <th>{t('descriptionLabel')}</th>
+                <th>{t('descriptionTraducedLabel')}</th>
+                <th>{t('colorLabel')}</th>
+                <th>
+                  <LanguagesNew afterClose={this.handleGetAll} />
+                </th>
               </tr>
-            ) : !isEmpty(data) ? (
-              map(
-                (language) => (
-                  <tr key={language.id}>
-                    <td>{language.name}</td>
-                    <td>{t(language.name)}</td>
-                    <td style={{ backgroundColor: `${language.color}` }}>
-                      {t('colorLabel')}
-                    </td>
-                    <td>
-                      <LanguagesEdit
-                        data={language}
-                        afterClose={this.handleGetAll}
-                      />
-                      <AskDelete
-                        id={language.id}
-                        funcToCallAfterConfirmation={this.handleDelete}
-                      />
-                    </td>
-                  </tr>
-                ),
-                data
-              )
-            ) : (
-              <NoRecords cols={4} />
-            )}
-          </tbody>
-        </Table>
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr>
+                  <td colSpan={colSpan}>
+                    <ReactPlaceholder
+                      showLoadingAnimation={true}
+                      type="text"
+                      ready={!loading}
+                      rows={RECORDS_PER_PAGE}
+                    />
+                  </td>
+                </tr>
+              ) : !isEmpty(data) ? (
+                map(
+                  (language) => (
+                    <tr key={language.id}>
+                      <td>{language.name}</td>
+                      <td>{t(language.name)}</td>
+                      <td style={{ backgroundColor: `${language.color}` }}>
+                        {t('colorLabel')}
+                      </td>
+                      <td>
+                        <LanguagesEdit
+                          data={language}
+                          afterClose={this.handleGetAll}
+                        />
+                        <AskDelete
+                          id={language.id}
+                          funcToCallAfterConfirmation={this.handleDelete}
+                        />
+                      </td>
+                    </tr>
+                  ),
+                  data
+                )
+              ) : (
+                <NoRecords cols={4} />
+              )}
+            </tbody>
+          </Table>
+        </Container>
       </ContainerCRUD>
     )
   }

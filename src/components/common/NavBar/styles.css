@@ -11,3 +11,12 @@
 .dropdown-item:active {
   color: #fff !important;
 }
+
+@media only screen and (max-width: 768px) {
+  .dropdown-item {
+    margin: 10px 0 10px 0;
+  }
+  .nav-link {
+    margin: 10px 0 10px 0;
+  }
+}

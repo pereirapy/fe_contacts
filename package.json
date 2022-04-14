@@ -1,7 +1,7 @@
 {
   "name": "fe_contacts",
-  "version": "3.4.7",
-  "private": true,
+  "version": "3.4.8",
+  "private": false,
   "dependencies": {
     "@djthoms/pretty-checkbox": "^3.1.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",

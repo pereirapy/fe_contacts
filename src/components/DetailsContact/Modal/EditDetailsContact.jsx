@@ -98,6 +98,7 @@ class EditDetailsContact extends React.Component {
           getOr('', 'information', data) === GOAL_REACHED
             ? ''
             : getOr('', 'information', data),
+        idCampaign: campaignActive?.id || null,
         lastPublisherThatTouched: this.getLastPublisherThatTouched(data),
       }
       const publishersOptions = reducePublishers(await publishers.getAll())
@@ -159,7 +160,7 @@ class EditDetailsContact extends React.Component {
 
     const data = {
       detailsContact: {
-        ...pick(['idPublisher', 'goalReached'], form),
+        ...pick(['idPublisher', 'goalReached', 'idCampaign'], form),
         information,
       },
       contact: {
