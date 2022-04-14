@@ -91,6 +91,7 @@ class EditDetailsContact extends React.Component {
       const id = getOr(0, 'props.id', this)
       const response = await details.getOne(id)
       const data = getOr(fields, 'data.data', response)
+      const idCampaign = data.idCampaign || campaignActive?.id || null
       const form = {
         ...data,
         information:
@@ -98,7 +99,7 @@ class EditDetailsContact extends React.Component {
           getOr('', 'information', data) === GOAL_REACHED
             ? ''
             : getOr('', 'information', data),
-        idCampaign: campaignActive?.id || null,
+        idCampaign,
         lastPublisherThatTouched: this.getLastPublisherThatTouched(data),
       }
       const publishersOptions = reducePublishers(await publishers.getAll())
