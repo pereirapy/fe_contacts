@@ -59,7 +59,7 @@ class Contacts extends React.Component {
           owner: '',
           phone: '',
           note: '',
-          typeCompany: '-1',
+          typeCompany: props.modeAllContacts ? '-1' : '0',
           modeAllContacts,
           genders: [],
           languages: [],

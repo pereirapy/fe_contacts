@@ -60,10 +60,12 @@ class NewDetailsContact extends React.Component {
       phone: getOr(0, 'match.params.phone', props),
       showRadioButtonGoalReached: false,
       goalCampaign: '',
+      campaignName: '',
     }
+    this.getTitle = this.getTitle.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
-    this.handleGetOneContact = this.handleGetOneContact.bind(this)
     this.handleInputChange = this.handleInputChange.bind(this)
+    this.handleGetOneContact = this.handleGetOneContact.bind(this)
 
     this.validator = new SimpleReactValidator({
       autoForceUpdate: this,
@@ -93,12 +95,19 @@ class NewDetailsContact extends React.Component {
       const showRadioButtonGoalReached = campaignActive || form.idCampaign
 
       let goalCampaign = ''
+      let campaignName = ''
       if (campaignActive) {
         goalCampaign = campaignActive.goal
+        campaignName = ` - ${campaignActive.name}`
       } else if (form.idCampaign) {
         const campaignResponse = await campaigns.getOne(form.idCampaign)
-        const campaignData = getOr({ goal: '' }, 'data.data', campaignResponse)
+        const campaignData = getOr(
+          { goal: '', name: '' },
+          'data.data',
+          campaignResponse
+        )
         goalCampaign = campaignData.goal
+        campaignName = ` - ${campaignData.name}`
       }
 
       this.setState({
@@ -108,6 +117,7 @@ class NewDetailsContact extends React.Component {
         locationsOptions,
         showRadioButtonGoalReached,
         goalCampaign,
+        campaignName,
       })
     } catch (error) {
       this.setState({ loading: false })
@@ -177,9 +187,11 @@ class NewDetailsContact extends React.Component {
   }
 
   getTitle(onlyText) {
-    const { phone } = this.state
+    const { phone, campaignName } = this.state
     const { t } = this.props
-    const title = `${t('common:new')} ${t('detailsContacts:title')} #${phone}`
+    const title = `${t('common:new')} ${t(
+      'detailsContacts:title'
+    )} #${phone}${campaignName}`
 
     return onlyText ? (
       title

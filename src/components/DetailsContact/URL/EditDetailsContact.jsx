@@ -59,14 +59,14 @@ class EditDetailsContact extends React.Component {
       phone: getOr(0, 'match.params.phone', props),
       showRadioButtonGoalReached: false,
       goalCampaign: '',
+      campaignName: '',
     }
-    this.handleGetOne = this.handleGetOne.bind(this)
     this.getTitle = this.getTitle.bind(this)
-
-    this.handleSubmit = this.handleSubmit.bind(this)
-    this.handleInputChange = this.handleInputChange.bind(this)
     this.getLastPublisherThatTouched =
       this.getLastPublisherThatTouched.bind(this)
+    this.handleGetOne = this.handleGetOne.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleInputChange = this.handleInputChange.bind(this)
 
     this.validator = new SimpleReactValidator({
       autoForceUpdate: this,
@@ -116,12 +116,19 @@ class EditDetailsContact extends React.Component {
       const showRadioButtonGoalReached = campaignActive || form.idCampaign
 
       let goalCampaign = ''
+      let campaignName = ''
       if (campaignActive) {
         goalCampaign = campaignActive.goal
+        campaignName = ` - ${campaignActive.name}`
       } else if (form.idCampaign) {
         const campaignResponse = await campaigns.getOne(form.idCampaign)
-        const campaignData = getOr({ goal: '' }, 'data.data', campaignResponse)
+        const campaignData = getOr(
+          { goal: '', name: '' },
+          'data.data',
+          campaignResponse
+        )
         goalCampaign = campaignData.goal
+        campaignName = ` - ${campaignData.name}`
       }
 
       this.setState({
@@ -131,6 +138,7 @@ class EditDetailsContact extends React.Component {
         loading: false,
         showRadioButtonGoalReached,
         goalCampaign,
+        campaignName,
       })
     } catch (error) {
       this.setState({ loading: false })
@@ -203,16 +211,15 @@ class EditDetailsContact extends React.Component {
 
   getTitle(onlyText) {
     const { t } = this.props
-    const { phone } = this.state
-    const title = `${t('common:edit')} ${t('detailsContacts:title')} #${phone}`
+    const { campaignName, phone } = this.state
+    const label = `${t('common:edit')} ${t(
+      'detailsContacts:title'
+    )} #${phone}${campaignName}`
 
     return onlyText ? (
-      title
+      label
     ) : (
-      <React.Fragment>
-        <Icon name={EIcons.addressCardIcon} />
-        {title}
-      </React.Fragment>
+      <Icon name={EIcons.addressCardIcon} label={label} />
     )
   }
 

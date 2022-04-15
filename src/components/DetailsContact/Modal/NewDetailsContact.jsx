@@ -60,15 +60,17 @@ class NewDetailsContact extends React.Component {
       locationsOptions: [],
       showRadioButtonGoalReached: false,
       goalCampaign: '',
+      campaignName: '',
     }
 
-    this.handleSubmit = this.handleSubmit.bind(this)
     this.onOpen = this.onOpen.bind(this)
-    this.notificationNotAllowedNewDetails =
-      this.notificationNotAllowedNewDetails.bind(this)
-    this.handleInputChange = this.handleInputChange.bind(this)
+    this.getTitle = this.getTitle.bind(this)
     this.resetForm = this.resetForm.bind(this)
-
+    this.notificationNotAllowedNewDetails =
+    this.notificationNotAllowedNewDetails.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleInputChange = this.handleInputChange.bind(this)
+    
     this.validator = new SimpleReactValidator({
       autoForceUpdate: this,
       locale: getLocale(this.props),
@@ -96,12 +98,20 @@ class NewDetailsContact extends React.Component {
       const showRadioButtonGoalReached = campaignActive || form.idCampaign
 
       let goalCampaign = ''
+      let campaignName = ''
+
       if (campaignActive) {
         goalCampaign = campaignActive.goal
+        campaignName = ` - ${campaignActive.name}`
       } else if (form.idCampaign) {
         const campaignResponse = await campaigns.getOne(form.idCampaign)
-        const campaignData = getOr({ goal: '' }, 'data.data', campaignResponse)
+        const campaignData = getOr(
+          { goal: '', name: '' },
+          'data.data',
+          campaignResponse
+        )
         goalCampaign = campaignData.goal
+        campaignName = ` - ${campaignData.name}`
       }
 
       this.setState({
@@ -111,6 +121,7 @@ class NewDetailsContact extends React.Component {
         locationsOptions,
         showRadioButtonGoalReached,
         goalCampaign,
+        campaignName,
       })
     } catch (error) {
       this.setState({ loading: false })
@@ -189,6 +200,17 @@ class NewDetailsContact extends React.Component {
     })
   }
 
+  getTitle() {
+    const { t, contact } = this.props
+    const { campaignName } = this.state
+    const label = `${t('common:new')} ${t('titleCrud')} #${get(
+      'phone',
+      contact
+    )}${campaignName}`
+
+    return <Icon name={EIcons.addressCardIcon} label={label} />
+  }
+
   render() {
     const {
       form,
@@ -200,13 +222,7 @@ class NewDetailsContact extends React.Component {
       showRadioButtonGoalReached,
       goalCampaign,
     } = this.state
-    const { t, afterClose, waitingFeedback, contact } = this.props
-    const title = (
-      <Icon
-        name={EIcons.addressCardIcon}
-        label={`${t('common:new')} ${t('titleCrud')} #${get('phone', contact)}`}
-      />
-    )
+    const { t, afterClose, waitingFeedback } = this.props
 
     return waitingFeedback ? (
       <Button
@@ -229,7 +245,7 @@ class NewDetailsContact extends React.Component {
         onClose={this.resetForm}
         locationsOptions={locationsOptions}
         publishersOptions={publishersOptions}
-        title={title}
+        title={this.getTitle()}
         buttonTitle={t('common:new')}
         buttonIcon={EIcons.plusSquareIcon}
         showRadioButtonGoalReached={showRadioButtonGoalReached}
