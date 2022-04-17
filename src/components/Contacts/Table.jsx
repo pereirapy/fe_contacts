@@ -139,11 +139,11 @@ export default function TableComponent({
           </th>
           <th
             className="hand"
-            onClick={() => handleSorter('statusDescription')}
+            onClick={() => handleSorter('idStatus')}
           >
             <SortIcon
               stringSort={currentSort}
-              columnName="statusDescription"
+              columnName="idStatus"
               columnNameTranslated={t('status')}
             />
           </th>

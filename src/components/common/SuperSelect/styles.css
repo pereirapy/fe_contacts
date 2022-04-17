@@ -24,3 +24,7 @@
 .is-valid.form-group:hover {
   border-color: rgb(40, 167, 69);
 }
+
+.react-select__menu {
+  z-index: 3!important;
+}
