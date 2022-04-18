@@ -1,0 +1,16 @@
+.suggestions {
+  border: 1px dashed #6c757d;
+  margin: 3px;
+  padding: 2px;
+  background-color: #ffffff;
+  color: black;
+  font-style: italic;
+  display: inline-block;
+}
+
+.suggestions:hover {
+  background-color: #027cff;
+  color: #fff!important;
+
+
+}

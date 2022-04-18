@@ -67,10 +67,11 @@ class NewDetailsContact extends React.Component {
     this.getTitle = this.getTitle.bind(this)
     this.resetForm = this.resetForm.bind(this)
     this.notificationNotAllowedNewDetails =
-    this.notificationNotAllowedNewDetails.bind(this)
+      this.notificationNotAllowedNewDetails.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.setSuggestion = this.setSuggestion.bind(this)
     this.handleInputChange = this.handleInputChange.bind(this)
-    
+
     this.validator = new SimpleReactValidator({
       autoForceUpdate: this,
       locale: getLocale(this.props),
@@ -211,6 +212,14 @@ class NewDetailsContact extends React.Component {
     return <Icon name={EIcons.addressCardIcon} label={label} />
   }
 
+  setSuggestion(suggestion) {
+    const newForm = {
+      ...this.state.form,
+      information: suggestion,
+    }
+    this.setState({ form: newForm, validated: true })
+  }
+
   render() {
     const {
       form,
@@ -250,6 +259,7 @@ class NewDetailsContact extends React.Component {
         buttonIcon={EIcons.plusSquareIcon}
         showRadioButtonGoalReached={showRadioButtonGoalReached}
         goalCampaign={goalCampaign}
+        setSuggestion={this.setSuggestion}
       />
     )
   }

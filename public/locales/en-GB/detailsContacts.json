@@ -17,5 +17,7 @@
   "goalReachedYes": "Goal reached",
   "goalReachedNo": "Goal NOT reached",
   "[GOAL_REACHED]": "Goal reached",
-  "goalCampaign": "The campaign goal is: '{{goalCampaign}}'"
+  "goalCampaign": "The campaign goal is: '{{goalCampaign}}'",
+  "suggestionTitle": "Press here to use this suggestion in the field Information"
+
 }

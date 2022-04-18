@@ -58,9 +58,10 @@ class EditDetailsContact extends React.Component {
     }
     this.getTitle = this.getTitle.bind(this)
     this.getLastPublisherThatTouched =
-    this.getLastPublisherThatTouched.bind(this)
+      this.getLastPublisherThatTouched.bind(this)
     this.handleGetOne = this.handleGetOne.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.setSuggestion = this.setSuggestion.bind(this)
     this.handleInputChange = this.handleInputChange.bind(this)
 
     this.validator = new SimpleReactValidator({
@@ -206,6 +207,14 @@ class EditDetailsContact extends React.Component {
     return <Icon name={EIcons.addressCardIcon} label={label} />
   }
 
+  setSuggestion(suggestion) {
+    const newForm = {
+      ...this.state.form,
+      information: suggestion,
+    }
+    this.setState({ form: newForm, validated: true })
+  }
+
   render() {
     const {
       form,
@@ -243,6 +252,7 @@ class EditDetailsContact extends React.Component {
         buttonVariant="success"
         showRadioButtonGoalReached={showRadioButtonGoalReached}
         goalCampaign={goalCampaign}
+        setSuggestion={this.setSuggestion}
       />
     )
   }

@@ -22,6 +22,7 @@ const SuperFormControl = (props) => {
     autocomplete,
     disabled = false,
     loading = false,
+    style = {},
   } = props
 
   const [touched, setTouched] = useState(false)
@@ -75,7 +76,7 @@ const SuperFormControl = (props) => {
       ready={!loading}
       rows={rows}
     >
-      <Form.Group controlId={name}>
+      <Form.Group controlId={name} style={style}>
         <Form.Label>
           {label} {endLabel ? endLabel : null}
         </Form.Label>
@@ -83,13 +84,13 @@ const SuperFormControl = (props) => {
           as={as}
           rows={rows}
           name={name}
-          type={type || 'text'}
+          type={!as || as !== 'textarea' ? type || 'text' : null}
           placeholder={placeholder}
           autoComplete={autocomplete}
           onChange={onChange}
           onKeyUp={onKeyUpLocal}
           onBlur={onBlurLocal}
-          defaultValue={value}
+          value={value || ''}
           disabled={disabled}
           className={classField}
         />

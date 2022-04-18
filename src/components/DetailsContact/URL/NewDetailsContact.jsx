@@ -65,6 +65,7 @@ class NewDetailsContact extends React.Component {
     this.getTitle = this.getTitle.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleInputChange = this.handleInputChange.bind(this)
+    this.setSuggestion = this.setSuggestion.bind(this)
     this.handleGetOneContact = this.handleGetOneContact.bind(this)
 
     this.validator = new SimpleReactValidator({
@@ -200,6 +201,14 @@ class NewDetailsContact extends React.Component {
     )
   }
 
+  setSuggestion(suggestion) {
+    const newForm = {
+      ...this.state.form,
+      information: suggestion,
+    }
+    this.setState({ form: newForm, validated: true })
+  }
+
   render() {
     const {
       form,
@@ -234,6 +243,7 @@ class NewDetailsContact extends React.Component {
             history={history}
             showRadioButtonGoalReached={showRadioButtonGoalReached}
             goalCampaign={goalCampaign}
+            setSuggestion={this.setSuggestion}
           />
         </Container>
       </ContainerCRUD>

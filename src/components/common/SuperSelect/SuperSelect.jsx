@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import Select from 'react-select'
 import { Form } from 'react-bootstrap'
 import { find, map, includes } from 'lodash/fp'
@@ -28,6 +28,16 @@ const SuperSelect = (props) => {
 
   const [touched, setTouched] = useState(false)
   const [classField, setClassField] = useState('')
+
+  const mounted = useRef(false)
+
+  useEffect(() => {
+    mounted.current = true
+
+    return () => {
+      mounted.current = false
+    }
+  }, [])
 
   const onBlurLocal = (e) => {
     if (value && validated && !validator.fieldValid(name)) {
@@ -68,8 +78,10 @@ const SuperSelect = (props) => {
       })
     }
     setTimeout(() => {
-      if (!validator.fieldValid(name)) validator.showMessageFor(name)
-      setClassField(getClass())
+      if (mounted.current) {
+        if (!validator.fieldValid(name)) validator.showMessageFor(name)
+        setClassField(getClass())
+      }
     }, 100)
   }
 

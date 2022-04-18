@@ -9,11 +9,26 @@ import { EIcons } from '../../enums/icons'
 import Icon from '../common/Icon/Icon'
 import Button from '../common/Button/Button'
 import OurToolTip from '../common/OurToolTip/OurToolTip'
+import { suggestions } from '../../constants/detailsContacts'
 import SuperSelect from '../common/SuperSelect/SuperSelect'
 import GenderSelect from '../common/GenderSelect/GenderSelect'
 import StatusSelect from '../common/StatusSelect/StatusSelect'
 import LanguageSelect from '../common/LanguageSelect/LanguageSelect'
 import SuperFormControl from '../common/SuperFormControl/SuperFormControl'
+import './styles.css'
+
+const RenderSuggestions = ({ setSuggestion, t }) =>
+  suggestions.map((suggestion) => (
+    <Form.Text
+      muted
+      key={suggestion}
+      className="suggestions hand"
+      title={t("suggestionTitle")}
+      onClick={() => setSuggestion(suggestion)}
+    >
+      {suggestion}
+    </Form.Text>
+  ))
 
 const FormDetails = (props) => {
   const { t } = useTranslation(['detailsContacts', 'common', 'contacts'])
@@ -31,6 +46,7 @@ const FormDetails = (props) => {
     locationsOptions,
     showRadioButtonGoalReached,
     goalCampaign,
+    setSuggestion,
   } = props
   const hiddenInformation =
     (form.goalReached === true || form.goalReached === '1') &&
@@ -44,7 +60,7 @@ const FormDetails = (props) => {
       rows={12}
     >
       <Form>
-        <Row className="mb-2">
+        <Row>
           <Col xs={6} lg={3}>
             <Form.Group controlId="typeCompanyResidential0">
               <Radio
@@ -225,7 +241,11 @@ const FormDetails = (props) => {
               rules={
                 hiddenInformation ? 'min:1|max:500' : 'required|min:5|max:500'
               }
+              style={{ marginBottom: 0 }}
             />
+            <div className="mb-1">
+              <RenderSuggestions setSuggestion={setSuggestion} t={t} />
+            </div>
           </Col>
         </Row>
         <Row>

@@ -17,5 +17,6 @@
   "goalReachedYes": "Alvo alcançado",
   "goalReachedNo": "Alvo NÃO alcançado",
   "[GOAL_REACHED]": "Alvo alcançado",
-  "goalCampaign": "O alvo desta campanha é: '{{goalCampaign}}'"
+  "goalCampaign": "O alvo desta campanha é: '{{goalCampaign}}'",
+  "suggestionTitle": "Clique aqui para usar essa sugestão no campo Informações"
 }
