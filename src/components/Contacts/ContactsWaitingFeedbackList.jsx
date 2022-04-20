@@ -230,16 +230,12 @@ class ContactsWaitingFeedbackList extends React.Component {
                     />
                   </th>
                   <th>{t('phone')}</th>
-                  <th className="d-none d-sm-table-cell">{t('name')}</th>
-                  <th className="d-none d-lg-table-cell">{t('language')}</th>
-                  <th className="d-none d-lg-table-cell">{t('status')}</th>
-                  <th className="d-none d-lg-table-cell">
-                    {t('publisherCreatedBy')}
-                  </th>
-                  <th className="d-none d-lg-table-cell">{t('createdAt')}</th>
-                  <th className="d-none d-lg-table-cell">
-                    {t('publisherResponsible')}
-                  </th>
+                  <th>{t('name')}</th>
+                  <th>{t('language')}</th>
+                  <th>{t('status')}</th>
+                  <th>{t('publisherCreatedBy')}</th>
+                  <th>{t('createdAt')}</th>
+                  <th>{t('publisherResponsible')}</th>
                   <th style={{ minWidth: '116px' }}>
                     <SendPhones
                       checksContactsPhones={checksContactsPhones}
@@ -305,23 +301,19 @@ class ContactsWaitingFeedbackList extends React.Component {
                           />
                         </td>
                         <td>{detailContact.phone}</td>
-                        <td className="d-none d-sm-table-cell">
+                        <td>
                           {detailContact.contactName}
                           {showInformationAboutCampaign({
                             detailContact,
                             componentReact: this,
                           })}
                         </td>
-                        <td className="d-none d-lg-table-cell">
-                          {t(`languages:${detailContact.languageName}`)}
-                        </td>
-                        <td className="d-none d-lg-table-cell">
+                        <td>{t(`languages:${detailContact.languageName}`)}</td>
+                        <td>
                           {t(`status:${detailContact.statusDescription}`)}
                         </td>
-                        <td className="d-none d-lg-table-cell">
-                          {detailContact.publisherNameCreatedBy}
-                        </td>
-                        <td className="d-none d-lg-table-cell">
+                        <td>{detailContact.publisherNameCreatedBy}</td>
+                        <td>
                           <OurToolTip
                             info={formatDateDMY(detailContact.createdAt)}
                             toolTipContent={t('toolTipWaitingFeedback')}
@@ -333,9 +325,7 @@ class ContactsWaitingFeedbackList extends React.Component {
                             }
                           />
                         </td>
-                        <td className="d-none d-lg-table-cell">
-                          {detailContact.publisherName}
-                        </td>
+                        <td>{detailContact.publisherName}</td>
                         <td>
                           <EditDetailsContact
                             data={detailContact}

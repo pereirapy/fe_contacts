@@ -67,7 +67,7 @@ export function toggleFilter(componentReact) {
 function getHeaders(t, isWaitingFeedback) {
   const headersGeneric = [
     { label: t('phone'), key: 'phone' },
-    { label: t('name'), key: 'name' },
+    { label: t('name'), key: isWaitingFeedback ? 'contactName' : 'name' },
     { label: t('owner'), key: 'owner' },
     { label: t('gender'), key: 'gender' },
     { label: t('typeCompany'), key: 'typeCompany' },

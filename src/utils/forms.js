@@ -1,7 +1,7 @@
 import moment from 'moment'
 import { startsWith } from 'lodash'
 import GqlBuilder from 'graphql-query-builder-v2'
-import { getOr, omit, trim, isString, isEmpty, pipe, forEach } from 'lodash/fp'
+import { getOr, omit, isString, isEmpty, pipe, forEach } from 'lodash/fp'
 
 import { START_NUMBER_NOT_ALLOWED } from '../constants/contacts'
 
@@ -28,7 +28,7 @@ export const handleInputChangeGeneric = (event, componentReact) => {
     target: { name, value },
   } = event
   const { form } = componentReact.state
-  const valueTrim = isString(value) ? trim(value) : value
+  const valueTrim = isString(value) ? value.replace(/  +/g, ' ') : value
   componentReact.setState({
     form: {
       ...form,
